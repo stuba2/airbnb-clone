@@ -2,7 +2,7 @@
 
 ## Database Schema Design
 
-![HeirBnB Database Schema](<AirBnB schema v3.png>)
+![HeirBnB Database Schema](<images/AirBnB schema v3.png>)
 [HeirBnB DB Schema](https://dbdiagram.io/d/64c3108e02bd1c4a5ed42ce8)
 
 ## API Documentation
@@ -1175,7 +1175,7 @@ Update and return an existing booking.
 * Require proper authorization: Booking must belong to the current user
 * Request
   * Method: PUT/PATCH
-  * URL: /bookings/:spotId
+  * URL: /bookings/:bookingId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1269,7 +1269,7 @@ Delete an existing booking.
   Spot must belong to the current user
 * Request
   * Method: DELETE
-  * URL: /bookings/:spotId
+  * URL: /bookings/:bookingId
   * Body: none
 
 * Successful Response
@@ -1318,7 +1318,7 @@ Delete an existing image for a Spot.
 * Require proper authorization: Spot must belong to the current user
 * Request
   * Method: DELETE
-  * URL: /images/:spotId/:imageId
+  * URL: /spots/:spotId/images/:imageId
   * Body: none
 
 * Successful Response
@@ -1353,7 +1353,7 @@ Delete an existing image for a Review.
 * Require proper authorization: Review must belong to the current user
 * Request
   * Method: DELETE
-  * URL: /images/:reviewId/:imageId
+  * URL: /reviews/:reviewId/images/:imageId
   * Body: none
 
 * Successful Response
