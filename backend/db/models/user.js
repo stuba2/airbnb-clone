@@ -8,6 +8,15 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
+    toSafeUser() {
+      return {
+        id: this.id,
+        username: this.username,
+        email: this.email,
+        firstName: this.firstName,
+        lastName: this.lastName,
+      }
+    }
     static associate(models) {
       // define association here
     }
@@ -34,6 +43,14 @@ module.exports = (sequelize, DataTypes) => {
         len: [3, 256],
         isEmail: true
       }
+    },
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     hashedPassword: {
       type: DataTypes.STRING.BINARY,
