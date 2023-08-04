@@ -8,8 +8,8 @@ if (process.env.NODE_ENV === 'production') {
 
 
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+  up: async (queryInterface, Sequelize) => {
+    return queryInterface.createTable("Users", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -18,13 +18,13 @@ module.exports = {
       },
       username: {
         type: Sequelize.STRING(30),
-        unique: true,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       email: {
         type: Sequelize.STRING(256),
-        unique: true,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       firstName: {
         type: Sequelize.STRING,
@@ -48,9 +48,10 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
-    });
+    }, options);
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+  down: async (queryInterface, Sequelize) => {
+    options.tableName = "Users";
+    return queryInterface.dropTable(options);
   }
 };
