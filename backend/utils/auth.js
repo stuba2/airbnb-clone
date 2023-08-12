@@ -8,11 +8,11 @@ const { secret, expiresIn } = jwtConfig;
 const setTokenCookie = (res, user) => {
   // Create the token.
   const safeUser = {
-    id: this.id,
-    username: this.username,
-    email: this.email,
-    firstName: this.firstName,
-    lastName: this.lastName,
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
   };
   const token = jwt.sign(
     { data: safeUser },
@@ -71,5 +71,9 @@ const requireAuth = function (req, _res, next) {
   err.status = 401;
   return next(err);
 }
+
+// const isOwner = function (req, res, next) {
+
+// }
 
 module.exports = { setTokenCookie, restoreUser, requireAuth };
