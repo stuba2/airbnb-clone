@@ -1,9 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 
-const { setTokenCookie, requireAuth } = require('../../utils/auth');
+const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth');
 const { Spot, Review, SpotImage, User, sequelize } = require('../../db/models');
 const { settings } = require('../../app');
+const { validateSpot } = require('../../utils/validators/spots')
 
 const router = express.Router();
 
@@ -29,23 +30,10 @@ router.get('/', async (req, res) => {
 });
 
 // Create a Spot
-router.post('/', requireAuth, async (req, res) => {
+router.post('/', requireAuth, restoreUser, validateSpot, async (req, res) => {
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
-  const user = await User.findOne({
-    where: {
-      username: 'Demo-lition'
-    }
-  })
-
-  // try {
-  //   setTokenCookie(req, user)
-
-  // } catch {
-  //   const error = new Error('You need to be logged in to do that')
-  //   res.json(err)
-  // }
-  // console.log('----------',user.id)
+  const user = req.user
 
   const newSpot = await Spot.create({
     ownerId: user.id,
@@ -59,19 +47,6 @@ router.post('/', requireAuth, async (req, res) => {
     description: description,
     price: price
   });
-
-  // {
-  //   "ownerId": 1,
-  //   "address": "1201 S Main St",
-  //   "city": "Ann Arbor",
-  //   "state": "MI",
-  //   "country": "USA",
-  //   "lat": 42.265777,
-  //   "lng": -83.748849,
-  //   "name": "Michigan Stadium",
-  //   "description": "This is the Big House",
-  //   "price": 45.23
-  // }
 
   const spotExistsQuestion = await Spot.findAll({
     where: {
