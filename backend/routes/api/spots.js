@@ -101,9 +101,19 @@ router.post('/:spotId/images', restoreUser, requireAuth,  async (req, res) => {
       message: "Only this spot's owner can add images"
     })
   }
-
-
 });
+
+// Get current user's spots
+router.get('/user', restoreUser, requireAuth, async (req, res) => {
+  const user = req.user;
+  const spots = await Spot.findAll({
+    where: {
+      ownerId: user.id
+    }
+  });
+
+  res.json(spots)
+})
 
 
 module.exports = router;
