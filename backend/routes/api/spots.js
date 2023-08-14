@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth');
-const { Spot, Review, SpotImage, User, sequelize } = require('../../db/models');
+const { Spot, Review, SpotImage, User, sequelize, Sequelize } = require('../../db/models');
 const { settings } = require('../../app');
 const { validateSpot } = require('../../utils/validators/spots')
 
@@ -10,22 +10,33 @@ const router = express.Router();
 
 // Get all Spots
 router.get('/', async (req, res) => {
+
   const spots = await Spot.findAll({
-    include: {
-      model: Review,
-      attributes: []
-    },
+    include: [
+      {
+        model: Review,
+        attributes: []
+      },
+      // {
+      //   model: SpotImage,
+      //   attributes: []
+      // }
+    ],
     attributes: [
-      'id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'description', 'price',
+      'id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'description', 'price', 'createdAt', 'updatedAt',
       [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating']
     ],
-    group: ['spotId']
+    // group: ['spotId']
+
+    // attributes: {
+    //   include: [sequelize.col('SpotImage'),'url']
+    // }
   });
-  // console.log(req.user)
+
 
   // get previewImage
   // if SpotImage.previewImage === true, include the SpotImage.url, else don't include previewImage in the res.json
-
+  
   res.json(spots)
 });
 
