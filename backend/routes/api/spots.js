@@ -73,26 +73,36 @@ router.post('/', requireAuth, restoreUser, validateSpot, async (req, res) => {
 });
 
 // Add image to spot
-router.post('/:spotId/images', async (req, res) => {
-  const { spotId } = req.params
-  const { url, preview } = req.body
+router.post('/:spotId/images', restoreUser, requireAuth,  async (req, res) => {
+  const { spotId } = req.params;
+  const { url, preview } = req.body;
+  const user = req.user;
+  const spot = await Spot.findByPk(+spotId);
 
-  try {
-    const spot = await Spot.findByPk(+spotId);
-    if (spot !== undefined) {
-      const newSpotPic = await SpotImage.create({
-        spotId: spotId,
-        url: url,
-        previewImage: preview
+  if (spot.id === user.id ) {
+    try {
+      if (spot !== undefined) {
+        const newSpotPic = await SpotImage.create({
+          spotId: spotId,
+          url: url,
+          previewImage: preview
+        });
+
+        res.json(newSpotPic)
+      }
+    } catch {
+      res.status(404);
+      res.json({
+        message: "Spot couldn't be found"
       });
-
-      res.json(newSpotPic)
     }
-  } catch {
+  } else {
     res.json({
-      message: "Spot couldn't be found"
+      message: "Only this spot's owner can add images"
     })
   }
+
+
 });
 
 
