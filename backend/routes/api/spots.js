@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
 
   // get previewImage
   // if SpotImage.previewImage === true, include the SpotImage.url, else don't include previewImage in the res.json
-  
+
   res.json(spots)
 });
 
@@ -69,6 +69,29 @@ router.post('/', requireAuth, restoreUser, validateSpot, async (req, res) => {
     res.json(newSpot)
   } else {
     throw new Error('Location already exists')
+  }
+});
+
+// Add image to spot
+router.post('/:spotId/images', async (req, res) => {
+  const { spotId } = req.params
+  const { url, preview } = req.body
+
+  try {
+    const spot = await Spot.findByPk(+spotId);
+    if (spot !== undefined) {
+      const newSpotPic = await SpotImage.create({
+        spotId: spotId,
+        url: url,
+        previewImage: preview
+      });
+
+      res.json(newSpotPic)
+    }
+  } catch {
+    res.json({
+      message: "Spot couldn't be found"
+    })
   }
 });
 
