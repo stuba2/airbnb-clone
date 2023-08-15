@@ -184,6 +184,97 @@ router.get('/:spotId', restoreUser, async (req, res) => {
 
 
   res.json(ret)
+});
+
+// Edit a spot
+router.put('/:spotId', restoreUser, requireAuth, async (req, res) => {
+  const { spotId } = req.params
+  const { address, city, state, country, lat, lng, name, description, price } = req.body
+
+  const spot = await Spot.scope('allInfo').findByPk(+spotId)
+
+  // Body validation errors
+  let errors = {}
+  if (!address) {
+    errors.address = "Street address is required"
+  }
+  if (!city) {
+    errors.city = "City is required"
+  }
+  if (!state) {
+    errors.state = "State is required"
+  }
+  if (!country) {
+    errors.country = "Country is required"
+  }
+  if (!lat) {
+    errors.lat = "Latitude is not valid"
+  }
+  if (!lng) {
+    errors.lng = "Longitude is not valid"
+  }
+  if (name.length > 50) {
+    errors.name = "Name must be less than 50 characters"
+  }
+  if (!name) {
+    errors.name = "Name is required"
+  }
+  if (!description) {
+    errors.description = "Description is required"
+  }
+  if (!price) {
+    errors.price = "Price per day is required"
+  }
+
+  if (errors.address || errors.city || errors.state || errors.country || errors.lat || errors.lng || errors.name || errors.description || errors.price) {
+    res.status(400)
+    res.json({
+      message: "Bad Request",
+      errors
+    })
+  }
+
+  // No spot found error
+  if (!spot) {
+    res.status(404)
+    res.json({
+      message: "Spot couldn't be found"
+    })
+  }
+
+  spot.address = address;
+  spot.city = city;
+  spot.state = state;
+  spot.country = country;
+  spot.lat = lat;
+  spot.lng = lng;
+  spot.name = name;
+  spot.description = description;
+  spot.price = price;
+
+  await spot.save()
+
+  res.json(spot)
+});
+
+// Delete a spot
+router.delete('/:spotId', restoreUser, requireAuth, async (req, res) => {
+  const { spotId } = req.params;
+
+  const spot = await Spot.findByPk(+spotId)
+
+  if (!spot) {
+    res.status(404);
+    res.json({
+      message: "Spot couldn't be found"
+    })
+  }
+
+  await spot.destroy();
+
+  res.json({
+    message: "Successfully deleted"
+  })
 })
 
 
