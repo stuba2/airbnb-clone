@@ -19,13 +19,16 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'spotId',
         onDelete: 'CASCADE'
       });
+      Spot.hasMany(models.SpotImage, {
+        foreignKey: 'spotId',
+        onDelete: 'CASCADE'
+      });
     }
   }
   Spot.init({
     ownerId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true,
     },
     address: {
       type: DataTypes.STRING,
@@ -89,6 +92,18 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Spot',
+    defaultScope: {
+      attributes: {
+        exclude: ["createdAt", "updatedAt"]
+      }
+    },
+    scopes: {
+      allInfo: {
+        attributes: {
+          exclude: []
+        }
+      }
+    }
   });
   return Spot;
 };
