@@ -11,31 +11,29 @@ const router = express.Router();
 // Get all Spots
 router.get('/', async (req, res) => {
 
-  const spots = await Spot.findAll({
+  const spots = await Spot.scope("allInfo").findAll({
     include: [
       {
-        model: Review,
-        attributes: []
+      model: Review,
+      attributes: []
       },
-      // {
-      //   model: SpotImage,
-      //   attributes: []
-      // }
-    ],
-    attributes: [
-      'id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'description', 'price', 'createdAt', 'updatedAt',
-      [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating']
-    ],
-    // group: ['spotId']
-
-    // attributes: {
-    //   include: [sequelize.col('SpotImage'),'url']
-    // }
+      {
+        model: SpotImage,
+        where: {
+          previewImage: true
+        },
+        required: false,
+        attributes: []
+      }
+  ],
+    attributes: {
+      include: [
+      [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating'],
+      [sequelize.col('SpotImages.url'), 'previewImage']
+    ]
+  },
+    group: ['Spot.id']
   });
-
-
-  // get previewImage
-  // if SpotImage.previewImage === true, include the SpotImage.url, else don't include previewImage in the res.json
 
   res.json(spots)
 });
@@ -109,7 +107,28 @@ router.get('/user', restoreUser, requireAuth, async (req, res) => {
   const spots = await Spot.findAll({
     where: {
       ownerId: user.id
-    }
+    },
+    include: [
+      {
+      model: Review,
+      attributes: []
+      },
+      {
+        model: SpotImage,
+        where: {
+          previewImage: true
+        },
+        required: false,
+        attributes: []
+      }
+  ],
+    attributes: {
+      include: [
+      [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating'],
+      [sequelize.col('SpotImages.url'), 'previewImage']
+    ]
+  },
+    group: ['Spot.id']
   });
 
   res.json(spots)
@@ -122,7 +141,6 @@ router.get('/:spotId', restoreUser, async (req, res) => {
   let ret = {}
 
   //error response (404) when spotId doesn't return anything
-
   if (!spot) {
     res.status(404);
     return res.json({
@@ -232,7 +250,7 @@ router.put('/:spotId', restoreUser, requireAuth, async (req, res) => {
       message: "Bad Request",
       errors
     })
-  }
+  };
 
   // No spot found error
   if (!spot) {
@@ -240,7 +258,7 @@ router.put('/:spotId', restoreUser, requireAuth, async (req, res) => {
     res.json({
       message: "Spot couldn't be found"
     })
-  }
+  };
 
   spot.address = address;
   spot.city = city;
@@ -275,7 +293,7 @@ router.delete('/:spotId', restoreUser, requireAuth, async (req, res) => {
   res.json({
     message: "Successfully deleted"
   })
-})
+});
 
 
 module.exports = router;
