@@ -25,14 +25,14 @@ router.get('/user', restoreUser, requireAuth, async (req, res) => {
               previewImage: true
             },
             required: false,
-            attributes: []
+            attributes: ['url']
           }
         ],
-        attributes: {
-          include: [
-            [sequelize.col('SpotImage.url'), 'previewImage']
-          ]
-        },
+        // attributes: {
+        //   include: [
+        //     [sequelize.col('SpotImage.url'), 'previewImage']
+        //   ]
+        // },
         group: ['Spot.id']
       }
     ]
@@ -71,6 +71,51 @@ router.get('/:spotId/reviews', restoreUser, requireAuth, async (req, res) => {
   });
 
   res.json(reviews)
-})
+});
+
+// Create a Review for a Spot based on the Spot's id
+router.post('/:spotId/reviews', restoreUser, requireAuth, validateReview, async (req, res) => {
+  const { spotId } = req.params;
+  const { review, stars } = req.body;
+  const user = req.user;
+
+  const oldReview = await Review.findOne({
+    where: {
+      spotId: spotId,
+      userId: user.id
+    }
+  });
+  if (oldReview) {
+    res.status(500);
+    return res.json({
+      message: "User already has a review for this spot"
+    })
+  }
+
+  const newReview = await Review.create({
+    userId: user.id,
+    spotId: spotId,
+    review: review,
+    stars: stars
+  });
+
+  // Body validation errors
+
+  // Couldn't find spot
+  const doesSpotExist = await Spot.findByPk(+spotId)
+  if (!doesSpotExist) {
+    res.status(404);
+    res.json({
+      message: "Spot couldn't be found"
+    })
+  }
+
+  // Review from User already exists
+  // const oldReview =
+
+
+  res.json(newReview)
+
+});
 
 module.exports = router;
