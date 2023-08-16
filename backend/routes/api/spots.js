@@ -110,8 +110,8 @@ router.get('/user', restoreUser, requireAuth, async (req, res) => {
     },
     include: [
       {
-      model: Review,
-      attributes: []
+        model: Review,
+        attributes: []
       },
       {
         model: SpotImage,
@@ -121,13 +121,13 @@ router.get('/user', restoreUser, requireAuth, async (req, res) => {
         required: false,
         attributes: []
       }
-  ],
+    ],
     attributes: {
       include: [
-      [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating'],
-      [sequelize.col('SpotImages.url'), 'previewImage']
-    ]
-  },
+        [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating'],
+        [sequelize.col('SpotImages.url'), 'previewImage']
+      ]
+    },
     group: ['Spot.id']
   });
 
