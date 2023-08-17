@@ -17,28 +17,43 @@ router.get('/user', restoreUser, requireAuth, async (req, res) => {
     },
     include: [
       {
+        model: User,
+        attributes: ['id', 'firstName', 'lastName']
+      },
+      {
         model: Spot,
-        include: [
-          {
-            model: SpotImage,
-            where: {
-              previewImage: true
-            },
-            required: false,
-            attributes: ['url']
-          }
-        ],
-        // attributes: {
-        //   include: [
-        //     [sequelize.col('SpotImage.url'), 'previewImage']
-        //   ]
-        // },
-        group: ['Spot.id']
+      },
+      {
+        model: ReviewImage,
+        attributes: ["id", "url"]
       }
     ]
   });
 
-  res.json(reviews)
+
+  let arr = []
+  for (let i = 0; i < reviews.length; i++) {
+    let review = reviews[i]
+    let reviewObject = review.toJSON()
+    let spot = reviewObject.Spot
+
+    const spotImage = await SpotImage.findOne({
+      where: {
+        spotId: spot.id,
+        previewImage: true
+      }
+    })
+
+    if (spotImage) {
+      spot.previewImage = spotImage.url
+    } else {
+      spot.previewImage = null
+    }
+
+    arr.push(reviewObject)
+  }
+  
+  res.json({Reviews: arr})
 });
 
 // Get all Reviews by a Spot's id
