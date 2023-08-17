@@ -118,4 +118,41 @@ router.post('/:spotId/reviews', restoreUser, requireAuth, validateReview, async 
 
 });
 
+// Add an Image to a Review based on the Review's id
+router.post('/:reviewId/image', restoreUser, requireAuth, async (req, res) => {
+  const { reviewId } = req.params;
+  const { url } = req.body
+  const oldReview = await Review.findByPk(+reviewId);
+  const reviewImages = await ReviewImage.findAll({
+    where: {
+      reviewId: reviewId
+    }
+  });
+
+  // No Review with specified id
+  if (!oldReview) {
+    res.status(404);
+    return res.json({
+      message: "Review couldn't be found"
+    })
+  };
+
+  // Images at max
+  if (reviewImages.length > 10) {
+    res.status(403)
+    return res.json({
+      message: "Maximum number of images for this resource was reached"
+    })
+  }
+
+  const newReviewPic = await ReviewImage.scope("idAndUrlOnly").create({
+    reviewId: reviewId,
+    url: url
+  })
+
+  const resReviewPic = await ReviewImage.scope("idAndUrlOnly").findByPk(newReviewPic.id)
+
+  res.json(resReviewPic)
+});
+
 module.exports = router;
