@@ -155,4 +155,47 @@ router.post('/:reviewId/image', restoreUser, requireAuth, async (req, res) => {
   res.json(resReviewPic)
 });
 
+// Edit a Review
+router.put('/:spotId/reviews/:reviewId', restoreUser, requireAuth, async (req, res) => {
+  const { spotId, reviewId } = req.params;
+  const { review, stars } = req.body;
+
+  const spot = await Spot.findByPk(+spotId);
+  const revvy = await Review.findByPk(+reviewId);
+
+  // Review validation errors
+  let errors = {}
+  if (!review) {
+    errors.review = "Review text is required"
+  }
+  if (+stars < 1 || +stars > 5) {
+    errors.stars = "Stars must be an integer from 1 to 5"
+  }
+
+  if (errors.review || errors.stars) {
+    res.status(400)
+    return res.json({
+      message: "Bad Request",
+      errors
+    })
+  }
+
+  // No review found error
+  if (!revvy) {
+    res.status(404)
+    return res.json({
+      message: "Review couldn't be found"
+    })
+  }
+
+  revvy.review = review;
+  revvy.stars = stars;
+
+  await revvy.save()
+
+  res.json(revvy)
+});
+
+
+
 module.exports = router;
