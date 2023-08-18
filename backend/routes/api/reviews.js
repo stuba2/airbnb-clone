@@ -52,7 +52,7 @@ router.get('/user', restoreUser, requireAuth, async (req, res) => {
 
     arr.push(reviewObject)
   }
-  
+
   res.json({Reviews: arr})
 });
 
@@ -211,6 +211,29 @@ router.put('/:spotId/reviews/:reviewId', restoreUser, requireAuth, async (req, r
   res.json(revvy)
 });
 
+// Delete a Review Image
+router.delete('/:reviewId/images/:imageId', restoreUser, requireAuth, async (req, res) => {
+  const { reviewId, imageId } = req.params;
+  const review = await Review.findByPk(+reviewId)
+  const reviewImage = await ReviewImage.findAll({
+    where: {
+      reviewId: review.id
+    }
+  })
 
+  // No Review Image
+  if (!reviewImage) {
+    res.status(404);
+    return res.json({
+      message: "Review Image couldn't be found"
+    })
+  }
+
+  await reviewImage.destroy();
+
+  res.json({
+    message: "Successfully deleted"
+  })
+})
 
 module.exports = router;

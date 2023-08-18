@@ -412,7 +412,7 @@ router.post('/:spotId/bookings', restoreUser, requireAuth, validateBooking, asyn
       }
     }
   });
-  
+
   const conflictBookingQEnd = await Booking.findAll({
     where: {
       startDate: {
@@ -453,6 +453,31 @@ router.post('/:spotId/bookings', restoreUser, requireAuth, validateBooking, asyn
   })
 
   res.json(newBooking[0])
+});
+
+// Delete a Spot Image
+router.delete('/:spotId/images/:imageId', restoreUser, requireAuth, async (req, res) => {
+  const { spotId, imageId } = req.params;
+  const spot = await Spot.findByPk(+spotId)
+  const spotImage = await SpotImage.findAll({
+    where: {
+      spotId: spot.id
+    }
+  })
+
+  // No Spot Image
+  if (!spotImage) {
+    res.status(404)
+    return res.json({
+      message: "Spot Image couldn't be found"
+    })
+  }
+
+  await spotImage.destroy()
+
+  res.json({
+    message: "Successfully deleted"
+  })
 });
 
 
