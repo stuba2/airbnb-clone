@@ -13,6 +13,56 @@ const router = express.Router();
 
 // Get all Spots
 router.get('/', async (req, res) => {
+  let query = {
+    where: {},
+    include: []
+  }
+
+  const { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+
+  if (!page) page = 1
+  if (!size) size = 20
+
+  const pagination = {}
+  if (page >= 1 && size >= 1) {
+    pagination.limit = size;
+    pagination.offset = size * (page - 1)
+  }
+
+  // Query parameter validation errors
+  let errors = {}
+  if (page < 1) {
+    errors.page = "Page must be greater than or equal to 1"
+  }
+  if (size < 1) {
+    errors.size = "Size must be greater than or equal to 1"
+  }
+  if (maxLat > 90) {
+    errors.maxLat = "Maximum latitude is invalid"
+  }
+  if (minLat < -90) {
+    errors.minLat = "Minimum latitude is invalid"
+  }
+  if (minLng < -180) {
+    errors.minLng = "Minimum longitude is invalid"
+  }
+  if (maxLng > 180) {
+    errors.maxLng = "Maximum longitude is invalid"
+  }
+  if (minPrice < 0) {
+    errors.minPrice = "Minimum price must be greater than or equal to 0"
+  }
+  if (maxPrice < 0) {
+    errors.maxPrice = "Maximum price must be greater than or equal to 0"
+  }
+
+  if (errors.page || errors.size || errors.maxLat || errors.minLat || errors.minLng || errors.maxLng || errors.minPrice || errors.maxPrice) {
+    res.status(400)
+    return res.json({
+      message: "Bad Request",
+      errors
+    })
+  }
 
   const spots = await Spot.scope("allInfo").findAll({
     include: [
@@ -35,7 +85,8 @@ router.get('/', async (req, res) => {
       [sequelize.col('SpotImages.url'), 'previewImage']
     ]
   },
-    group: ['Spot.id']
+    group: ['Spot.id'],
+    ...pagination
   });
 
   res.json(spots)
