@@ -37,7 +37,25 @@ module.exports = {
       spotId: 3,
       review: 'This place was the best. Bees made me honey every morning',
       stars: 5
-    }
+    },
+    {
+      userId: 2,
+      spotId: 1,
+      review: 'Testing this out',
+      stars: 2
+    },
+    {
+      userId: 3,
+      spotId: 2,
+      review: 'Give me toast',
+      stars: 2
+    },
+    {
+      userId: 1,
+      spotId: 3,
+      review: 'I am thirsty',
+      stars: 2
+    },
    ])
   },
 
