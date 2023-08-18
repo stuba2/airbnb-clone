@@ -72,4 +72,6 @@ router.get('/', restoreUser, requireAuth, async (req, res) => {
   res.json({Bookings: arr})
 });
 
+
+
 module.exports = router;

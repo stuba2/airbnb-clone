@@ -1,8 +1,9 @@
 const express = require('express');
+const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth');
-const { Spot, Review, SpotImage, User, sequelize, Sequelize } = require('../../db/models');
+const { Spot, Review, SpotImage, User, sequelize, Booking } = require('../../db/models');
 const { settings } = require('../../app');
 const { validateSpot } = require('../../utils/validators/spots');
 const spotimage = require('../../db/models/spotimage');
@@ -315,6 +316,72 @@ router.delete('/:spotId/reviews/:reviewId', restoreUser, requireAuth, async (req
     message: "Successfully deleted"
   })
 });
+
+// Get all Bookings for a Spot based on the Spot's id
+router.get('/:spotId/bookings', restoreUser, requireAuth, async (req, res) => {
+  const { spotId }= req.params;
+  const spot = await Spot.findByPk(+spotId);
+  const user = req.user;
+  let arr = []
+  let ret = {}
+
+  // Error: no spot found
+  if (!spot) {
+    res.status(404)
+    return res.json({
+      message: "Spot couldn't be found"
+    })
+  }
+
+  const bookings = await Booking.findAll({
+    where: {
+      spotId: spot.id,
+      userId: {
+        [Op.not]: user.id
+      }
+    },
+    attributes: ['spotId','startDate','endDate']
+  })
+
+  for (let i = 0; i < bookings.length; i++) {
+    let booking = bookings[i]
+    if (user.id !== booking.userId) {
+      arr.push(booking)
+    }
+  }
+
+  const userBookings = await Booking.findAll({
+    where: {
+      spotId: spot.id,
+      userId: user.id
+    }
+  });
+
+  
+  const paredUser = await User.findAll({
+    where: {
+      id: user.id
+    },
+    attributes: ['id','firstName','lastName']
+  })
+
+  for (let i = 0; i < userBookings.length; i++) {
+    let booking = userBookings[i];
+    if (user.id === booking.userId) {
+      ret.User = paredUser[i]
+      ret.id = booking.id
+      ret.spotId = booking.spotId
+      ret.userId = booking.userId
+      ret.startDate = booking.startDate
+      ret.endDate = booking.endDate
+      ret.createdAt = booking.createdAt
+      ret.updatedAt = booking.updatedAt
+      arr.push(ret)
+    }
+  }
+
+  res.json({Bookings: arr})
+})
 
 
 module.exports = router;
