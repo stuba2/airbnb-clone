@@ -412,7 +412,7 @@ router.post('/:spotId/bookings', restoreUser, requireAuth, validateBooking, asyn
       }
     }
   });
-  console.log(conflictBookingQStart)
+  
   const conflictBookingQEnd = await Booking.findAll({
     where: {
       startDate: {
