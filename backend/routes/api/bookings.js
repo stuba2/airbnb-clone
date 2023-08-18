@@ -1,4 +1,5 @@
 const express = require('express');
+const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 
 const { requireAuth, restoreUser } = require('../../utils/auth');
@@ -70,6 +71,114 @@ router.get('/', restoreUser, requireAuth, async (req, res) => {
   }
 // console.log({arr})
   res.json({Bookings: arr})
+});
+
+// Edit a Booking
+router.put('/:bookingId', restoreUser, requireAuth, async (req, res) => {
+  const { bookingId } = req.params;
+  const { startDate, endDate } = req.body;
+  const user = req.user;
+  const errors = {}
+  const booking = await Booking.findByPk(+bookingId);
+
+  // No booking found error
+  if (!booking) {
+    res.status(404);
+    return res.json({
+      message: "Booking couldn't be found"
+    })
+  }
+
+  // Booking in the past error
+  if (booking.endDate < new Date()) {
+    res.status(403)
+    return res.json({
+      message: "Past bookings can't be modified"
+    })
+  }
+
+  // Booking conflict error
+  const conflictBookingQStart = await Booking.findAll({
+    where: {
+      startDate: {
+        [Op.lte]: startDate
+      },
+      endDate: {
+        [Op.gte]: startDate
+      }
+    }
+  });
+
+  const conflictBookingQEnd = await Booking.findAll({
+    where: {
+      startDate: {
+        [Op.lte]: endDate
+      },
+      endDate: {
+        [Op.gte]: endDate
+      }
+    }
+  });
+
+  if (conflictBookingQStart[0]) {
+    errors.startDate = "Start date conflicts with an existing booking"
+  }
+  if (conflictBookingQEnd[0]) {
+    errors.endDate = "End date conflicts with an existing booking"
+  }
+
+  if (errors.startDate || errors.endDate) {
+    res.status(403)
+    return res.json({
+      message: "Sorry this spot is already booked for the specified dates",
+      errors
+    })
+  }
+
+  booking.startDate = startDate
+  booking.endDate = endDate
+
+  await booking.save()
+
+  res.json(booking)
+});
+
+// Delete a Booking
+router.delete('/:bookingId', restoreUser, requireAuth, async (req, res) => {
+  const { bookingId } = req.params;
+  const booking = await Booking.findByPk(+bookingId)
+
+  // No Booking found error
+  if (!booking) {
+    res.status(404);
+    return res.json({
+      message: "Booking couldn't be found"
+    })
+  };
+
+  // Booking already started error
+  const conflictBookingQStart = await Booking.findAll({
+    where: {
+      startDate: {
+        [Op.lte]: booking.startDate
+      },
+      endDate: {
+        [Op.gte]: booking.BookingstartDate
+      }
+    }
+  });
+  if (conflictBookingQStart[0]) {
+    res.status(403)
+    return res.json({
+      message: "Bookings that have ben started can't be deleted"
+    })
+  }
+
+  await booking.destroy();
+
+  res.json({
+    message: "Successfully deleted"
+  })
 });
 
 
