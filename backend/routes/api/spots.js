@@ -5,6 +5,7 @@ const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth')
 const { Spot, Review, SpotImage, User, sequelize, Sequelize } = require('../../db/models');
 const { settings } = require('../../app');
 const { validateSpot } = require('../../utils/validators/spots');
+const spotimage = require('../../db/models/spotimage');
 
 const router = express.Router();
 
@@ -110,8 +111,8 @@ router.get('/user', restoreUser, requireAuth, async (req, res) => {
     },
     include: [
       {
-      model: Review,
-      attributes: []
+        model: Review,
+        attributes: []
       },
       {
         model: SpotImage,
@@ -121,13 +122,13 @@ router.get('/user', restoreUser, requireAuth, async (req, res) => {
         required: false,
         attributes: []
       }
-  ],
+    ],
     attributes: {
       include: [
-      [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating'],
-      [sequelize.col('SpotImages.url'), 'previewImage']
-    ]
-  },
+        [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating'],
+        [sequelize.col('SpotImages.url'), 'previewImage']
+      ]
+    },
     group: ['Spot.id']
   });
 
@@ -289,6 +290,26 @@ router.delete('/:spotId', restoreUser, requireAuth, async (req, res) => {
   }
 
   await spot.destroy();
+
+  res.json({
+    message: "Successfully deleted"
+  })
+});
+
+// Delete a Review
+router.delete('/:spotId/reviews/:reviewId', restoreUser, requireAuth, async (req, res) => {
+  const { spotId, reviewId } = req.params;
+  const spot = await Spot.findByPk(+spotId)
+  const review = await Review.findByPk(+reviewId)
+
+  if (!review) {
+    res.status(404);
+    return res.json({
+      message: "Review couldn't be found"
+    });
+  }
+
+  await review.destroy();
 
   res.json({
     message: "Successfully deleted"

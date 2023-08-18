@@ -102,6 +102,11 @@ module.exports = (sequelize, DataTypes) => {
         attributes: {
           exclude: []
         }
+      },
+      noDescription: {
+        attributes: {
+          exclude: ['description']
+        }
       }
     }
   });
