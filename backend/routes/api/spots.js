@@ -1,10 +1,12 @@
 const express = require('express');
+const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth');
-const { Spot, Review, SpotImage, User, sequelize, Sequelize } = require('../../db/models');
+const { Spot, Review, SpotImage, User, sequelize, Booking } = require('../../db/models');
 const { settings } = require('../../app');
 const { validateSpot } = require('../../utils/validators/spots');
+const { validateBooking } = require('../../utils/validators/bookings');
 const spotimage = require('../../db/models/spotimage');
 
 const router = express.Router();
@@ -314,6 +316,143 @@ router.delete('/:spotId/reviews/:reviewId', restoreUser, requireAuth, async (req
   res.json({
     message: "Successfully deleted"
   })
+});
+
+// Get all Bookings for a Spot based on the Spot's id
+router.get('/:spotId/bookings', restoreUser, requireAuth, async (req, res) => {
+  const { spotId }= req.params;
+  const spot = await Spot.findByPk(+spotId);
+  const user = req.user;
+  let arr = []
+  let ret = {}
+
+  // Error: no spot found
+  if (!spot) {
+    res.status(404)
+    return res.json({
+      message: "Spot couldn't be found"
+    })
+  }
+
+  const bookings = await Booking.findAll({
+    where: {
+      spotId: spot.id,
+      userId: {
+        [Op.not]: user.id
+      }
+    },
+    attributes: ['spotId','startDate','endDate']
+  })
+
+  for (let i = 0; i < bookings.length; i++) {
+    let booking = bookings[i]
+    if (user.id !== booking.userId) {
+      arr.push(booking)
+    }
+  }
+
+  const userBookings = await Booking.findAll({
+    where: {
+      spotId: spot.id,
+      userId: user.id
+    }
+  });
+
+
+  const paredUser = await User.findAll({
+    where: {
+      id: user.id
+    },
+    attributes: ['id','firstName','lastName']
+  })
+
+  for (let i = 0; i < userBookings.length; i++) {
+    let booking = userBookings[i];
+    if (user.id === booking.userId) {
+      ret.User = paredUser[i]
+      ret.id = booking.id
+      ret.spotId = booking.spotId
+      ret.userId = booking.userId
+      ret.startDate = booking.startDate
+      ret.endDate = booking.endDate
+      ret.createdAt = booking.createdAt
+      ret.updatedAt = booking.updatedAt
+      arr.push(ret)
+    }
+  }
+
+  res.json({Bookings: arr})
+});
+
+// Create a Booking from a Spot based on the Spot's id
+router.post('/:spotId/bookings', restoreUser, requireAuth, validateBooking, async (req, res) => {
+  const { spotId } = req.params;
+  const { startDate, endDate } = req.body;
+  const user = req.user;
+  const errors = {}
+
+  const spot = Booking.findByPk(+spotId)
+
+  // If spot doesn't exist error
+  if (!spot) {
+    res.status(404);
+    return res.json({
+      message: "Spot couldn't be found"
+    })
+  };
+
+  // Booking conflict error
+  const conflictBookingQStart = await Booking.findAll({
+    where: {
+      startDate: {
+        [Op.lte]: startDate
+      },
+      endDate: {
+        [Op.gte]: startDate
+      }
+    }
+  });
+  
+  const conflictBookingQEnd = await Booking.findAll({
+    where: {
+      startDate: {
+        [Op.lte]: endDate
+      },
+      endDate: {
+        [Op.gte]: endDate
+      }
+    }
+  });
+
+  if (conflictBookingQStart[0]) {
+    errors.startDate = "Start date conflicts with an existing booking"
+  }
+  if (conflictBookingQEnd[0]) {
+    errors.endDate = "End date conflicts with an existing booking"
+  }
+
+  if (errors.startDate || errors.endDate) {
+    res.status(403)
+    return res.json({
+      message: "Sorry this spot is already booked for the specified dates",
+      errors
+    })
+  }
+
+  const newBookingCreation = await Booking.create({
+    spotId: spotId,
+    userId: user.id,
+    startDate: startDate,
+    endDate: endDate
+  });
+// console.log(newBookingCreation.id)
+  const newBooking = await Booking.findAll({
+    where: {
+      id: newBookingCreation.id
+    }
+  })
+
+  res.json(newBooking[0])
 });
 
 
