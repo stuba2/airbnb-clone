@@ -6,6 +6,7 @@ const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth')
 const { Spot, Review, SpotImage, User, sequelize, Booking } = require('../../db/models');
 const { settings } = require('../../app');
 const { validateSpot } = require('../../utils/validators/spots');
+const { validateBooking } = require('../../utils/validators/bookings');
 const spotimage = require('../../db/models/spotimage');
 
 const router = express.Router();
@@ -357,7 +358,7 @@ router.get('/:spotId/bookings', restoreUser, requireAuth, async (req, res) => {
     }
   });
 
-  
+
   const paredUser = await User.findAll({
     where: {
       id: user.id
@@ -381,7 +382,78 @@ router.get('/:spotId/bookings', restoreUser, requireAuth, async (req, res) => {
   }
 
   res.json({Bookings: arr})
-})
+});
+
+// Create a Booking from a Spot based on the Spot's id
+router.post('/:spotId/bookings', restoreUser, requireAuth, validateBooking, async (req, res) => {
+  const { spotId } = req.params;
+  const { startDate, endDate } = req.body;
+  const user = req.user;
+  const errors = {}
+
+  const spot = Booking.findByPk(+spotId)
+
+  // If spot doesn't exist error
+  if (!spot) {
+    res.status(404);
+    return res.json({
+      message: "Spot couldn't be found"
+    })
+  };
+
+  // Booking conflict error
+  const conflictBookingQStart = await Booking.findAll({
+    where: {
+      startDate: {
+        [Op.lte]: startDate
+      },
+      endDate: {
+        [Op.gte]: startDate
+      }
+    }
+  });
+  console.log(conflictBookingQStart)
+  const conflictBookingQEnd = await Booking.findAll({
+    where: {
+      startDate: {
+        [Op.lte]: endDate
+      },
+      endDate: {
+        [Op.gte]: endDate
+      }
+    }
+  });
+
+  if (conflictBookingQStart[0]) {
+    errors.startDate = "Start date conflicts with an existing booking"
+  }
+  if (conflictBookingQEnd[0]) {
+    errors.endDate = "End date conflicts with an existing booking"
+  }
+
+  if (errors.startDate || errors.endDate) {
+    res.status(403)
+    return res.json({
+      message: "Sorry this spot is already booked for the specified dates",
+      errors
+    })
+  }
+
+  const newBookingCreation = await Booking.create({
+    spotId: spotId,
+    userId: user.id,
+    startDate: startDate,
+    endDate: endDate
+  });
+// console.log(newBookingCreation.id)
+  const newBooking = await Booking.findAll({
+    where: {
+      id: newBookingCreation.id
+    }
+  })
+
+  res.json(newBooking[0])
+});
 
 
 module.exports = router;

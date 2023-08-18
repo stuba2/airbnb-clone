@@ -10,6 +10,7 @@ const validateBooking = [
     .exists({ checkFalsy: true })
     .notEmpty()
     .withMessage('Please provide a valid end date'),
+    handleValidationErrors
 ]
 
 module.exports = { validateBooking }
