@@ -22,6 +22,7 @@ router.get('/user', restoreUser, requireAuth, async (req, res) => {
       },
       {
         model: Spot,
+        attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price']
       },
       {
         model: ReviewImage,
@@ -56,85 +57,8 @@ router.get('/user', restoreUser, requireAuth, async (req, res) => {
   res.json({Reviews: arr})
 });
 
-// Get all Reviews by a Spot's id
-router.get('/:spotId/reviews', restoreUser, requireAuth, async (req, res) => {
-  const { spotId } = req.params;
-  // const user = req.user;
-  const spot = await Spot.findByPk(+spotId);
-
-  if (!spot) {
-    res.status(404);
-    res.json({
-      message: "Spot couldn't be found"
-    })
-  }
-
-  const reviews = await Review.findAll({
-    where: {
-      spotId: spotId
-    },
-    include: [
-      {
-        model: User,
-        attributes: ['id', 'firstName', 'lastName']
-      },
-      {
-        model: ReviewImage,
-        attributes: ['id', 'url']
-      }
-    ]
-  });
-
-  res.json(reviews)
-});
-
-// Create a Review for a Spot based on the Spot's id
-router.post('/:spotId/reviews', restoreUser, requireAuth, validateReview, async (req, res) => {
-  const { spotId } = req.params;
-  const { review, stars } = req.body;
-  const user = req.user;
-
-  const oldReview = await Review.findOne({
-    where: {
-      spotId: spotId,
-      userId: user.id
-    }
-  });
-  if (oldReview) {
-    res.status(500);
-    return res.json({
-      message: "User already has a review for this spot"
-    })
-  }
-
-  const newReview = await Review.create({
-    userId: user.id,
-    spotId: spotId,
-    review: review,
-    stars: stars
-  });
-
-  // Body validation errors
-
-  // Couldn't find spot
-  const doesSpotExist = await Spot.findByPk(+spotId)
-  if (!doesSpotExist) {
-    res.status(404);
-    res.json({
-      message: "Spot couldn't be found"
-    })
-  }
-
-  // Review from User already exists
-  // const oldReview =
-
-
-  res.json(newReview)
-
-});
-
 // Add an Image to a Review based on the Review's id
-router.post('/:reviewId/image', restoreUser, requireAuth, async (req, res) => {
+router.post('/:reviewId/images', restoreUser, requireAuth, async (req, res) => {
   const { reviewId } = req.params;
   const { url } = req.body
   const oldReview = await Review.findByPk(+reviewId);
@@ -217,19 +141,20 @@ router.delete('/:reviewId/images/:imageId', restoreUser, requireAuth, async (req
   const review = await Review.findByPk(+reviewId)
   const reviewImage = await ReviewImage.findAll({
     where: {
-      reviewId: review.id
+      reviewId: review.id,
+      id: imageId
     }
   })
 
   // No Review Image
-  if (!reviewImage) {
+  if (!reviewImage[0]) {
     res.status(404);
     return res.json({
       message: "Review Image couldn't be found"
     })
   }
 
-  await reviewImage.destroy();
+  await reviewImage[0].destroy();
 
   res.json({
     message: "Successfully deleted"

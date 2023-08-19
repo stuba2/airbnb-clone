@@ -5,36 +5,38 @@ const validateSpot = [
   check('address')
     .exists({ checkFalsy: true })
     .notEmpty()
-    .withMessage('Please provide a valid address'),
+    .withMessage('Street address is required'),
   check('city')
     .exists({ checkFalsy: true })
     .notEmpty()
-    .withMessage('Please provide a valid city'),
+    .withMessage('City is required'),
   check('state')
     .exists({ checkFalsy: true })
     .notEmpty()
-    .isLength({ min: 2, max: 2 })
-    .withMessage('Please provide a valid state with only 2 characters'),
+    .withMessage('State is required'),
   check('country')
     .exists({ checkFalsy: true })
     .notEmpty()
-    .isLength({ min: 3, max: 3})
-    .withMessage('Please provide a valid country with only 3 characters'),
+    .withMessage('Country is required'),
   check('lat')
     .exists({ checkFalsy: true })
-    .withMessage('Please provide a latitude'),
+    .withMessage('Latitude is not valid'),
   check('lng')
     .exists({ checkFalsy: true })
-    .withMessage('Please provide a longitude'),
+    .withMessage('Longitude is not valid'),
+  check('name')
+    .exists({ checkFalsy: true })
+    .isLength({ max: 50 })
+    .withMessage('Name must be less than 50 characters'),
   check('name')
     .exists({ checkFalsy: true })
     .withMessage('Please provide a name'),
   check('description')
     .exists({ checkFalsy: true })
-    .withMessage('Please provide a description'),
+    .withMessage('Description is required'),
   check('price')
     .exists({ checkFalsy: true })
-    .withMessage('Please provide a price'),
+    .withMessage('Price per day is required'),
   handleValidationErrors
 ];
 

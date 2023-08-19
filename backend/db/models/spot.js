@@ -34,7 +34,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      // must have numbers and letters? // Leaning no for now
     },
     city: {
       type: DataTypes.STRING,
@@ -46,16 +45,10 @@ module.exports = (sequelize, DataTypes) => {
     state: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        len: [2,2]
-      }
     },
     country: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        len: [3,3]
-      }
     },
     lat: {
       type: DataTypes.FLOAT,

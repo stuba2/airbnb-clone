@@ -5,7 +5,7 @@ const validateReview = [
   check('review')
     .exists({ checkFalsy: true })
     .notEmpty()
-    .withMessage('Text is required'),
+    .withMessage('Review text is required'),
   check('stars')
     .exists({ checkFalsy: true })
     .notEmpty()

@@ -43,6 +43,11 @@ module.exports = (sequelize, DataTypes) => {
         attributes: {
           exclude: ['spotId', 'createdAt', 'updatedAt']
         }
+      },
+      justIUP: {
+        attributes: {
+          include: ['id', 'url', 'previewImage']
+        }
       }
     }
   });
