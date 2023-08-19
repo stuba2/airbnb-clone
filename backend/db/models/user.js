@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
     toSafeUser() {
       return {
         id: this.id,
-        username: this.username,
-        email: this.email,
         firstName: this.firstName,
         lastName: this.lastName,
+        email: this.email,
+        username: this.username,
       }
     }
     static associate(models) {
@@ -45,7 +45,10 @@ module.exports = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: {
+        args: true,
+        msg: "User with that email already exists"
+      },
       validate: {
         len: [3, 256],
         isEmail: true
@@ -54,7 +57,10 @@ module.exports = (sequelize, DataTypes) => {
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: {
+        args: true,
+        msg: "User with that username already exists"
+      },
       validate: {
         len: [4,30],
         isNotEmail(value) {

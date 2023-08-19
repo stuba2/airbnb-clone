@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         startDateAfterEndDate() {
           if (this.startDate > this.endDate) {
-            throw new Error('Start date must be before the end date.')
+            throw new Error('endDate cannot be on or before startDate')
           }
         }
       }
