@@ -85,7 +85,7 @@ router.get('/', async (req, res) => {
       [sequelize.col('SpotImages.url'), 'previewImage']
     ]
   },
-    group: ['Spot.id'],
+    group: [['Spot.id'], ['SpotImages.url']],
     // ...pagination
   });
 
