@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
     include: []
   }
 
-  const { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+  let { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
 
   if (!page) page = 1
   if (!size) size = 20
@@ -86,10 +86,13 @@ router.get('/', async (req, res) => {
     ]
   },
     group: ['Spot.id'],
-    ...pagination
+    // ...pagination
   });
 
-  res.json(spots)
+  res.json({
+    Spots: spots,
+    ...pagination
+  })
 });
 
 // Create a Spot
