@@ -1,5 +1,5 @@
 const express = require('express');
-const { Op } = require('sequelize');
+const { Op, QueryError } = require('sequelize');
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth, restoreUser, plsLogIn } = require('../../utils/auth');
@@ -24,42 +24,50 @@ router.get('/', async (req, res) => {
   const page = req.query.page === undefined ? 1 : parseInt(req.query.page)
   const size = req.query.size === undefined ? 20 : parseInt(req.query.size)
 
-console.log('page: ',page)
-console.log('size: ',size)
+// console.log('page: ',page)
+// console.log('size: ',size)
+  if (page > 10) page = 10
+  if (size > 20) size = 20
+  if (minPrice < 0) minPrice = 0
+  if (maxPrice < 0) maxPrice = 0
 
   if (page >= 1 && size >= 1) {
     query.limit = size;
     query.offset = size * (page - 1)
   }
-console.log('query.limit: ', query.limit)
-console.log('query.offset: ', query.offset)
+// console.log('query.limit: ', query.limit)
+// console.log('query.offset: ', query.offset)
   if (minLat) {
     query.where.lat = { [Op.gte]: minLat }
   }
   if (maxLat) {
-    query.where.lat = { [Op.lte]: maxLat }
+    if (!isEmpty(query.where.lat)) {
+      query.where.lat = { [Op.between]: [minLat, maxLat]}
+    } else if (isEmpty(query.where.lat)) {
+      query.where.lat = { [Op.lte]: maxLat }
+    }
   }
   if (minLng) {
     query.where.lng = { [Op.gte]: minLng }
   }
   if (maxLng) {
-    query.where.lng = { [Op.lte]: maxLng }
+    if (!isEmpty(query.where.lng)) {
+      query.where.lng = { [Op.between]: [minLng, maxLng]}
+    } else if (isEmpty(query.where.lng)) {
+      query.where.lng = { [Op.lte]: maxLng }
+    }
   }
   if (minPrice) {
-    query.where.price = { [Op.gte]: minPrice }
+    query.where.price = { [Op.lte]: minPrice }
   }
   if (maxPrice) {
-    query.where.price = { [Op.lte]: maxPrice }
+    if (!isEmpty(query.where.price)) {
+      query.where.price = { [Op.between]: [minPrice, maxPrice]}
+    } else if (isEmpty(query.where.price)) {
+      query.where.price = { [Op.gte]: maxPrice }
+    }
   }
 
-  // if (!page) page = 1
-  // if (!size) size = 20
-
-  // const pagination = {}
-  // if (page >= 1 && size >= 1) {
-  //   pagination.limit = size;
-  //   pagination.offset = size * (page - 1)
-  // }
 
   // Query parameter validation errors
   let errors = {}
@@ -964,7 +972,7 @@ if (isEmpty(req.body)) {
       message: "spotId needs to be a number"
     })
   }
-console.log('---------------------',new Date())
+// console.log('---------------------',new Date())
   // Body validation errors
   let errors = {}
   if (!startDate) {
@@ -983,16 +991,7 @@ console.log('---------------------',new Date())
     errors.endDate = "endDate cannot be on or before startDate"
   }
 
-  const spot = await Booking.findByPk(+spotId)
-
-  // Restricts if user is the owner
-  if (user.id === spot.ownerId) {
-    res.status(403)
-    return res.json({
-      message: "Forbidden"
-    })
-  }
-
+  const spot = await Spot.findByPk(+spotId)
 
   // If spot doesn't exist error
   if (!spot) {
@@ -1002,6 +1001,15 @@ console.log('---------------------',new Date())
     })
   };
 
+
+  // Restricts if user is the owner
+  if (user.id === spot.ownerId) {
+    res.status(403)
+    return res.json({
+      message: "Forbidden"
+    })
+  }
+
   // Booking conflict error
   const conflictBookingQStart = await Booking.findAll({
     where: {
@@ -1010,7 +1018,8 @@ console.log('---------------------',new Date())
       },
       endDate: {
         [Op.gte]: startDate
-      }
+      },
+      spotId: spotId
     }
   });
 
@@ -1021,7 +1030,8 @@ console.log('---------------------',new Date())
       },
       endDate: {
         [Op.gte]: endDate
-      }
+      },
+      spotId: spotId
     }
   });
 
