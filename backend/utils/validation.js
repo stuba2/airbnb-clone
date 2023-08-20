@@ -12,15 +12,29 @@ const handleValidationErrors = (req, _res, next) => {
       .array()
       .forEach(error => errors[error.path] = error.msg);
 
-    const err = Error("Bad request.");
+    const err = Error("Bad request");
     err.errors = errors;
     err.status = 400;
-    err.title = "Bad request.";
+    // err.title = "Bad request.";
     next(err);
+
+    let ret = {}
+    ret.message = "Bad Request"
+
   }
   next();
 };
 
+const isEmpty = (obj) => {
+  for (let prop in obj) {
+    if (Object.hasOwn(obj, prop)) {
+      return false
+    }
+  }
+  return true
+}
+
 module.exports = {
-  handleValidationErrors
+  handleValidationErrors,
+  isEmpty
 };
