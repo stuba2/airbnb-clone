@@ -2,15 +2,16 @@ const express = require('express');
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 
-const { requireAuth, restoreUser } = require('../../utils/auth');
+const { requireAuth, restoreUser, plsLogIn } = require('../../utils/auth');
 const { Booking, Spot, SpotImage, Sequelize } = require('../../db/models');
 const { validateBooking } = require('../../utils/validators/bookings');
 const spotimage = require('../../db/models/spotimage');
+const { isEmpty } = require('../../utils/validation')
 
 const router = express.Router();
 
 // Get all of the Current User's Bookings
-router.get('/', restoreUser, requireAuth, async (req, res) => {
+router.get('/', restoreUser, requireAuth, plsLogIn, async (req, res) => {
   const user = req.user;
 
   const bookings = await Booking.findAll({
@@ -74,12 +75,39 @@ router.get('/', restoreUser, requireAuth, async (req, res) => {
 });
 
 // Edit a Booking
-router.put('/:bookingId', restoreUser, requireAuth, async (req, res) => {
+router.put('/:bookingId', restoreUser, requireAuth, plsLogIn, async (req, res) => {
+  if (isEmpty(req.body)) {
+    res.status(400)
+    return res.json({
+      message: "Bad Request",
+      errors: {
+        startDate: "startDate is required",
+        endDate: "endDate is required"
+      }
+    })
+  }
+
   const { bookingId } = req.params;
   const { startDate, endDate } = req.body;
   const user = req.user;
   const errors = {}
+
+  if (isNaN(parseInt(bookingId))) {
+    res.status(404)
+    return res.json({
+      message: "bookingId needs to be a number"
+    })
+  }
+
   const booking = await Booking.findByPk(+bookingId);
+
+  // Restricts if user isn't the owner
+  if (user.id !== booking.userId) {
+    res.status(403)
+    return res.json({
+      message: "Forbidden"
+    })
+  }
 
   // No booking found error
   if (!booking) {
@@ -144,8 +172,17 @@ router.put('/:bookingId', restoreUser, requireAuth, async (req, res) => {
 });
 
 // Delete a Booking
-router.delete('/:bookingId', restoreUser, requireAuth, async (req, res) => {
+router.delete('/:bookingId', restoreUser, requireAuth, plsLogIn, async (req, res) => {
   const { bookingId } = req.params;
+  const user = req.user
+
+  if (isNaN(parseInt(bookingId))) {
+    res.status(404)
+    return res.json({
+      message: "bookingId needs to be a number"
+    })
+  }
+
   const booking = await Booking.findByPk(+bookingId)
 
   // No Booking found error
@@ -155,6 +192,20 @@ router.delete('/:bookingId', restoreUser, requireAuth, async (req, res) => {
       message: "Booking couldn't be found"
     })
   };
+
+  const spot = await Spot.findAll({
+    where: {
+      id: booking.spotId
+    }
+  })
+
+  // Restricts if user isn't the owner OR if user booked the spot
+  if (user.id !== booking.userId && user.id !== spot.ownerId) {
+    res.status(403)
+    return res.json({
+      message: "Forbidden"
+    })
+  }
 
   // Booking already started error
   const conflictBookingQStart = await Booking.findAll({

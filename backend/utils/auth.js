@@ -72,8 +72,18 @@ const requireAuth = function (req, _res, next) {
   return next(err);
 }
 
-// const isOwner = function (req, res, next) {
+const isGetUser = function (err, req, res, next) {
+  res.status(200)
+  res.json({
+    user: null
+  })
+  return next()
+}
 
-// }
+const plsLogIn = function (err, req, res, next) {
+  return res.json({
+    message: "Authentication required"
+  })
+}
 
-module.exports = { setTokenCookie, restoreUser, requireAuth };
+module.exports = { setTokenCookie, restoreUser, requireAuth, isGetUser, plsLogIn };
