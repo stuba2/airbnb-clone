@@ -1,14 +1,15 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 
-const { requireAuth, restoreUser } = require('../../utils/auth');
+const { requireAuth, restoreUser, plsLogIn } = require('../../utils/auth');
 const { Review, User, Spot, SpotImage, ReviewImage, sequelize } = require('../../db/models');
 const { validateReview } = require('../../utils/validators/reviews');
+const { isEmpty } = require('../../utils/validation')
 
 const router = express.Router();
 
 // Get all Reviews of Current User
-router.get('/user', restoreUser, requireAuth, async (req, res) => {
+router.get('/user', restoreUser, requireAuth, plsLogIn, async (req, res) => {
   const user = req.user;
 
   const reviews = await Review.findAll({
@@ -58,9 +59,28 @@ router.get('/user', restoreUser, requireAuth, async (req, res) => {
 });
 
 // Add an Image to a Review based on the Review's id
-router.post('/:reviewId/images', restoreUser, requireAuth, async (req, res) => {
+router.post('/:reviewId/images', restoreUser, requireAuth, plsLogIn, async (req, res) => {
+  if (isEmpty(req.body)) {
+    res.status(400)
+    return res.json({
+      message: "Bad Request",
+      errors: {
+        url: "URL is required"
+      }
+    })
+  }
+
   const { reviewId } = req.params;
   const { url } = req.body
+  const user = req.user
+
+  if (isNaN(parseInt(reviewId))) {
+    res.status(404)
+    return res.json({
+      message: "reviewId needs to be a number"
+    })
+  }
+
   const oldReview = await Review.findByPk(+reviewId);
   const reviewImages = await ReviewImage.findAll({
     where: {
@@ -75,6 +95,21 @@ router.post('/:reviewId/images', restoreUser, requireAuth, async (req, res) => {
       message: "Review couldn't be found"
     })
   };
+
+  // Restricts if user isn't the owner
+  if (user.id !== oldReview.userId) {
+    res.status(403)
+    return res.json({
+      message: "Forbidden"
+    })
+  }
+
+  if (oldReview && user.id !== oldReview.userId) {
+    res.status(403)
+    return res.json({
+      message: "Forbidden"
+    })
+  }
 
   // Images at max
   if (reviewImages.length > 10) {
@@ -94,50 +129,24 @@ router.post('/:reviewId/images', restoreUser, requireAuth, async (req, res) => {
   res.json(resReviewPic)
 });
 
-// Edit a Review
-router.put('/:spotId/reviews/:reviewId', restoreUser, requireAuth, async (req, res) => {
-  const { spotId, reviewId } = req.params;
-  const { review, stars } = req.body;
+// Delete a Review Image
+router.delete('/:reviewId/images/:imageId', restoreUser, requireAuth, plsLogIn, async (req, res) => {
+  const { reviewId, imageId } = req.params;
+  const user = req.user;
 
-  const spot = await Spot.findByPk(+spotId);
-  const revvy = await Review.findByPk(+reviewId);
-
-  // Review validation errors
-  let errors = {}
-  if (!review) {
-    errors.review = "Review text is required"
-  }
-  if (+stars < 1 || +stars > 5) {
-    errors.stars = "Stars must be an integer from 1 to 5"
-  }
-
-  if (errors.review || errors.stars) {
-    res.status(400)
-    return res.json({
-      message: "Bad Request",
-      errors
-    })
-  }
-
-  // No review found error
-  if (!revvy) {
+  if (isNaN(parseInt(reviewId))) {
     res.status(404)
     return res.json({
-      message: "Review couldn't be found"
+      message: "reviewId needs to be a number"
+    })
+  }
+  if (isNaN(parseInt(imageId))) {
+    res.status(404)
+    return res.json({
+      message: "imageId needs to be a number"
     })
   }
 
-  revvy.review = review;
-  revvy.stars = stars;
-
-  await revvy.save()
-
-  res.json(revvy)
-});
-
-// Delete a Review Image
-router.delete('/:reviewId/images/:imageId', restoreUser, requireAuth, async (req, res) => {
-  const { reviewId, imageId } = req.params;
   const review = await Review.findByPk(+reviewId)
   const reviewImage = await ReviewImage.findAll({
     where: {
@@ -145,6 +154,14 @@ router.delete('/:reviewId/images/:imageId', restoreUser, requireAuth, async (req
       id: imageId
     }
   })
+
+  // Restricts if user isn't the owner
+  if (user.id !== review.userId) {
+    res.status(403)
+    return res.json({
+      message: "Forbidden"
+    })
+  }
 
   // No Review Image
   if (!reviewImage[0]) {

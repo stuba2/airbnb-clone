@@ -21,8 +21,8 @@ const validateSignup = [
     .isLength({ min: 4 })
     .withMessage('Please provide a username with at least 4 characters.'),
   check('username')
-      .exists({ checkFalsy: true })
-      .withMessage("Username is required"),
+    .exists({ checkFalsy: true })
+    .withMessage("Username is required"),
   check('username')
     .not()
     .isEmail()
@@ -39,5 +39,9 @@ const validateSignup = [
   .withMessage('Last name is required'),
   handleValidationErrors
 ];
+
+// const userIsNull = (err, req, res, next) => {
+
+// }
 
 module.exports = { validateLogin, validateSignup }
