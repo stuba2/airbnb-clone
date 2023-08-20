@@ -26,12 +26,13 @@ const handleValidationErrors = (req, _res, next) => {
 };
 
 const isEmpty = (obj) => {
-  for (let prop in obj) {
-    if (Object.hasOwn(obj, prop)) {
-      return false
-    }
+  // for (let prop in obj) {
+    if (Object.keys(obj).length === 0) {
+      // return false
+    // }
+    return true
   }
-  return true
+  return false
 }
 
 module.exports = {
