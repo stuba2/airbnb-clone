@@ -40,8 +40,6 @@ const validateSignup = [
   handleValidationErrors
 ];
 
-// const userIsNull = (err, req, res, next) => {
 
-// }
 
 module.exports = { validateLogin, validateSignup }

@@ -68,9 +68,8 @@ router.get('/', restoreUser, requireAuth, plsLogIn, async (req, res) => {
 
 
     arr.push(retObject)
-    // console.log(bookingObject)
   }
-// console.log({arr})
+
   res.json({Bookings: arr})
 });
 
