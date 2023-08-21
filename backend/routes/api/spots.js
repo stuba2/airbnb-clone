@@ -21,11 +21,9 @@ router.get('/', async (req, res) => {
   }
 
   const { minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
-  const page = req.query.page === undefined ? 1 : parseInt(req.query.page)
-  const size = req.query.size === undefined ? 20 : parseInt(req.query.size)
+  let page = req.query.page === undefined ? 1 : parseInt(req.query.page)
+  let size = req.query.size === undefined ? 20 : parseInt(req.query.size)
 
-// console.log('page: ',page)
-// console.log('size: ',size)
   if (page > 10) page = 10
   if (size > 20) size = 20
   if (minPrice < 0) minPrice = 0
@@ -35,15 +33,14 @@ router.get('/', async (req, res) => {
     query.limit = size;
     query.offset = size * (page - 1)
   }
-// console.log('query.limit: ', query.limit)
-// console.log('query.offset: ', query.offset)
+
   if (minLat) {
     query.where.lat = { [Op.gte]: minLat }
   }
   if (maxLat) {
-    if (!isEmpty(query.where.lat)) {
-      query.where.lat = { [Op.between]: [minLat, maxLat]}
-    } else if (isEmpty(query.where.lat)) {
+    if (query.where.lat) {
+      query.where.lat = { [Op.between]: [minLat, maxLat] }
+    } else {
       query.where.lat = { [Op.lte]: maxLat }
     }
   }
@@ -51,9 +48,9 @@ router.get('/', async (req, res) => {
     query.where.lng = { [Op.gte]: minLng }
   }
   if (maxLng) {
-    if (!isEmpty(query.where.lng)) {
-      query.where.lng = { [Op.between]: [minLng, maxLng]}
-    } else if (isEmpty(query.where.lng)) {
+    if (query.where.lng) {
+      query.where.lng = { [Op.between]: [minLng, maxLng] }
+    } else {
       query.where.lng = { [Op.lte]: maxLng }
     }
   }
@@ -61,9 +58,9 @@ router.get('/', async (req, res) => {
     query.where.price = { [Op.lte]: minPrice }
   }
   if (maxPrice) {
-    if (!isEmpty(query.where.price)) {
-      query.where.price = { [Op.between]: [minPrice, maxPrice]}
-    } else if (isEmpty(query.where.price)) {
+    if (query.where.price) {
+      query.where.price = { [Op.between]: [minPrice, maxPrice] }
+    } else {
       query.where.price = { [Op.gte]: maxPrice }
     }
   }
@@ -314,37 +311,6 @@ router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, async (req, r
   })
 
   res.json(retNewPic[0])
-
-  // if (spot.id === user.id ) {
-  //   try {
-  //     if (spot !== undefined) {
-  //       const newSpotPic = await SpotImage.create({
-  //         spotId: spotId,
-  //         url: url,
-  //         previewImage: preview
-  //       });
-  //       const retNewPic = await SpotImage.findOne({
-  //         where: {
-  //           spotId: spotId,
-  //           url: url,
-  //           previewImage: preview
-  //         },
-  //         attributes: ['id','url','previewImage']
-  //       })
-
-  //       res.json(retNewPic)
-  //     }
-  //   } catch {
-  //     res.status(404);
-  //     res.json({
-  //       message: "Spot couldn't be found"
-  //     });
-  //   }
-  // } else {
-  //   res.json({
-  //     message: "Only this spot's owner can add images"
-  //   })
-  // }
 });
 
 // Get Spots owned by the Current User
@@ -899,10 +865,7 @@ router.get('/:spotId/bookings', restoreUser, requireAuth, plsLogIn, async (req, 
   // Bookings if you're NOT the owner of the spot
   const bookings = await Booking.findAll({
     where: {
-      spotId: spot.id,
-      // userId: {
-      //   [Op.not]: user.id
-      // }
+      spotId: spot.id
     },
     attributes: ['spotId','startDate','endDate']
   })
@@ -916,8 +879,7 @@ router.get('/:spotId/bookings', restoreUser, requireAuth, plsLogIn, async (req, 
 
   const userBookings = await Booking.findAll({
     where: {
-      spotId: spot.id,
-      // userId: user.id
+      spotId: spot.id
     }
   });
 
@@ -972,7 +934,7 @@ if (isEmpty(req.body)) {
       message: "spotId needs to be a number"
     })
   }
-// console.log('---------------------',new Date())
+
   // Body validation errors
   let errors = {}
   if (!startDate) {
@@ -981,7 +943,7 @@ if (isEmpty(req.body)) {
   if (!endDate) {
     errors.endDate = "Please provide a valid end date"
   }
-  if (new Date(startDate) > new Date()) {
+  if (new Date(startDate) < new Date()) {
     errors.startDate = "Start date must be in the future"
   }
   if (new Date(endDate) < new Date()) {
@@ -990,6 +952,15 @@ if (isEmpty(req.body)) {
   if (endDate < startDate) {
     errors.endDate = "endDate cannot be on or before startDate"
   }
+  if (errors.startDate || errors.endDate) {
+    res.status(400)
+    return res.json({
+      message: "Bad Request",
+      errors
+    })
+  }
+  delete errors.startDate
+  delete errors.endDate
 
   const spot = await Spot.findByPk(+spotId)
 

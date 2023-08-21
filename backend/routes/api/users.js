@@ -164,7 +164,7 @@ router.post('/login', async (req, res, next) => {
 
 // Get Current User
 router.get('/', restoreUser, requireAuth, isGetUser, async (req, res) => {
-  // console.log('--------',req.user)
+  
   const user = req.user
   const currentUser = await User.findOne({
     where: {
