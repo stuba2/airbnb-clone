@@ -2,7 +2,7 @@
 
 ## Database Schema Design
 
-![HeirBnB Database Schema](<../images/AirBnB schema v5.png>)
+![HeirBnB Database Schema](<../images/AirBnB schema v6.png>)
 [HeirBnB DB Schema](https://dbdiagram.io/d/64c3108e02bd1c4a5ed42ce8)
 
 ## API Documentation
