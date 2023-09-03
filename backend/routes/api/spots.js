@@ -1,15 +1,12 @@
 const express = require('express');
-const { Op, QueryError } = require('sequelize');
-const bcrypt = require('bcryptjs');
+const { Op } = require('sequelize');
 
-const { setTokenCookie, requireAuth, restoreUser, plsLogIn } = require('../../utils/auth');
+const { requireAuth, restoreUser, plsLogIn } = require('../../utils/auth');
 const { Spot, Review, SpotImage, User, sequelize, Booking, ReviewImage } = require('../../db/models');
-const { settings } = require('../../app');
 const { validateSpot } = require('../../utils/validators/spots');
 const { validateBooking } = require('../../utils/validators/bookings');
 const { validateReview } = require('../../utils/validators/reviews');
-const { isEmpty } = require('../../utils/validation')
-const spotimage = require('../../db/models/spotimage');
+const { validateSpotImage } = require('../../utils/validators/spotImages');
 
 const router = express.Router();
 
@@ -20,6 +17,7 @@ router.get('/', async (req, res) => {
     include: []
   }
 
+  // Pagination & Queries
   const { minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
   let page = req.query.page === undefined ? 1 : parseInt(req.query.page)
   let size = req.query.size === undefined ? 20 : parseInt(req.query.size)
@@ -138,23 +136,6 @@ router.get('/', async (req, res) => {
 
 // Create a Spot
 router.post('/', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, res) => {
-  // if (isEmpty(req.body)) {
-  //   res.status(400)
-  //   return res.json({
-  //     message: "Bad Request",
-  //     errors: {
-  //       address: "Street address is required",
-  //       city: "City is required",
-  //       state: "State is required",
-  //       country: "Country is required",
-  //       lat: "Latitude is not valid",
-  //       lng: "Longitude is not valid",
-  //       name: "Name must be less than 50 characters",
-  //       description: "Description is required",
-  //       price: "Price per day is required"
-  //     }
-  //   })
-  // }
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
   const user = req.user
@@ -237,18 +218,7 @@ router.post('/', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, r
 });
 
 // Add an Image to a Spot based on the Spot's id
-router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, async (req, res) => {
-  if (isEmpty(req.body)) {
-    res.status(400)
-    return res.json({
-      message: "Bad Request",
-      errors: {
-        url: "Image URL is required",
-        previewImage: "true or false required"
-      }
-    })
-  }
-
+router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, validateSpotImage, async (req, res) => {
   const { spotId } = req.params;
   const { url, preview } = req.body;
   const user = req.user;
@@ -293,9 +263,6 @@ router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, async (req, r
       errors
     })
   }
-
-
-
 
   const newSpotPic = await SpotImage.create({
     spotId: spotId,
@@ -426,24 +393,6 @@ router.get('/:spotId', restoreUser, async (req, res) => {
 
 // Edit a spot
 router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, res) => {
-  // if (isEmpty(req.body)) {
-  //   res.status(400)
-  //   return res.json({
-  //     message: "Bad Request",
-  //     errors: {
-  //       address: "Street address is required",
-  //       city: "City is required",
-  //       state: "State is required",
-  //       country: "Country is required",
-  //       lat: "Latitude is not valid",
-  //       lng: "Longitude is not valid",
-  //       name: "Name must be less than 50 characters",
-  //       description: "Description is required",
-  //       price: "Price per day is required"
-  //     }
-  //   })
-  // }
-
   const { spotId } = req.params
   const { address, city, state, country, lat, lng, name, description, price } = req.body
   const user = req.user
@@ -515,8 +464,6 @@ router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (
     })
   };
 
-
-
   const spotExistsQuestion = await Spot.findAll({
     where: {
       address: address
@@ -581,8 +528,6 @@ router.delete('/:spotId', restoreUser, requireAuth, plsLogIn, async (req, res) =
     })
   }
 
-
-
   await spot.destroy();
 
   res.json({
@@ -630,18 +575,7 @@ router.get('/:spotId/reviews', restoreUser, async (req, res) => {
 });
 
 // Create a Review for a Spot based on the Spot's id
-router.post('/:spotId/reviews', restoreUser, requireAuth, plsLogIn, async (req, res) => {
-  if (isEmpty(req.body)) {
-    res.status(400)
-    return res.json({
-      message: "Bad Request",
-      errors: {
-        review: "Review text is required",
-        stars: "Stars must be an integer from 1 to 5"
-      }
-    })
-  }
-
+router.post('/:spotId/reviews', restoreUser, requireAuth, plsLogIn, validateReview, async (req, res) => {
   const { spotId } = req.params;
   const { review, stars } = req.body;
   const user = req.user;
@@ -710,18 +644,7 @@ router.post('/:spotId/reviews', restoreUser, requireAuth, plsLogIn, async (req, 
 });
 
 // Edit a Review
-router.put('/:spotId/reviews/:reviewId', restoreUser, requireAuth, plsLogIn, async (req, res) => {
-  if (isEmpty(req.body)) {
-    res.status(400)
-    return res.json({
-      message: "Bad Request",
-      errors: {
-        review: "Review text is required",
-        stars: "Stars must be an integer from 1 to 5"
-      }
-    })
-  }
-
+router.put('/:spotId/reviews/:reviewId', restoreUser, requireAuth, plsLogIn, validateReview, async (req, res) => {
   const { spotId, reviewId } = req.params;
   const { review, stars } = req.body;
   const user = req.user;
@@ -769,7 +692,7 @@ router.put('/:spotId/reviews/:reviewId', restoreUser, requireAuth, plsLogIn, asy
   if (!review) {
     errors.review = "Review text is required"
   }
-  if (+stars < 1 || +stars > 5) {
+  if (typeof stars !== "number" || stars < 1 || stars > 5) {
     errors.stars = "Stars must be an integer from 1 to 5"
   }
 
@@ -784,7 +707,7 @@ router.put('/:spotId/reviews/:reviewId', restoreUser, requireAuth, plsLogIn, asy
 
 
   revvy.review = review;
-  revvy.stars = stars;
+  revvy.stars = parseInt(stars);
 
   await revvy.save()
 
@@ -910,19 +833,7 @@ router.get('/:spotId/bookings', restoreUser, requireAuth, plsLogIn, async (req, 
 });
 
 // Create a Booking from a Spot based on the Spot's id
-router.post('/:spotId/bookings', restoreUser, requireAuth, plsLogIn, async (req, res) => {
-
-if (isEmpty(req.body)) {
-  res.status(400)
-  return res.json({
-    message: "Bad Request",
-    errors: {
-      startDate: "Please provide a valid start date",
-      endDate: "Please provide a valid end date"
-    }
-  })
-}
-
+router.post('/:spotId/bookings', restoreUser, requireAuth, plsLogIn, validateBooking, async (req, res) => {
   const { spotId } = req.params;
   const { startDate, endDate } = req.body;
   const user = req.user;

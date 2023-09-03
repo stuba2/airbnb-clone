@@ -5,27 +5,13 @@ const bcrypt = require('bcryptjs');
 const { setTokenCookie, requireAuth, restoreUser, isGetUser } = require('../../utils/auth');
 const { User } = require('../../db/models');
 const { validateSignup, validateLogin } = require('../../utils/validators/users');
-const { isEmpty } = require('../../utils/validation')
 
 const router = express.Router();
 
 
 
 // Sign up
-router.post('/signup',  async (req, res) => {
-
-  if (isEmpty(req.body)) {
-    res.status(400)
-    return res.json({
-      message: "Bad Request",
-      errors: {
-        email: "Invalid email",
-        username: "Username is required",
-        firstName: "First Name is required",
-        lastName: "Last Name is required"
-      }
-    })
-  }
+router.post('/signup', validateSignup, async (req, res) => {
     const { email, password, username, firstName, lastName } = req.body;
     const hashedPassword = bcrypt.hashSync(password);
 
@@ -58,7 +44,6 @@ router.post('/signup',  async (req, res) => {
 
 
     // Validation errors
-    // let errors = {}
     if (!email.includes('@')) {
       errors.email = "Invalid email"
     }
@@ -110,17 +95,7 @@ router.post('/signup',  async (req, res) => {
 
 
 // Log in
-router.post('/login', async (req, res, next) => {
-  if (isEmpty(req.body)) {
-    res.status(400)
-    return res.json({
-      message: "Bad Request",
-      errors: {
-        credential: "Email or username is required",
-        password: "Password is required"
-      }
-    })
-  }
+router.post('/login', validateLogin, async (req, res, next) => {
   const { credential, password } = req.body;
 
   const user = await User.unscoped().findOne({
@@ -134,12 +109,6 @@ router.post('/login', async (req, res, next) => {
     });
 
     if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
-      // const err = new Error('Login failed');
-      // err.status = 401;
-      // err.title = 'Login failed';
-      // err.errors = { credential: 'The provided credentials were invalid.' };
-      // err.message = "Invalid credentials"
-      // return next(err);
       res.status(401)
       return res.json({
         message: "Invalid credentials"
@@ -164,7 +133,7 @@ router.post('/login', async (req, res, next) => {
 
 // Get Current User
 router.get('/', restoreUser, requireAuth, isGetUser, async (req, res) => {
-  
+
   const user = req.user
   const currentUser = await User.findOne({
     where: {

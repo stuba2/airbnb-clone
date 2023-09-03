@@ -1,12 +1,9 @@
 const express = require('express');
 const { Op } = require('sequelize');
-const bcrypt = require('bcryptjs');
 
 const { requireAuth, restoreUser, plsLogIn } = require('../../utils/auth');
-const { Booking, Spot, SpotImage, Sequelize } = require('../../db/models');
+const { Booking, Spot, SpotImage } = require('../../db/models');
 const { validateBooking } = require('../../utils/validators/bookings');
-const spotimage = require('../../db/models/spotimage');
-const { isEmpty } = require('../../utils/validation')
 
 const router = express.Router();
 
@@ -74,18 +71,7 @@ router.get('/', restoreUser, requireAuth, plsLogIn, async (req, res) => {
 });
 
 // Edit a Booking
-router.put('/:bookingId', restoreUser, requireAuth, plsLogIn, async (req, res) => {
-  if (isEmpty(req.body)) {
-    res.status(400)
-    return res.json({
-      message: "Bad Request",
-      errors: {
-        startDate: "startDate is required",
-        endDate: "endDate is required"
-      }
-    })
-  }
-
+router.put('/:bookingId', restoreUser, requireAuth, plsLogIn, validateBooking, async (req, res) => {
   const { bookingId } = req.params;
   const { startDate, endDate } = req.body;
   const user = req.user;
