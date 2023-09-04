@@ -77,13 +77,29 @@ app.use((err, _req, _res, next) => {
 // Error formatter
 app.use((err, _req, res, _next) => {
   res.status(err.status || 500);
-  console.error(err);
-  res.json({
-    title: err.title || 'Server Error',
-    message: err.message,
-    errors: err.errors,
-    stack: isProduction ? null : err.stack
-  });
+
+  if (isProduction) {
+    res.json({
+      message: err.message,
+      errors: err.errors,
+    })
+  } else {
+    res.json({
+      title: err.title || "Server Error",
+      message: err.message,
+      errors: err.errors,
+      stack: err.stack
+    })
+  }
+
+  // console.error(err);
+
+  // res.json({
+  //   title: err.title || 'Server Error',
+  //   message: err.message,
+  //   errors: err.errors,
+  //   stack: isProduction ? null : err.stack
+  // });
 });
 
 // Exports
