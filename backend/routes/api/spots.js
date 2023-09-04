@@ -166,7 +166,8 @@ router.get('/', async (req, res) => {
       sum += reviewLazy.stars
     }
     let average = sum / reviewsLazy.length
-    spotLazy.avgRating = average.toFixed(1)
+    let shortAvg = parseInt(average.toFixed(1))
+    spotLazy.avgRating = shortAvg
 
     // previewImage
     let imageLazyProm = await SpotImage.findAll({
@@ -419,7 +420,8 @@ router.get('/user', restoreUser, requireAuth, plsLogIn, async (req, res) => {
       sum += reviewLazy.stars
     }
     let average = sum / reviewsLazy.length
-    spotLazy.avgRating = average.toFixed(1)
+    let shortAvg = parseInt(average.toFixed(1))
+    spotLazy.avgRating = shortAvg
 
     // previewImage
     let imageLazyProm = await SpotImage.findAll({
