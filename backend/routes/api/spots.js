@@ -180,8 +180,8 @@ router.get('/', async (req, res) => {
 
 
     for (let i = 0; i < imageLazy.length; i++) {
-      if (imageLazy[i] === true) {
-        spotLazy.previewImage = imageLazy.url
+      if (imageLazy[i].previewImage === true) {
+        spotLazy.previewImage = imageLazy[i].url
       }
     }
     if (!spotLazy.previewImage) {
