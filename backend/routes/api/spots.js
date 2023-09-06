@@ -131,7 +131,7 @@ router.get('/', async (req, res) => {
 
   res.json({
     Spots: spots,
-    page: query.offset,
+    page: page,
     size: query.limit
   })
 });
