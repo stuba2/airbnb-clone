@@ -131,30 +131,30 @@ router.get('/', async (req, res) => {
 
   res.json({
     Spots: spots,
-    page: query.offset,
+    page: page,
     size: query.limit
   })
 });
 
 // Create a Spot
-router.post('/', restoreUser, requireAuth, plsLogIn, async (req, res) => {
-  if (isEmpty(req.body)) {
-    res.status(400)
-    return res.json({
-      message: "Bad Request",
-      errors: {
-        address: "Street address is required",
-        city: "City is required",
-        state: "State is required",
-        country: "Country is required",
-        lat: "Latitude is not valid",
-        lng: "Longitude is not valid",
-        name: "Name must be less than 50 characters",
-        description: "Description is required",
-        price: "Price per day is required"
-      }
-    })
-  }
+router.post('/', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, res) => {
+  // if (isEmpty(req.body)) {
+  //   res.status(400)
+  //   return res.json({
+  //     message: "Bad Request",
+  //     errors: {
+  //       address: "Street address is required",
+  //       city: "City is required",
+  //       state: "State is required",
+  //       country: "Country is required",
+  //       lat: "Latitude is not valid",
+  //       lng: "Longitude is not valid",
+  //       name: "Name must be less than 50 characters",
+  //       description: "Description is required",
+  //       price: "Price per day is required"
+  //     }
+  //   })
+  // }
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
   const user = req.user
@@ -425,24 +425,24 @@ router.get('/:spotId', restoreUser, async (req, res) => {
 });
 
 // Edit a spot
-router.put('/:spotId', restoreUser, requireAuth, plsLogIn, async (req, res) => {
-  if (isEmpty(req.body)) {
-    res.status(400)
-    return res.json({
-      message: "Bad Request",
-      errors: {
-        address: "Street address is required",
-        city: "City is required",
-        state: "State is required",
-        country: "Country is required",
-        lat: "Latitude is not valid",
-        lng: "Longitude is not valid",
-        name: "Name must be less than 50 characters",
-        description: "Description is required",
-        price: "Price per day is required"
-      }
-    })
-  }
+router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, res) => {
+  // if (isEmpty(req.body)) {
+  //   res.status(400)
+  //   return res.json({
+  //     message: "Bad Request",
+  //     errors: {
+  //       address: "Street address is required",
+  //       city: "City is required",
+  //       state: "State is required",
+  //       country: "Country is required",
+  //       lat: "Latitude is not valid",
+  //       lng: "Longitude is not valid",
+  //       name: "Name must be less than 50 characters",
+  //       description: "Description is required",
+  //       price: "Price per day is required"
+  //     }
+  //   })
+  // }
 
   const { spotId } = req.params
   const { address, city, state, country, lat, lng, name, description, price } = req.body
