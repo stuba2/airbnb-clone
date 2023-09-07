@@ -12,15 +12,19 @@ const handleValidationErrors = (req, _res, next) => {
       .array()
       .forEach(error => errors[error.path] = error.msg);
 
-    const err = Error("Bad request");
-    err.errors = errors;
-    err.status = 400;
+    const err1 = {}
+    err1.message = "Bad Request"
+    err1.errors = errors
+    err1.status = 400
+    // err1.title = 'hi'
+    // delete err1.title
+
+    // const err = Error("Bad request");
+    // err.errors = errors;
+    // err.status = 400;
     // err.title = "Bad request.";
-    next(err);
-
-    let ret = {}
-    ret.message = "Bad Request"
-
+    console.log('-------Title: ', err1.title)
+    next(err1);
   }
   next();
 };
@@ -33,7 +37,7 @@ const isEmpty = (obj) => {
     return true
   }
   return false
-}
+};
 
 module.exports = {
   handleValidationErrors,
