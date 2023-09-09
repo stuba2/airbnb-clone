@@ -6,7 +6,7 @@ const validateSpotImage = [
     .exists({ checkFalsy: true })
     .notEmpty()
     .withMessage('Url is not valid'),
-  check('previewImage')
+  check('preview')
     .exists({ checkFalsy: true })
     .notEmpty()
     .isBoolean()

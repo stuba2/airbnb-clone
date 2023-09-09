@@ -117,7 +117,7 @@ router.get('/', async (req, res) => {
   ],
     attributes: {
       include: [
-      [sequelize.fn('AVG', sequelize.col('stars', 2)), 'avgRating'],
+      [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating'],
       [sequelize.col('SpotImages.url'), 'previewImage']
     ]
   },
