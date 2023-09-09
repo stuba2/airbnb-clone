@@ -1,10 +1,8 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
 
 const { requireAuth, restoreUser, plsLogIn } = require('../../utils/auth');
-const { Review, User, Spot, SpotImage, ReviewImage, sequelize } = require('../../db/models');
-const { validateReview } = require('../../utils/validators/reviews');
-const { isEmpty } = require('../../utils/validation')
+const { Review, User, Spot, SpotImage, ReviewImage } = require('../../db/models');
+const { validateReviewImage } = require('../../utils/validators/reviewImages');
 
 const router = express.Router();
 
@@ -59,17 +57,7 @@ router.get('/user', restoreUser, requireAuth, plsLogIn, async (req, res) => {
 });
 
 // Add an Image to a Review based on the Review's id
-router.post('/:reviewId/images', restoreUser, requireAuth, plsLogIn, async (req, res) => {
-  if (isEmpty(req.body)) {
-    res.status(400)
-    return res.json({
-      message: "Bad Request",
-      errors: {
-        url: "URL is required"
-      }
-    })
-  }
-
+router.post('/:reviewId/images', restoreUser, requireAuth, plsLogIn, validateReviewImage, async (req, res) => {
   const { reviewId } = req.params;
   const { url } = req.body
   const user = req.user
