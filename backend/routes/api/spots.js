@@ -1,5 +1,5 @@
 const express = require('express');
-const { Op } = require('sequelize');
+const { Op, DataTypes } = require('sequelize');
 
 const { requireAuth, restoreUser, plsLogIn } = require('../../utils/auth');
 const { Spot, Review, SpotImage, User, sequelize, Booking, ReviewImage } = require('../../db/models');
@@ -117,7 +117,7 @@ router.get('/', async (req, res) => {
   ],
     attributes: {
       include: [
-      [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating'],
+      [sequelize.fn('AVG', sequelize.col('stars', 2)), 'avgRating'],
       [sequelize.col('SpotImages.url'), 'previewImage']
     ]
   },
