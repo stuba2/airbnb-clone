@@ -86,19 +86,19 @@ router.put('/:bookingId', restoreUser, requireAuth, plsLogIn, validateBooking, a
 
   const booking = await Booking.findByPk(+bookingId);
 
-  // Restricts if user isn't the owner
-  if (user.id !== booking.userId) {
-    res.status(403)
-    return res.json({
-      message: "Forbidden"
-    })
-  }
-
   // No booking found error
   if (!booking) {
     res.status(404);
     return res.json({
       message: "Booking couldn't be found"
+    })
+  }
+
+  // Restricts if user isn't the owner
+  if (user.id !== booking.userId) {
+    res.status(403)
+    return res.json({
+      message: "Forbidden"
     })
   }
 
@@ -109,6 +109,32 @@ router.put('/:bookingId', restoreUser, requireAuth, plsLogIn, validateBooking, a
       message: "Past bookings can't be modified"
     })
   }
+
+  // Body validation errors
+  if (!startDate) {
+    errors.startDate = "Please provide a valid start date"
+  }
+  if (!endDate) {
+    errors.endDate = "Please provide a valid end date"
+  }
+  if (new Date(startDate) < new Date()) {
+    errors.startDate = "Start date must be in the future"
+  }
+  if (new Date(endDate) < new Date()) {
+    errors.endDate = "End date must be in the future"
+  }
+  if (endDate < startDate) {
+    errors.endDate = "endDate cannot be on or before startDate"
+  }
+  if (errors.startDate || errors.endDate) {
+    res.status(400)
+    return res.json({
+      message: "Bad Request",
+      errors
+    })
+  }
+  delete errors.startDate
+  delete errors.endDate
 
   // Booking conflict error
   const conflictBookingQStart = await Booking.findAll({
