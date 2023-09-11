@@ -283,7 +283,7 @@ router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, validateSpotI
 // Get Spots owned by the Current User
 router.get('/user', restoreUser, requireAuth, plsLogIn, async (req, res) => {
   const user = req.user;
-  const spots = await Spot.findAll({
+  const spots = await Spot.scope("allInfo").findAll({
     where: {
       ownerId: user.id
     },
@@ -609,12 +609,25 @@ router.post('/:spotId/reviews', restoreUser, requireAuth, plsLogIn, validateRevi
       userId: user.id
     }
   });
+
+  // User is spot owner
+  console.log('user id: ',user.id)
+  console.log('oldReview id: ', oldReview.userId)
+  if (user.id === oldReview.userId) {
+    res.status(403)
+    return res.json({
+      message: "Forbidden"
+    })
+  }
+
+  // User already reviewed
   if (oldReview) {
     res.status(500);
     return res.json({
       message: "User already has a review for this spot"
     })
   }
+
 
   // Couldn't find spot
   const doesSpotExist = await Spot.findByPk(+spotId)
