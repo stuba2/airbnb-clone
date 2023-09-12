@@ -127,6 +127,16 @@ router.get('/', async (req, res) => {
     subQuery: false
   });
 
+  for (let i = 0; i < spots.length; i++) {
+    let spotStr = JSON.stringify(spots[i])
+    let spot = JSON.parse(spotStr)
+    if (spot.avgRating) {
+      let num = +spot.avgRating
+      let newNum = Math.round(num * 100) / 100
+      spot.avgRating = newNum
+    }
+  }
+
   res.json({
     Spots: spots,
     page: page,
@@ -309,6 +319,16 @@ router.get('/user', restoreUser, requireAuth, plsLogIn, async (req, res) => {
     },
     group: [['Spot.id'], ['SpotImages.url']]
   });
+
+  for (let i = 0; i < spots.length; i++) {
+    let spotStr = JSON.stringify(spots[i])
+    let spot = JSON.parse(spotStr)
+    if (spot.avgRating) {
+      let num = +spot.avgRating
+      let newNum = Math.round(num * 100) / 100
+      spot.avgRating = newNum
+    }
+  }
 
   res.json({Spots: spots})
 });
