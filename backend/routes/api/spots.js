@@ -99,46 +99,98 @@ router.get('/', async (req, res) => {
     })
   }
 
-  const spots = await Spot.scope("allInfo").findAll({
-    where: query.where,
-    include: [
-      {
-      model: Review,
-      attributes: []
-      },
-      {
-        model: SpotImage,
-        where: {
-          previewImage: true
-        },
-        required: false,
-        attributes: []
-      }
-  ],
-    attributes: {
-      include: [
-      [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating'],
-      [sequelize.col('SpotImages.url'), 'previewImage']
-    ]
-  },
-    group: [['Spot.id'], ['SpotImages.url']],
-    offset: query.offset,
-    limit: query.limit,
-    subQuery: false
-  });
+  // const spots = await Spot.scope("allInfo").findAll({
+  //   where: query.where,
+  //   include: [
+  //     {
+  //     model: Review,
+  //     attributes: []
+  //     },
+  //     {
+  //       model: SpotImage,
+  //       where: {
+  //         previewImage: true
+  //       },
+  //       required: false,
+  //       attributes: []
+  //     }
+  // ],
+  //   attributes: {
+  //     include: [
+  //     [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating'],
+  //     [sequelize.col('SpotImages.url'), 'previewImage']
+  //   ]
+  // },
+  //   group: [['Spot.id'], ['SpotImages.url']],
+  //   offset: query.offset,
+  //   limit: query.limit,
+  //   subQuery: false
+  // });
 
-  for (let i = 0; i < spots.length; i++) {
-    let spotStr = JSON.stringify(spots[i])
-    let spot = JSON.parse(spotStr)
-    if (spot.avgRating) {
-      let num = +spot.avgRating
-      let newNum = Math.round(num * 100) / 100
-      spot.avgRating = newNum
+  // for (let i = 0; i < spots.length; i++) {
+  //   let spotStr = JSON.stringify(spots[i])
+  //   let spot = JSON.parse(spotStr)
+  //   if (spot.avgRating) {
+  //     let num = +spot.avgRating
+  //     let newNum = Math.round(num * 100) / 100
+  //     spot.avgRating = newNum
+  //   }
+  // }
+
+  // res.json({
+  //   Spots: spots,
+  //   page: page,
+  //   size: query.limit
+  // })
+
+  // lazy load attempt
+  let spotsLazy = await Spot.scope("allInfo").findAll()
+  let ret = []
+
+  for (let i = 0; i < spotsLazy.length; i++) {
+    let spotLazyStr = JSON.stringify(spotsLazy[i])
+    let spotLazy = JSON.parse(spotLazyStr)
+
+    // avgRating
+    let reviewsLazyProm = await Review.findAll({
+      where: {
+        spotId: spotLazy.id
+      },
+      attributes: ['stars']
+    })
+    let reviewsLazy = JSON.parse(JSON.stringify(reviewsLazyProm))
+
+    let sum = 0
+    for (let i = 0; i < reviewsLazy.length; i++) {
+      let reviewLazy = reviewsLazy[i]
+      sum += reviewLazy.stars
     }
+    let average = sum / reviewsLazy.length
+    spotLazy.avgRating = average
+
+    // previewImage
+    let imageLazyProm = await SpotImage.findAll({
+      where: {
+        spotId: spotLazy.id
+      },
+      attributes: ['previewImage', 'url']
+    })
+    let imageLazy = JSON.parse(JSON.stringify(imageLazyProm))
+
+
+    if (imageLazy[0] === true) {
+      spotLazy.previewImage = imageLazy.url
+    } else {
+      spotLazy.previewImage = null
+    }
+
+    ret.push(spotLazy)
   }
 
+
+
   res.json({
-    Spots: spots,
+    Spots: ret,
     page: page,
     size: query.limit
   })
@@ -293,44 +345,97 @@ router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, validateSpotI
 // Get Spots owned by the Current User
 router.get('/user', restoreUser, requireAuth, plsLogIn, async (req, res) => {
   const user = req.user;
-  const spots = await Spot.scope("allInfo").findAll({
+  // const spots = await Spot.scope("allInfo").findAll({
+  //   where: {
+  //     ownerId: user.id
+  //   },
+  //   include: [
+  //     {
+  //       model: Review,
+  //       attributes: []
+  //     },
+  //     {
+  //       model: SpotImage,
+  //       where: {
+  //         previewImage: true
+  //       },
+  //       required: false,
+  //       attributes: []
+  //     }
+  //   ],
+  //   attributes: {
+  //     include: [
+  //       [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating'],
+  //       [sequelize.col('SpotImages.url'), 'previewImage']
+  //     ]
+  //   },
+  //   group: [['Spot.id'], ['SpotImages.url']]
+  // });
+
+  // for (let i = 0; i < spots.length; i++) {
+  //   let spotStr = JSON.stringify(spots[i])
+  //   let spot = JSON.parse(spotStr)
+  //   if (spot.avgRating) {
+  //     let num = +spot.avgRating
+  //     let newNum = Math.round(num * 100) / 100
+  //     spot.avgRating = newNum
+  //   }
+  // }
+
+  // res.json({Spots: spots})
+
+  // lazy load attempt
+  const spotsLazy = await Spot.scope("allInfo").findAll({
     where: {
       ownerId: user.id
-    },
-    include: [
-      {
-        model: Review,
-        attributes: []
-      },
-      {
-        model: SpotImage,
-        where: {
-          previewImage: true
-        },
-        required: false,
-        attributes: []
-      }
-    ],
-    attributes: {
-      include: [
-        [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating'],
-        [sequelize.col('SpotImages.url'), 'previewImage']
-      ]
-    },
-    group: [['Spot.id'], ['SpotImages.url']]
-  });
-
-  for (let i = 0; i < spots.length; i++) {
-    let spotStr = JSON.stringify(spots[i])
-    let spot = JSON.parse(spotStr)
-    if (spot.avgRating) {
-      let num = +spot.avgRating
-      let newNum = Math.round(num * 100) / 100
-      spot.avgRating = newNum
     }
+  })
+  let ret = []
+
+  for (let i = 0; i < spotsLazy.length; i++) {
+    let spotLazyStr = JSON.stringify(spotsLazy[i])
+    let spotLazy = JSON.parse(spotLazyStr)
+
+    // avgRating
+    let reviewsLazyProm = await Review.findAll({
+      where: {
+        spotId: spotLazy.id
+      },
+      attributes: ['stars']
+    })
+    let reviewsLazy = JSON.parse(JSON.stringify(reviewsLazyProm))
+
+    let sum = 0
+    for (let i = 0; i < reviewsLazy.length; i++) {
+      let reviewLazy = reviewsLazy[i]
+      sum += reviewLazy.stars
+    }
+    let average = sum / reviewsLazy.length
+    spotLazy.avgRating = average
+
+    // previewImage
+    let imageLazyProm = await SpotImage.findAll({
+      where: {
+        spotId: spotLazy.id
+      },
+      attributes: ['previewImage', 'url']
+    })
+    let imageLazy = JSON.parse(JSON.stringify(imageLazyProm))
+
+
+    if (imageLazy[0] === true) {
+      spotLazy.previewImage = imageLazy.url
+    } else {
+      spotLazy.previewImage = null
+    }
+
+    ret.push(spotLazy)
   }
 
-  res.json({Spots: spots})
+  res.json({
+    Spots: ret
+  })
+
 });
 
 // Get details of a Spot from an id
@@ -631,8 +736,6 @@ router.post('/:spotId/reviews', restoreUser, requireAuth, plsLogIn, validateRevi
   });
 
   // User is spot owner
-  console.log('user id: ',user.id)
-  console.log('oldReview id: ', oldReview.userId)
   if (user.id === oldReview.userId) {
     res.status(403)
     return res.json({
