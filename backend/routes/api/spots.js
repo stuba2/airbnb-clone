@@ -178,10 +178,18 @@ router.get('/', async (req, res) => {
     let imageLazy = JSON.parse(JSON.stringify(imageLazyProm))
 
 
-    if (imageLazy[0] === true) {
-      spotLazy.previewImage = imageLazy.url
-    } else {
+    for (let i = 0; i < imageLazy.length; i++) {
+      if (imageLazy[i] === true) {
+        spotLazy.previewImage = imageLazy.url
+      }
+    }
+    if (!spotLazy.previewImage) {
       spotLazy.previewImage = null
+    }
+
+    // price
+    if (typeof spotLazy.price === "string") {
+      spotLazy.price = parseInt(spotLazy.price)
     }
 
     ret.push(spotLazy)
@@ -423,9 +431,12 @@ router.get('/user', restoreUser, requireAuth, plsLogIn, async (req, res) => {
     let imageLazy = JSON.parse(JSON.stringify(imageLazyProm))
 
 
-    if (imageLazy[0] === true) {
-      spotLazy.previewImage = imageLazy.url
-    } else {
+    for (let i = 0; i < imageLazy.length; i++) {
+      if (imageLazy[i] === true) {
+        spotLazy.previewImage = imageLazy.url
+      }
+    }
+    if (!spotLazy.previewImage) {
       spotLazy.previewImage = null
     }
 
