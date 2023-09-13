@@ -762,7 +762,7 @@ router.post('/:spotId/reviews', restoreUser, requireAuth, plsLogIn, validateRevi
   }
 
   // User is spot owner
-  if (user.id === oldReview.userId) {
+  if (user.id === doesSpotExist.userId) {
     res.status(403)
     return res.json({
       message: "Forbidden"
