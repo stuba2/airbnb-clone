@@ -166,7 +166,7 @@ router.get('/', async (req, res) => {
       sum += reviewLazy.stars
     }
     let average = sum / reviewsLazy.length
-    let shortAvg = parseFloat(average.toFixed(2))
+    let shortAvg = parseFloat(average.toFixed(1))
     spotLazy.avgRating = shortAvg
 
     // previewImage
