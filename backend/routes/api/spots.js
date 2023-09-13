@@ -166,7 +166,7 @@ router.get('/', async (req, res) => {
       sum += reviewLazy.stars
     }
     let average = sum / reviewsLazy.length
-    let shortAvg = parseInt(average.toFixed(2))
+    let shortAvg = parseFloat(average.toFixed(2))
     spotLazy.avgRating = shortAvg
 
     // previewImage
@@ -190,7 +190,7 @@ router.get('/', async (req, res) => {
 
     // price
     if (typeof spotLazy.price === "string") {
-      spotLazy.price = parseInt(spotLazy.price)
+      spotLazy.price = parseFloat(spotLazy.price)
     }
 
     ret.push(spotLazy)
@@ -420,7 +420,7 @@ router.get('/user', restoreUser, requireAuth, plsLogIn, async (req, res) => {
       sum += reviewLazy.stars
     }
     let average = sum / reviewsLazy.length
-    let shortAvg = parseInt(average.toFixed(2))
+    let shortAvg = parseFloat(average.toFixed(1))
     spotLazy.avgRating = shortAvg
 
     // previewImage
@@ -443,7 +443,7 @@ router.get('/user', restoreUser, requireAuth, plsLogIn, async (req, res) => {
 
     // price
     if (typeof spotLazy.price === "string") {
-      spotLazy.price = parseInt(spotLazy.price)
+      spotLazy.price = parseFloat(spotLazy.price)
     }
 
     ret.push(spotLazy)
@@ -762,7 +762,7 @@ router.post('/:spotId/reviews', restoreUser, requireAuth, plsLogIn, validateRevi
   }
 
   // User is spot owner
-  if (user.id === doesSpotExist.userId) {
+  if (user.id === doesSpotExist.ownerId) {
     res.status(403)
     return res.json({
       message: "Forbidden"
