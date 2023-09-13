@@ -166,7 +166,7 @@ router.get('/', async (req, res) => {
       sum += reviewLazy.stars
     }
     let average = sum / reviewsLazy.length
-    let shortAvg = parseInt(average.toFixed(1))
+    let shortAvg = parseInt(average.toFixed(2))
     spotLazy.avgRating = shortAvg
 
     // previewImage
@@ -180,8 +180,8 @@ router.get('/', async (req, res) => {
 
 
     for (let i = 0; i < imageLazy.length; i++) {
-      if (imageLazy[i] === true) {
-        spotLazy.previewImage = imageLazy.url
+      if (imageLazy[i].previewImage === true) {
+        spotLazy.previewImage = imageLazy[i].url
       }
     }
     if (!spotLazy.previewImage) {
@@ -420,7 +420,7 @@ router.get('/user', restoreUser, requireAuth, plsLogIn, async (req, res) => {
       sum += reviewLazy.stars
     }
     let average = sum / reviewsLazy.length
-    let shortAvg = parseInt(average.toFixed(1))
+    let shortAvg = parseInt(average.toFixed(2))
     spotLazy.avgRating = shortAvg
 
     // previewImage
@@ -432,10 +432,9 @@ router.get('/user', restoreUser, requireAuth, plsLogIn, async (req, res) => {
     })
     let imageLazy = JSON.parse(JSON.stringify(imageLazyProm))
 
-
     for (let i = 0; i < imageLazy.length; i++) {
-      if (imageLazy[i] === true) {
-        spotLazy.previewImage = imageLazy.url
+      if (imageLazy[i].previewImage === true) {
+        spotLazy.previewImage = imageLazy[i].url
       }
     }
     if (!spotLazy.previewImage) {
@@ -753,6 +752,15 @@ router.post('/:spotId/reviews', restoreUser, requireAuth, plsLogIn, validateRevi
     }
   });
 
+  // Couldn't find spot
+  const doesSpotExist = await Spot.findByPk(+spotId)
+  if (!doesSpotExist) {
+    res.status(404);
+    return res.json({
+      message: "Spot couldn't be found"
+    })
+  }
+
   // User is spot owner
   if (user.id === oldReview.userId) {
     res.status(403)
@@ -769,15 +777,6 @@ router.post('/:spotId/reviews', restoreUser, requireAuth, plsLogIn, validateRevi
     })
   }
 
-
-  // Couldn't find spot
-  const doesSpotExist = await Spot.findByPk(+spotId)
-  if (!doesSpotExist) {
-    res.status(404);
-    res.json({
-      message: "Spot couldn't be found"
-    })
-  }
 
   const newReview = await Review.create({
     userId: user.id,
