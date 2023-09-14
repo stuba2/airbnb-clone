@@ -53,13 +53,13 @@ router.get('/', async (req, res) => {
     }
   }
   if (minPrice) {
-    query.where.price = { [Op.lte]: minPrice }
+    query.where.price = { [Op.gte]: minPrice }
   }
   if (maxPrice) {
     if (query.where.price) {
       query.where.price = { [Op.between]: [minPrice, maxPrice] }
     } else {
-      query.where.price = { [Op.gte]: maxPrice }
+      query.where.price = { [Op.lte]: maxPrice }
     }
   }
 
