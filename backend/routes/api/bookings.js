@@ -103,7 +103,7 @@ router.put('/:bookingId', restoreUser, requireAuth, plsLogIn, validateBooking, a
   }
 
   // Booking in the past error
-  if (booking.endDate < new Date()) {
+  if (booking.endDate < new Date().toISOString().slice(0,10)) {
     res.status(403)
     return res.json({
       message: "Past bookings can't be modified"
@@ -117,12 +117,12 @@ router.put('/:bookingId', restoreUser, requireAuth, plsLogIn, validateBooking, a
   if (!endDate) {
     errors.endDate = "Please provide a valid end date"
   }
-  if (new Date(startDate) < new Date()) {
-    errors.startDate = "Start date must be in the future"
-  }
-  if (new Date(endDate) < new Date()) {
-    errors.endDate = "End date must be in the future"
-  }
+  // if (new Date(startDate) < new Date()) {
+  //   errors.startDate = "Start date must be in the future"
+  // }
+  // if (new Date(endDate) < new Date()) {
+  //   errors.endDate = "End date must be in the future"
+  // }
   if (endDate < startDate) {
     errors.endDate = "endDate cannot be on or before startDate"
   }

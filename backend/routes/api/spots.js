@@ -2,7 +2,7 @@ const express = require('express');
 const { Op } = require('sequelize');
 
 const { requireAuth, restoreUser, plsLogIn } = require('../../utils/auth');
-const { Spot, Review, SpotImage, User, sequelize, Booking, ReviewImage } = require('../../db/models');
+const { Spot, Review, SpotImage, User, sequelize, Booking, ReviewImage, Sequelize } = require('../../db/models');
 const { validateSpot } = require('../../utils/validators/spots');
 const { validateBooking } = require('../../utils/validators/bookings');
 const { validateReview } = require('../../utils/validators/reviews');
@@ -252,6 +252,9 @@ router.post('/', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, r
   }
   if (!price) {
     errors.price = "Price per day is required"
+  }
+  if (typeof price !== "number") {
+    errors.price = "Price is not valid"
   }
 
   if (errors.address || errors.city || errors.state || errors.country || errors.lat || errors.lng || errors.name || errors.description || errors.price) {
@@ -606,6 +609,9 @@ router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (
   }
   if (!price) {
     errors.price = "Price per day is required"
+  }
+  if (typeof price !== "number") {
+    errors.price = "Price is not valid"
   }
 
   if (errors.address || errors.city || errors.state || errors.country || errors.lat || errors.lng || errors.name || errors.description || errors.price) {
@@ -1087,18 +1093,60 @@ router.post('/:spotId/bookings', restoreUser, requireAuth, plsLogIn, validateBoo
   //   errors.endDate = "End date conflicts with an existing booking"
   // }
 
-  const conflictingBooking = await Booking.findAll({
-    where: {
-      // [Op.all]: sequelize.literal(`(startDate, endDate) OVERLAPS (${startDate}, ${endDate}`)
-      [Op.overlap]: [startDate, endDate]
-    }
-  })
+//////////////////////////////////////
 
-  if (conflictingBooking[0]) {
-    errors.startDate = "Start date conflicts with an existing booking"
-    errors.endDate = "End date conflicts with an existing booking"
+const existingBookingBefore = await Booking.findAll({
+  where: {
+    startDate: {
+      [Op.lte]: startDate
+    },
+    endDate: {
+      [Op.between]: [startDate, endDate]
+    }
   }
-// console.log('conflictingBooking: ', conflictingBooking)
+})
+
+const existingBookingAfter = await Booking.findAll({
+  where: {
+    startDate: {
+      [Op.between]: [startDate, endDate]
+    },
+    endDate: {
+      [Op.gte]: endDate
+    }
+  }
+})
+
+const existingBookingInside = await Booking.findAll({
+  where: {
+    startDate: {
+      [Op.between]: [startDate, endDate]
+    },
+    endDate: {
+      [Op.between]: [startDate, endDate]
+    }
+  }
+})
+
+const existingBookingOutside = await Booking.findAll({
+  where: {
+    startDate: {
+      [Op.lte]: startDate
+    },
+    endDate: {
+      [Op.gte]: endDate
+    }
+  }
+})
+
+if (existingBookingBefore[0] || existingBookingInside[0] || existingBookingOutside[0]) {
+  errors.startDate = "Start date conflicts with an existing booking"
+}
+if (existingBookingAfter[0] || existingBookingInside[0] || existingBookingOutside[0]) {
+  errors.endDate = "End date conflicts with an existing booking"
+}
+
+///////////////////////////////////////
 
   if (errors.startDate || errors.endDate) {
     res.status(403)
