@@ -144,7 +144,11 @@ router.get('/', async (req, res) => {
   // })
 
   // lazy load attempt
-  let spotsLazy = await Spot.scope("allInfo").findAll()
+  let spotsLazy = await Spot.scope("allInfo").findAll({
+    where: query.where,
+    offset: query.offset,
+    limit: query.limit
+  })
   let ret = []
 
   for (let i = 0; i < spotsLazy.length; i++) {
@@ -225,13 +229,13 @@ router.post('/', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, r
   if (!country) {
     errors.country = "Country is required"
   }
-  if (!lat) {
+  if (!lat || typeof lng !== "number") {
     errors.lat = "Latitude is not valid"
   }
   if (lat < -90 || lat > 90) {
     errors.lat = "Latitude is not valid"
   }
-  if (!lng) {
+  if (!lng || typeof lat !== "number") {
     errors.lng = "Longitude is not valid"
   }
   if (lng < -180 || lng > 180) {
@@ -352,7 +356,7 @@ router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, validateSpotI
 });
 
 // Get Spots owned by the Current User
-router.get('/user', restoreUser, requireAuth, plsLogIn, async (req, res) => {
+router.get('/user', restoreUser, requireAuth, async (req, res) => {
   const user = req.user;
   // const spots = await Spot.scope("allInfo").findAll({
   //   where: {
@@ -579,10 +583,16 @@ router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (
   if (!country) {
     errors.country = "Country is required"
   }
-  if (!lat) {
+  if (!lat || typeof lng !== "number") {
     errors.lat = "Latitude is not valid"
   }
-  if (!lng) {
+  if (lat < -90 || lat > 90) {
+    errors.lat = "Latitude is not valid"
+  }
+  if (!lng || typeof lat !== "number") {
+    errors.lng = "Longitude is not valid"
+  }
+  if (lng < -180 || lng > 180) {
     errors.lng = "Longitude is not valid"
   }
   if (name.length > 50) {
@@ -1007,12 +1017,12 @@ router.post('/:spotId/bookings', restoreUser, requireAuth, plsLogIn, validateBoo
   if (!endDate) {
     errors.endDate = "Please provide a valid end date"
   }
-  if (new Date(startDate) < new Date()) {
-    errors.startDate = "Start date must be in the future"
-  }
-  if (new Date(endDate) < new Date()) {
-    errors.endDate = "End date must be in the future"
-  }
+  // if (new Date(startDate) < new Date()) {
+  //   errors.startDate = "Start date must be in the future"
+  // }
+  // if (new Date(endDate) < new Date()) {
+  //   errors.endDate = "End date must be in the future"
+  // }
   if (endDate < startDate) {
     errors.endDate = "endDate cannot be on or before startDate"
   }
