@@ -253,9 +253,9 @@ router.post('/', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, r
   if (!price) {
     errors.price = "Price per day is required"
   }
-  if (typeof price !== "number") {
-    errors.price = "Price is not valid"
-  }
+  // if (typeof price !== "number") {
+  //   errors.price = "Price is not valid"
+  // }
 
   if (errors.address || errors.city || errors.state || errors.country || errors.lat || errors.lng || errors.name || errors.description || errors.price) {
     res.status(400)
@@ -610,9 +610,9 @@ router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (
   if (!price) {
     errors.price = "Price per day is required"
   }
-  if (typeof price !== "number") {
-    errors.price = "Price is not valid"
-  }
+  // if (typeof price !== "number") {
+  //   errors.price = "Price is not valid"
+  // }
 
   if (errors.address || errors.city || errors.state || errors.country || errors.lat || errors.lng || errors.name || errors.description || errors.price) {
     res.status(400)
