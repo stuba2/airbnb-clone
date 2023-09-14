@@ -81,6 +81,7 @@ const isGetUser = function (err, req, res, next) {
 }
 
 const plsLogIn = function (err, req, res, next) {
+  res.status(401)
   return res.json({
     message: "Authentication required"
   })
