@@ -1,5 +1,5 @@
 const express = require('express');
-const { Op, DataTypes } = require('sequelize');
+const { Op } = require('sequelize');
 
 const { requireAuth, restoreUser, plsLogIn } = require('../../utils/auth');
 const { Spot, Review, SpotImage, User, sequelize, Booking, ReviewImage } = require('../../db/models');
@@ -356,7 +356,7 @@ router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, validateSpotI
 });
 
 // Get Spots owned by the Current User
-router.get('/user', restoreUser, requireAuth, async (req, res) => {
+router.get('/user', restoreUser, requireAuth, plsLogIn, async (req, res) => {
   const user = req.user;
   // const spots = await Spot.scope("allInfo").findAll({
   //   where: {
@@ -1056,36 +1056,49 @@ router.post('/:spotId/bookings', restoreUser, requireAuth, plsLogIn, validateBoo
   }
 
   // Booking conflict error
-  const conflictBookingQStart = await Booking.findAll({
-    where: {
-      startDate: {
-        [Op.lte]: startDate
-      },
-      endDate: {
-        [Op.gte]: startDate
-      },
-      spotId: spotId
-    }
-  });
+  // const conflictBookingQStart = await Booking.findAll({
+  //   where: {
+  //     startDate: {
+  //       [Op.lte]: startDate
+  //     },
+  //     endDate: {
+  //       [Op.gte]: startDate
+  //     },
+  //     spotId: spotId
+  //   }
+  // });
 
-  const conflictBookingQEnd = await Booking.findAll({
-    where: {
-      startDate: {
-        [Op.lte]: endDate
-      },
-      endDate: {
-        [Op.gte]: endDate
-      },
-      spotId: spotId
-    }
-  });
+  // const conflictBookingQEnd = await Booking.findAll({
+  //   where: {
+  //     startDate: {
+  //       [Op.lte]: endDate
+  //     },
+  //     endDate: {
+  //       [Op.gte]: endDate
+  //     },
+  //     spotId: spotId
+  //   }
+  // });
 
-  if (conflictBookingQStart[0]) {
+  // if (conflictBookingQStart[0]) {
+  //   errors.startDate = "Start date conflicts with an existing booking"
+  // }
+  // if (conflictBookingQEnd[0]) {
+  //   errors.endDate = "End date conflicts with an existing booking"
+  // }
+
+  const conflictingBooking = await Booking.findAll({
+    where: {
+      // [Op.all]: sequelize.literal(`(startDate, endDate) OVERLAPS (${startDate}, ${endDate}`)
+      [Op.overlap]: [startDate, endDate]
+    }
+  })
+
+  if (conflictingBooking[0]) {
     errors.startDate = "Start date conflicts with an existing booking"
-  }
-  if (conflictBookingQEnd[0]) {
     errors.endDate = "End date conflicts with an existing booking"
   }
+// console.log('conflictingBooking: ', conflictingBooking)
 
   if (errors.startDate || errors.endDate) {
     res.status(403)
