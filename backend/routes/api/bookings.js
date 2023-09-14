@@ -137,32 +137,83 @@ router.put('/:bookingId', restoreUser, requireAuth, plsLogIn, validateBooking, a
   delete errors.endDate
 
   // Booking conflict error
-  const conflictBookingQStart = await Booking.findAll({
+  // const conflictBookingQStart = await Booking.findAll({
+  //   where: {
+  //     startDate: {
+  //       [Op.lte]: startDate
+  //     },
+  //     endDate: {
+  //       [Op.gte]: startDate
+  //     }
+  //   }
+  // });
+
+  // const conflictBookingQEnd = await Booking.findAll({
+  //   where: {
+  //     startDate: {
+  //       [Op.lte]: endDate
+  //     },
+  //     endDate: {
+  //       [Op.gte]: endDate
+  //     }
+  //   }
+  // });
+
+  // if (conflictBookingQStart[0]) {
+  //   errors.startDate = "Start date conflicts with an existing booking"
+  // }
+  // if (conflictBookingQEnd[0]) {
+  //   errors.endDate = "End date conflicts with an existing booking"
+  // }
+
+  const existingBookingBefore = await Booking.findAll({
     where: {
       startDate: {
         [Op.lte]: startDate
       },
       endDate: {
-        [Op.gte]: startDate
+        [Op.between]: [startDate, endDate]
       }
     }
-  });
+  })
 
-  const conflictBookingQEnd = await Booking.findAll({
+  const existingBookingAfter = await Booking.findAll({
     where: {
       startDate: {
-        [Op.lte]: endDate
+        [Op.between]: [startDate, endDate]
       },
       endDate: {
         [Op.gte]: endDate
       }
     }
-  });
+  })
 
-  if (conflictBookingQStart[0]) {
+  const existingBookingInside = await Booking.findAll({
+    where: {
+      startDate: {
+        [Op.between]: [startDate, endDate]
+      },
+      endDate: {
+        [Op.between]: [startDate, endDate]
+      }
+    }
+  })
+
+  const existingBookingOutside = await Booking.findAll({
+    where: {
+      startDate: {
+        [Op.lte]: startDate
+      },
+      endDate: {
+        [Op.gte]: endDate
+      }
+    }
+  })
+
+  if (existingBookingBefore[0] || existingBookingInside[0] || existingBookingOutside[0]) {
     errors.startDate = "Start date conflicts with an existing booking"
   }
-  if (conflictBookingQEnd[0]) {
+  if (existingBookingAfter[0] || existingBookingInside[0] || existingBookingOutside[0]) {
     errors.endDate = "End date conflicts with an existing booking"
   }
 
