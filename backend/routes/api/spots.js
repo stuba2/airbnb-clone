@@ -969,31 +969,31 @@ router.get('/:spotId/bookings', restoreUser, requireAuth, plsLogIn, async (req, 
     }
   }
 
-  const userBookings = await Booking.findAll({
+  // Bookings if you ARE the owner of the spot
+
+  const currentSpotBookings = await Booking.findAll({
     where: {
       spotId: spot.id
     }
-  });
-
-
-  const paredUser = await User.findAll({
-    where: {
-      id: user.id
-    },
-    attributes: ['id','firstName','lastName']
   })
 
-  for (let i = 0; i < userBookings.length; i++) {
-    let booking = userBookings[i];
+  for (let i = 0; i < currentSpotBookings.length; i++) {
+    let currentSpotBooking = currentSpotBookings[i]
+    const bookingUser = await User.findOne({
+      where: {
+        id: currentSpotBooking.userId
+      },
+      attributes: ['id', 'firstName', 'lastName']
+    })
     if (user.id === spot.ownerId) {
-      ret.User = paredUser[i]
-      ret.id = booking.id
-      ret.spotId = booking.spotId
-      ret.userId = booking.userId
-      ret.startDate = booking.startDate
-      ret.endDate = booking.endDate
-      ret.createdAt = booking.createdAt
-      ret.updatedAt = booking.updatedAt
+      ret.User = bookingUser
+      ret.id = currentSpotBooking.id
+      ret.spotId = currentSpotBooking.spotId
+      ret.userId = currentSpotBooking.userId
+      ret.startDate = currentSpotBooking.startDate
+      ret.endDate = currentSpotBooking.endDate
+      ret.createdAt = currentSpotBooking.createdAt
+      ret.updatedAt = currentSpotBooking.updatedAt
       arr.push(ret)
     }
   }
@@ -1102,7 +1102,8 @@ const existingBookingBefore = await Booking.findAll({
     },
     endDate: {
       [Op.between]: [startDate, endDate]
-    }
+    },
+    spotId: spotId
   }
 })
 
@@ -1113,7 +1114,8 @@ const existingBookingAfter = await Booking.findAll({
     },
     endDate: {
       [Op.gte]: endDate
-    }
+    },
+    spotId: spotId
   }
 })
 
@@ -1124,7 +1126,8 @@ const existingBookingInside = await Booking.findAll({
     },
     endDate: {
       [Op.between]: [startDate, endDate]
-    }
+    },
+    spotId: spotId
   }
 })
 
@@ -1135,7 +1138,8 @@ const existingBookingOutside = await Booking.findAll({
     },
     endDate: {
       [Op.gte]: endDate
-    }
+    },
+    spotId: spotId
   }
 })
 
