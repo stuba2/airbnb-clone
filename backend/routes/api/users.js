@@ -11,7 +11,7 @@ const router = express.Router();
 
 
 // Sign up
-router.post('/signup', validateSignup, async (req, res) => {
+router.post('/', validateSignup, async (req, res) => {
     const { email, password, username, firstName, lastName } = req.body;
     const hashedPassword = bcrypt.hashSync(password);
 
@@ -94,55 +94,55 @@ router.post('/signup', validateSignup, async (req, res) => {
 );
 
 
-// Log in
-router.post('/login', validateLogin, async (req, res, next) => {
-  const { credential, password } = req.body;
+// // Log in
+// router.post('/login', validateLogin, async (req, res, next) => {
+//   const { credential, password } = req.body;
 
-  const user = await User.unscoped().findOne({
-      // allows either username or password to log in
-      where: {
-        [Op.or]: {
-          username: credential,
-          email: credential
-        }
-      }
-    });
+//   const user = await User.unscoped().findOne({
+//       // allows either username or password to log in
+//       where: {
+//         [Op.or]: {
+//           username: credential,
+//           email: credential
+//         }
+//       }
+//     });
 
-    if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
-      res.status(401)
-      return res.json({
-        message: "Invalid credentials"
-      })
-    }
+//     if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
+//       res.status(401)
+//       return res.json({
+//         message: "Invalid credentials"
+//       })
+//     }
 
-    const safeUser = {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      username: user.username,
-    };
+//     const safeUser = {
+//       id: user.id,
+//       firstName: user.firstName,
+//       lastName: user.lastName,
+//       email: user.email,
+//       username: user.username,
+//     };
 
-    await setTokenCookie(res, safeUser);
+//     await setTokenCookie(res, safeUser);
 
-    return res.json({
-      user: safeUser
-    });
-  }
-);
+//     return res.json({
+//       user: safeUser
+//     });
+//   }
+// );
 
-// Get Current User
-router.get('/', restoreUser, requireAuth, isGetUser, async (req, res) => {
+// // Get Current User
+// router.get('/', restoreUser, requireAuth, isGetUser, async (req, res) => {
 
-  const user = req.user
-  const currentUser = await User.findOne({
-    where: {
-      id: user.id
-    },
-    attributes: ['id','firstName','lastName','email','username']
-  });
+//   const user = req.user
+//   const currentUser = await User.findOne({
+//     where: {
+//       id: user.id
+//     },
+//     attributes: ['id','firstName','lastName','email','username']
+//   });
 
-  res.json({user: currentUser})
-})
+//   res.json({user: currentUser})
+// })
 
 module.exports = router;
