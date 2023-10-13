@@ -12,8 +12,6 @@ const LoginFormModal = () => {
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal()
 
-  // if (sessionUser) return <Redirect to="/" />;
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors({});

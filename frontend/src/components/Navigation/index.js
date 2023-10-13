@@ -4,12 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import OpenModalButton from '../OpenModalButton';
 import LoginFormModal from '../LoginFormModal';
+import SignupFormModal from '../signupFormModal';
 import * as sessionActions from '../../store/session';
 import './Navigation.css';
 
 const Navigation = ({ isLoaded }) => {
   const sessionUser = useSelector(state => state.session.user);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   const logout = (e) => {
     e.preventDefault();
@@ -30,7 +31,10 @@ const Navigation = ({ isLoaded }) => {
           buttonText="Log In"
           modalComponent={<LoginFormModal />}
         />
-        <NavLink to="/signup">Sign Up</NavLink>
+        <OpenModalButton
+          buttonText="Sign Up"
+          modalComponent={<SignupFormModal />}
+        />
       </li>
     );
   }
