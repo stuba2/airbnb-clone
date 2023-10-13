@@ -30,9 +30,6 @@ module.exports = (sequelize, DataTypes) => {
     endDate: {
       type: DataTypes.DATEONLY,
       allowNull: false,
-      validate: {
-        isBefore: "2030-01-01"
-      }
     },
   }, {
     sequelize,
