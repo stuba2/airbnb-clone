@@ -1,0 +1,12 @@
+.profile-dropdown {
+  color: blue;
+}
+
+
+/* .profile-dropdown.true {
+  color: green
+} */
+
+.profile-dropdown.hidden {
+  color: red;
+}
