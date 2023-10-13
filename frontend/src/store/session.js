@@ -16,8 +16,7 @@ const removeUser = () => {
   };
 };
 
-export const login = (user) => async (dispatch) => {
-  console.log('begin')
+export const loginThunk = (user) => async (dispatch) => {
   const { credential, password } = user;
   const response = await csrfFetch("/api/session", {
     method: "POST",
@@ -26,16 +25,21 @@ export const login = (user) => async (dispatch) => {
       password,
     }),
   });
-  console.log('middle')
 
   if (response.ok) {
-    console.log('ok')
     const data = await response.json();
     dispatch(setUser(data.user));
     return response;
   } else {
     console.log('wrong')
   }
+};
+
+export const restoreUserThunk = () => async (dispatch) => {
+  const response = await csrfFetch("/api/session");
+  const data = await response.json();
+  dispatch(setUser(data.user));
+  return response;
 };
 
 const initialState = { user: null };
