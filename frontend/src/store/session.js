@@ -63,6 +63,7 @@ export const signupThunk = (user) => async (dispatch) => {
     })
   })
 
+
   if (response.ok) {
     const data = await response.json()
 
@@ -70,6 +71,19 @@ export const signupThunk = (user) => async (dispatch) => {
     return response
   } else {
     console.log('wrong: signupThunk')
+  }
+}
+
+export const logoutThunk = () => async (dispatch) => {
+  const response = await csrfFetch('/api/session', {
+    method: "DELETE"
+  })
+
+  if (response.ok) {
+    dispatch(removeUser())
+    return response
+  } else {
+    console.log('wrong: logoutThunk')
   }
 }
 
