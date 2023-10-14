@@ -31,16 +31,47 @@ export const loginThunk = (user) => async (dispatch) => {
     dispatch(setUser(data.user));
     return response;
   } else {
-    console.log('wrong')
+    console.log('wrong: loginThunk')
   }
 };
 
 export const restoreUserThunk = () => async (dispatch) => {
   const response = await csrfFetch("/api/session");
-  const data = await response.json();
-  dispatch(setUser(data.user));
-  return response;
+
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(setUser(data.user));
+    return response;
+  } else {
+    console.log('wrong: restoreUserThunk')
+  }
 };
+
+export const signupThunk = (user) => async (dispatch) => {
+  const { username, firstName, lastName, email, password } = user
+  const response = await csrfFetch('/api/users', {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      username,
+      firstName,
+      lastName,
+      email,
+      password
+    })
+  })
+
+  if (response.ok) {
+    const data = await response.json()
+
+    dispatch(setUser(data.user))
+    return response
+  } else {
+    console.log('wrong: signupThunk')
+  }
+}
 
 const initialState = { user: null };
 
