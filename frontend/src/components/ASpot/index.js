@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import * as spotActions from '../../store/spot'
 import { useParams } from "react-router-dom"
+import AReview from "../AReview"
 
 const ASpot = () => {
   const dispatch = useDispatch()
@@ -40,7 +41,7 @@ const ASpot = () => {
         </div>
         <div>
           <div>[star] {spot.avgStarRating} - {spot.numReviews} reviews</div>
-          REVIEWS
+          <div><AReview /></div>
         </div>
       </div>
       )
