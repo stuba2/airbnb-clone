@@ -34,31 +34,37 @@ const NewSpotForm = () => {
       lng: -83
     }
 
-    const imageForm1 = {
+    let imageForm1
+    let imageForm2
+    let imageForm3
+    let imageForm4
+    let imageForm5
+
+    imageForm1 = {
       url: image1,
       preview: true
     }
 
     if (image2) {
-      const imageForm2 = {
+      imageForm2 = {
         url: image2,
         preview: false
       }
     }
     if (image3) {
-      const imageForm3 = {
+      imageForm3 = {
         url: image3,
         preview: false
       }
     }
     if (image4) {
-      const imageForm4 = {
+      imageForm4 = {
         url: image4,
         preview: false
       }
     }
     if (image5) {
-      const imageForm5 = {
+      imageForm5 = {
         url: image5,
         preview: false
       }
@@ -69,9 +75,26 @@ const NewSpotForm = () => {
     const newSpotId = +createdSpot.id
     console.log('new spot id?: ', newSpotId)
 
-    let addedImage
-    addedImage = await dispatch(spotActions.addImageThunk(newSpotId, imageForm1))
-    // if (image2)
+    let addedImage1
+    let addedImage2
+    let addedImage3
+    let addedImage4
+    let addedImage5
+
+    addedImage1 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm1))
+
+    if (image2) {
+      addedImage2 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm2))
+    }
+    if (image3) {
+      addedImage3 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm3))
+    }
+    if (image4) {
+      addedImage4 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm4))
+    }
+    if (image5) {
+      addedImage5 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm5))
+    }
 
     setAddress('')
     setCity('')

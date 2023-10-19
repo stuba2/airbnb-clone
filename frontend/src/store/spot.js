@@ -98,7 +98,6 @@ export const createSpotThunk = (spotForm) => async (dispatch) => {
 }
 
 export const addImageThunk = (newSpotId, imageObj) => async (dispatch) => {
-  console.log('before fetch')
   const response = await csrfFetch(`/api/spots/${+newSpotId}/images/`, {
     method: "POST",
     headers: {
@@ -106,13 +105,13 @@ export const addImageThunk = (newSpotId, imageObj) => async (dispatch) => {
     },
     body: JSON.stringify(imageObj)
   })
-  console.log('this is response: ', response)
 
-  if (response.ok) {
-    const imageData = await response.json()
-    console.log(imageData)
-    dispatch(addImage(imageData))
-    return imageData
+  const updatedSpot = await csrfFetch(`/api/spots/${+newSpotId}/`)
+
+  if (response.ok && updatedSpot.ok) {
+    const spotUpdate = await updatedSpot.json()
+    dispatch(addImage(spotUpdate))
+    return spotUpdate
   } else {
     console.log('wrong: addImageThunk')
   }
@@ -140,7 +139,9 @@ const spotReducer = (state = initialState, action) => {
       return newState
     case ADD_IMAGE:
       newState = {...state}
-
+      const imgData = action.payload
+      newState[imgData.id] = imgData
+      return newState
     default:
       return state
   }
