@@ -1,7 +1,27 @@
-.profile-dropdown {
-  color: blue;
+.nav-bar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.nav-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.create-spot {
+  padding: 0 10px 10px;
+}
+
+.profile-button {
+  padding: 0 10px 10px;
 }
 
 .profile-dropdown.hidden {
-  color: red;
+  display: none;
 }

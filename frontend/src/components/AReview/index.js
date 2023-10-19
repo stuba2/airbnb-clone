@@ -11,8 +11,10 @@ const AReview = () => {
   })
 
   let reviewsArrVals = Object.values(reviews)
+  let purgedReviews = reviewsArrVals.filter((review) =>
+    review.spotId === +spotId
+  )
 
-  console.log('this is reviews: ', reviews)
 
   useEffect(() => {
     dispatch(reviewActions.getReviewsThunk(+spotId))
@@ -26,9 +28,10 @@ const AReview = () => {
   } else {
     return (
       <div>
-        {reviewsArrVals.map((review) => {
+        {purgedReviews.map((review) => {
           return (
-            <div>
+            <div
+            key={review.id}>
               <h5>{review.User.firstName}</h5>
               <h6>{review.createdAt}</h6> {/* Format these */}
               <p>{review.review}</p>

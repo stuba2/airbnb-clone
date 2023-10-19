@@ -46,7 +46,10 @@ const ProfileButton = ({ user }) => {
 
   return (
     <>
-      <button onClick={openMenu}>
+      <button
+        onClick={openMenu}
+        
+      >
         <i className="fas fa-user-circle" />
       </button>
       <ul className={ulClassName} ref={ulRef}>
