@@ -5,22 +5,94 @@ import { useParams } from "react-router-dom"
 import './NewSpotForm.css'
 
 const NewSpotForm = () => {
+  const dispatch = useDispatch()
   const [country, setCountry] = useState('')
   const [address, setAddress] = useState('')
   const [city, setCity] = useState('')
   const [livedState, setLivedState] = useState('')
   const [description, setDescription] = useState('')
   const [name, setName] = useState('')
-  const [price, setPrice] = useState()
+  const [price, setPrice] = useState(0)
   const [image1, setImage1] = useState('')
   const [image2, setImage2] = useState('')
   const [image3, setImage3] = useState('')
   const [image4, setImage4] = useState('')
   const [image5, setImage5] = useState('')
 
+  const onSubmit = async (e) => {
+    e.preventDefault()
+
+    const spotForm = {
+      address,
+      city,
+      state: livedState,
+      country,
+      name,
+      description,
+      price: +price,
+      lat: 45,
+      lng: -83
+    }
+
+    const imageForm1 = {
+      url: image1,
+      preview: true
+    }
+
+    if (image2) {
+      const imageForm2 = {
+        url: image2,
+        preview: false
+      }
+    }
+    if (image3) {
+      const imageForm3 = {
+        url: image3,
+        preview: false
+      }
+    }
+    if (image4) {
+      const imageForm4 = {
+        url: image4,
+        preview: false
+      }
+    }
+    if (image5) {
+      const imageForm5 = {
+        url: image5,
+        preview: false
+      }
+    }
+
+    let createdSpot
+    createdSpot = await dispatch(spotActions.createSpotThunk(spotForm))
+    const newSpotId = +createdSpot.id
+    console.log('new spot id?: ', newSpotId)
+
+    let addedImage
+    addedImage = await dispatch(spotActions.addImageThunk(newSpotId, imageForm1))
+    // if (image2)
+
+    setAddress('')
+    setCity('')
+    setLivedState('')
+    setCountry('')
+    setName('')
+    setDescription('')
+    setPrice(0)
+    setImage1('')
+    setImage2('')
+    setImage3('')
+    setImage4('')
+    setImage5('')
+  }
+
   return (
     <div>
-      <form className="new-spot-form">
+      <form
+        className="new-spot-form"
+        onSubmit={onSubmit}
+      >
         <h2>Create a new Spot</h2>
         <div className="location">
           <h3>Where's your place located?</h3>

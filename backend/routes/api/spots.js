@@ -334,6 +334,7 @@ router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, validateSpotI
   if (preview !== true && preview !== false) {
     errors.previewImage = "true or false required"
   }
+
   if (errors.url || errors.previewImage) {
     res.status(400)
     return res.json({

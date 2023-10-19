@@ -37,7 +37,7 @@ label {
   flex-direction: column;
   padding-bottom: 15px;
   border-bottom: solid;
-  border-color: black;
+  border-color: #222222;
 }
 
 .new-spot-country {
@@ -83,7 +83,7 @@ label {
   flex-direction: column;
   padding-bottom: 15px;
   border-bottom: solid;
-  border-color: black;
+  border-color: #222222;
 }
 
 .description {
@@ -100,7 +100,7 @@ label {
   flex-direction: column;
   padding-bottom: 15px;
   border-bottom: solid;
-  border-color: black;
+  border-color: #222222;
 }
  .name {
   display: flex;
@@ -112,7 +112,7 @@ label {
   flex-direction: column;
   padding-bottom: 15px;
   border-bottom: solid;
-  border-color: black;
+  border-color: #222222;
  }
  .price {
   display: flex;
@@ -128,7 +128,7 @@ label {
   flex-direction: column;
   padding-bottom: 15px;
   border-bottom: solid;
-  border-color: black;
+  border-color: #222222;
  }
 
  .button-div {

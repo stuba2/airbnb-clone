@@ -3,6 +3,8 @@ import { csrfFetch } from "./csrf"
 const GET_SPOTS = "spots/get"
 const GET_SPOT = "spot/get"
 const FIND_OWNER = "spot/get/owner"
+const POST_SPOT = "spot/post"
+const ADD_IMAGE = "spot/post/image"
 
 const getSpots = (spots) => {
   return {
@@ -22,6 +24,20 @@ const findOwner = (data) => {
   // console.log('-------', data)
   return {
     type: FIND_OWNER,
+    payload: data
+  }
+}
+
+const createASpot = (spot) => {
+  return {
+    type: POST_SPOT,
+    payload: spot
+  }
+}
+
+const addImage = (data) => {
+  return {
+    type: ADD_IMAGE,
     payload: data
   }
 }
@@ -52,16 +68,54 @@ export const getASpotThunk = (spot) => async (dispatch) => {
 }
 
 export const getOwnerDeetsThunk = (id) => async (dispatch) => {
-  // console.log('hey its id' ,id)
-const response = await csrfFetch(`/api/spots/${id}`)
+  const response = await csrfFetch(`/api/spots/${id}`)
 
-if (response.ok) {
-  const data = await response.json()
-  dispatch(findOwner(data))
-  return data
-} else {
-  console.log('wrong: getOwnerDeetsThunk')
+  if (response.ok) {
+    const data = await response.json()
+    dispatch(findOwner(data))
+    return data
+  } else {
+    console.log('wrong: getOwnerDeetsThunk')
+  }
 }
+
+export const createSpotThunk = (spotForm) => async (dispatch) => {
+  const newSpot = await csrfFetch('/api/spots/', {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(spotForm)
+  })
+
+  if (newSpot.ok) {
+    const createdSpot = await newSpot.json()
+    dispatch(createASpot(createdSpot))
+    return createdSpot
+  } else {
+    console.log('wrong: createSpotThunk')
+  }
+}
+
+export const addImageThunk = (newSpotId, imageObj) => async (dispatch) => {
+  console.log('before fetch')
+  const response = await csrfFetch(`/api/spots/${+newSpotId}/images/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(imageObj)
+  })
+  console.log('this is response: ', response)
+
+  if (response.ok) {
+    const imageData = await response.json()
+    console.log(imageData)
+    dispatch(addImage(imageData))
+    return imageData
+  } else {
+    console.log('wrong: addImageThunk')
+  }
 }
 
 const initialState = {}
@@ -79,6 +133,14 @@ const spotReducer = (state = initialState, action) => {
       const spotObj = action.payload
       newState[spotObj.id] = spotObj
       return newState
+    case POST_SPOT:
+      newState = {...state}
+      const newSpot = action.payload
+      newState[newSpot.id] = newSpot
+      return newState
+    case ADD_IMAGE:
+      newState = {...state}
+
     default:
       return state
   }

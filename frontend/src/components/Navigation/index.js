@@ -43,7 +43,7 @@ const Navigation = ({ isLoaded }) => {
     <div className='nav-bar'>
       <div className='nav-left'>
         <div className='home-logo'>
-          <NavLink exact to="/"><img src='../../../public/heirbnb-logo.png'  /></NavLink>
+          <NavLink exact to="/"><img src={require('../../images/heirbnb-logo.png')}  /></NavLink>
         </div>
       </div>
       <div className='nav-right'>
