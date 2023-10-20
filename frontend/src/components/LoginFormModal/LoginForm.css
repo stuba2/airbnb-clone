@@ -1,12 +1,23 @@
-h1 {
+/* h1 {
   color: #2F65A7
 }
 
 label {
   color: #2F65A7
-}
+} */
 
 button {
-  color: #FFCB05;
-  background-color: #00274C;
+  /* color: #003434;
+  color: #f6ebe3;
+  background-color: #c04e02; */
+  background-color: white;
+  color: #717171;
+  border-color: #dddddd;
 }
+ .fa-solid {
+  padding: 3px;
+ }
+
+ .fas {
+  padding: 3px;
+ }

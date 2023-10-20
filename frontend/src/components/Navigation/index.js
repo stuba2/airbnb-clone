@@ -40,16 +40,25 @@ const Navigation = ({ isLoaded }) => {
   // }
 
   return (
-    <ul>
-      <li>
-        <NavLink exact to="/">Home</NavLink>
-      </li>
-      {isLoaded && (
-        <li>
-          <ProfileButton user={sessionUser} />
-        </li>
-      )}
-    </ul>
+    <div className='nav-bar'>
+      <div className='nav-left'>
+        <div className='home-logo'>
+          <NavLink exact to="/"><img src={require('../../images/heirbnb-logo.png')}  /></NavLink>
+        </div>
+      </div>
+      <div className='nav-right'>
+        <div className='create-spot'>
+          <NavLink to="/api/spots/new">
+            Create a New Spot
+          </NavLink>
+        </div>
+        {isLoaded && (
+          <div className='profile-button'>
+            <ProfileButton user={sessionUser} />
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 
