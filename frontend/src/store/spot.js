@@ -134,6 +134,14 @@ export const getOwnedSpotsThunk = (ownerId) => async (dispatch) => {
   }
 }
 
+export const editASpotThunk = () => async (dispatch) => {
+
+}
+
+export const deleteASpotThunk = () => async (dispatch) => {
+
+}
+
 const initialState = {}
 
 const spotReducer = (state = initialState, action) => {

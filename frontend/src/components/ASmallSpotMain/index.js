@@ -12,6 +12,7 @@ const ASmallSpotMain = ({spotId}) => {
   })
   const spot = spots[+spotId]
 
+
   let spotsArrVals = Object.values(spots)
 
   useEffect(() => {
@@ -31,7 +32,7 @@ const ASmallSpotMain = ({spotId}) => {
   // // console.log('spotId', spotId, 'truePreviewImg: ', truePreviewImg)
   // console.log('---', spot.SpotImages)
 
-  const hasPreviewImg = (spot) => {
+    const hasPreviewImg = (spot) => {
     const SpotImages = spot.SpotImages
     if (SpotImages) {
       const what = SpotImages.find((image) => image.previewImage === true)
