@@ -80,9 +80,9 @@
   border-bottom: solid;
 }
 
-.description-owner-area {
-  /* padding-bottom: 15px; */
-}
+/* .description-owner-area {
+  padding-bottom: 15px;
+} */
 
 .owner-info {
   padding-bottom: 5px;
@@ -139,10 +139,10 @@
   margin: 10px auto;
 }
 
-.review-modal {
-  /* background-color: #c04e02;
+/* .review-modal {
+  background-color: #c04e02;
   color: white;
   box-shadow: 3px 3px black;
   border: solid black;
-  border-radius: 2px; */
-}
+  border-radius: 2px;
+} */
