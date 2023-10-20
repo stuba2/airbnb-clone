@@ -1,0 +1,19 @@
+.whole-container {
+  padding: 10px;
+  border: solid #222222;
+  border-radius: 8px;
+  width: 250px;
+  display: flex;
+  justify-content: center;
+}
+
+.review-text {
+  padding-bottom: 15px;
+  width: 100%;
+  /* display: flex; */
+  /* align-items: start; */
+}
+
+.review-text-box {
+  height: 6em;
+}

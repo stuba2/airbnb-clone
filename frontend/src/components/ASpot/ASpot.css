@@ -1,0 +1,148 @@
+.whole-thing-a-spot {
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+
+.images {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto;
+  grid-template-areas:
+  "big smaller";
+  height: 350px;
+}
+
+.big-pic {
+  background-color: lightblue;
+  grid-area: big;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid white;
+}
+
+.small-pics {
+  grid-area: smaller;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+  "pic2 pic3"
+  "pic4 pic5";
+}
+
+.small-pic-2 {
+  background-color: lightcoral;
+  grid-area: pic2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid white;
+}
+
+.small-pic-3 {
+  background-color: lightcyan;
+  grid-area: pic3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid white;
+}
+
+.small-pic-4 {
+  background-color: lightgoldenrodyellow;
+  grid-area: pic4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid white;
+}
+
+.small-pic-5 {
+  background-color: lightgreen;
+  grid-area: pic5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid white;
+}
+
+.under-image-info {
+  padding-top: 15px;
+  display: grid;
+  grid-template-columns: 2fr, 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+  "description res-button";
+  border-bottom: solid;
+}
+
+.description-owner-area {
+  /* padding-bottom: 15px; */
+}
+
+.owner-info {
+  padding-bottom: 5px;
+}
+
+.reserve-button-area {
+  border: solid;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+  "price rating-num-reviews"
+  "reserve-button reserve-button ";
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+.spot-price {
+  grid-area: price;
+  /* background-color: lightgrey; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.reserve-rating-reviews {
+  grid-area: rating-num-reviews;
+  /* background-color: lightpink; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* .reserve-reviews {
+  grid-area: num-reviews;
+  background-color: lightsalmon;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+
+.reserve-button {
+  grid-area: reserve-button;
+  background-color: #c04e02;
+  color: white;
+  box-shadow: 3px 3px black;
+  border: solid black;
+  border-radius: 2px;
+  padding: 10px;
+  margin: 10px 20px 20px;
+}
+
+.lower-review {
+  margin: 10px auto;
+}
+
+.review-modal {
+  /* background-color: #c04e02;
+  color: white;
+  box-shadow: 3px 3px black;
+  border: solid black;
+  border-radius: 2px; */
+}

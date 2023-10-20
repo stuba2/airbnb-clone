@@ -4,6 +4,8 @@ import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from "./OpenModalMenuItem";
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
+import './ProfileButton.css'
+import { NavLink } from "react-router-dom/";
 
 const ProfileButton = ({ user }) => {
   const dispatch = useDispatch();
@@ -31,14 +33,12 @@ const ProfileButton = ({ user }) => {
 
   const closeMenu = () => {
     setShowMenu(false)
-    console.log('yup its closed now')
   }
 
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logoutThunk());
     closeMenu()
-    console.log('closin time')
   };
 
 
@@ -48,19 +48,24 @@ const ProfileButton = ({ user }) => {
     <>
       <button
         onClick={openMenu}
-
+        className="whole-button"
       >
-        <i className="fa-solid fa-bars"></i>
-        <i className="fas fa-user-circle" />
+        <i className="fa-solid fa-bars profile-button-img"></i>
+        <i className="fas fa-user-circle profile-button-img" />
       </button>
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
           <>
-            <li>{user.username}</li>
-            <li>{user.firstName} {user.lastName}</li>
-            <li>{user.email}</li>
-            <li>
-              <button onClick={logout}>Log Out</button>
+            {/* <li className="username">{user.username}</li> */}
+            <li className="first-last">Hello, {user.firstName}</li>
+            <li className="email">{user.email}</li>
+            <NavLink to='/api/spots/current'
+              className="manage-spots"
+              onClick={closeMenu}>
+                Manage Spots
+              </NavLink>
+            <li className="logout">
+              <button  onClick={logout}>Log Out</button>
             </li>
           </>
         ) : (

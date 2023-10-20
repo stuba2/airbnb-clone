@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as reviewActions from '../../store/review'
 import { useParams } from "react-router-dom";
+import './AReview.css'
 
 const AReview = () => {
   const dispatch = useDispatch()
@@ -14,6 +15,7 @@ const AReview = () => {
   let purgedReviews = reviewsArrVals.filter((review) =>
     review.spotId === +spotId
   )
+  let reversedPurgedReviews = purgedReviews.slice().reverse()
 
 
   useEffect(() => {
@@ -21,20 +23,26 @@ const AReview = () => {
   }, [dispatch])
 
 
+
   if (!reviews) {
     return (
       <div>...loading</div>
-    )
-  } else {
-    return (
-      <div>
-        {purgedReviews.map((review) => {
+      )
+    } else {
+      return (
+        <div>
+        {reversedPurgedReviews.map((review) => {
+        let date = new Date(review.createdAt).toDateString()
+        let dateMonth = date.split(' ')[1]
+        let dateYear = date.split(' ')[3]
           return (
             <div
-            key={review.id}>
-              <h5>{review.User.firstName}</h5>
-              <h6>{review.createdAt}</h6> {/* Format these */}
-              <p>{review.review}</p>
+              key={review.id}
+              className="whole-review"
+            >
+              <div className="review-name">{review.User.firstName}</div>
+              <div className="review-date">{dateMonth} {dateYear}</div> {/* Format these */}
+              <p className="review-review">{review.review}</p>
             </div>
           )
         })}

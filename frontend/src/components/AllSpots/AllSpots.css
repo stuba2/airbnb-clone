@@ -1,8 +1,44 @@
-.spots {
-  padding: 5px;
-  display: inline-block;
+.front-page-spots {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
 }
 
-.front-pate-spots {
-  display: block;
+.spots {
+  padding: 5px;
+  display: inline-flex;
+  text-decoration: none;
+  /* height: 15vw; */
+  /* width: 15vw; */
+}
+
+@media screen and (min-width: 1200px) {
+  .front-page-spots {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    justify-items: center;
+  }
+}
+
+@media screen and (max-width: 1199px) and (min-width: 800px) {
+  .front-page-spots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+  }
+}
+
+@media screen and (max-width: 799px) and (min-width: 700px) {
+  .front-page-spots {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+  }
+}
+
+@media screen and (max-width: 699px)  {
+  .front-page-spots {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    justify-items: center;
+  }
 }

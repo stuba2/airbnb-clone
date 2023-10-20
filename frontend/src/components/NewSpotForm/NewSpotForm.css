@@ -145,6 +145,14 @@ label {
   padding-bottom: 10px;
  }
 
+ .button-div > button {
+  background-color: #c04e02;
+  color: white;
+  box-shadow: 3px 3px black;
+  border: 2px solid black;
+  border-radius: 2px;
+ }
+
  .spot-error {
   color: red;
   font-size: small;

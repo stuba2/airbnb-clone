@@ -4,6 +4,7 @@ import * as spotActions from '../../store/spot'
 import { useDispatch, useSelector } from "react-redux";
 import "./AllSpots.css"
 import ASpot from "../ASpot";
+import ASmallSpotMain from "../ASmallSpotMain";
 
 const AllSpots = () =>{
   const dispatch = useDispatch();
@@ -31,12 +32,13 @@ const AllSpots = () =>{
               to={`/api/spots/${spot.id}`}
               className="spots"
               key={spot.id}>
-                <div>({spot.name} {spot.id})</div>
+                {/* <div>({spot.name} {spot.id})</div>
                 <div>{spot.previewImage || "null"}</div>
                 <div>{spot.city}, {spot.state}</div>
-                <div>${spot.price}/night</div>
-                <div>[star] {spot.avgRating}</div>
-                <br></br>
+                <div>${spot.price} night</div>
+                <div><i className="fa-solid fa-star"></i> {spot.avgRating}</div>
+                <br></br> */}
+                <ASmallSpotMain spotId={spot.id}/>
             </NavLink>
           )
         })}

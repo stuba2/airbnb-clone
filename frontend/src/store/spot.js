@@ -5,6 +5,7 @@ const GET_SPOT = "spot/get"
 const FIND_OWNER = "spot/get/owner"
 const POST_SPOT = "spot/post"
 const ADD_IMAGE = "spot/post/image"
+const OWNED_SPOTS = "spot/get/owned"
 
 const getSpots = (spots) => {
   return {
@@ -42,6 +43,13 @@ const addImage = (data) => {
   }
 }
 
+const getOwnedSpots = (data) => {
+  return {
+    type: OWNED_SPOTS,
+    payload: data
+  }
+}
+
 export const getSpotsThunk = () => async (dispatch) => {
   const response = await csrfFetch("/api/spots")
 
@@ -59,7 +67,6 @@ export const getASpotThunk = (spot) => async (dispatch) => {
 
   if (response.ok) {
     const data = await response.json()
-    console.log('this is data: ', data)
     dispatch(getASpot(data))
     return data
   } else {
@@ -117,6 +124,16 @@ export const addImageThunk = (newSpotId, imageObj) => async (dispatch) => {
   }
 }
 
+export const getOwnedSpotsThunk = (ownerId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/spots/user`)
+
+  if (response.ok) {
+    const ownedSpots = response.json()
+    dispatch(getOwnedSpots(ownedSpots))
+    return ownedSpots
+  }
+}
+
 const initialState = {}
 
 const spotReducer = (state = initialState, action) => {
@@ -142,6 +159,8 @@ const spotReducer = (state = initialState, action) => {
       const imgData = action.payload
       newState[imgData.id] = imgData
       return newState
+    case OWNED_SPOTS:
+
     default:
       return state
   }

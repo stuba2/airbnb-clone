@@ -1,0 +1,71 @@
+.whole-thing-small-spot {
+  height: 20vw;
+  width: 20vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+}
+
+.spot-image {
+  background-color: lightblue;
+  border: solid 1px;
+  width: 75%;
+  height: 75%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.under-pic {
+  width: 15vw;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+  "city-state rating"
+  "price price";
+}
+
+.city-state {
+  grid-area: city-state;
+  width: 100%;
+  font-size: .8rem;
+  justify-self: start;
+}
+
+.rating {
+  grid-area: rating;
+  font-size: small;
+  justify-self: end;
+}
+
+.price {
+  grid-area: price;
+  font-size: small;
+}
+
+@media screen and (min-width: 1200px) {
+  .city-state {
+    /* font-size: ; */
+  }
+}
+
+@media screen and (max-width: 1199px) and (min-width: 800px) {
+  .front-page-spots {
+
+  }
+}
+
+@media screen and (max-width: 799px) and (min-width: 700px) {
+  .front-page-spots {
+
+  }
+}
+
+@media screen and (max-width: 699px)  {
+  .front-page-spots {
+
+  }
+}
