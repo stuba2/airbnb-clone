@@ -14,6 +14,11 @@ const ASpot = () => {
     return state.spots
   })
   const spot = spots[+spotId]
+  const image1 = spot ? (spot.SpotImages ? (spot.SpotImages[0] ? spot.SpotImages[0].url : "No Image Found") : "No Image Found") : "No Image Found"
+  const image2 = spot ? (spot.SpotImages ? (spot.SpotImages[1] ? spot.SpotImages[1].url : "No Image Found") : "No Image Found") : "No Image Found"
+  const image3 = spot ? (spot.SpotImages ? (spot.SpotImages[2] ? spot.SpotImages[2].url : "No Image Found") : "No Image Found") : "No Image Found"
+  const image4 = spot ? (spot.SpotImages ? (spot.SpotImages[3] ? spot.SpotImages[3].url : "No Image Found") : "No Image Found") : "No Image Found"
+  const image5 = spot ? (spot.SpotImages ? (spot.SpotImages[4] ? spot.SpotImages[4].url : "No Image Found") : "No Image Found") : "No Image Found"
 
 
   // useEffect(() => {
@@ -21,8 +26,18 @@ const ASpot = () => {
   // }, [dispatch])
 
   useEffect(() => {
-    dispatch(spotActions.getOwnerDeetsThunk(spotId))
+    dispatch(spotActions.getSpotDeetsThunk(spotId))
   }, [dispatch])
+
+  const hasPreviewImg = (spot) => {
+    const SpotImages = spot.SpotImages
+    if (SpotImages) {
+      const imgPreview = SpotImages.find((image) => image.previewImage === true)
+      if (imgPreview) {
+        return imgPreview.url
+      } else return 'No Image Found'
+    }
+  }
 
   if (!spot || !spot.Owner) {
     return (
@@ -38,13 +53,13 @@ const ASpot = () => {
 
         <div className="images">
           <div className="big-pic">
-            Preview Image
+            {hasPreviewImg(spot)}
           </div>
           <div className="small-pics">
-            <div className="small-pic-2">Optional Image</div>
-            <div className="small-pic-3">Optional Image</div>
-            <div className="small-pic-4">Optional Image</div>
-            <div className="small-pic-5">Optional Image</div>
+            <div className="small-pic-2">{image2}</div>
+            <div className="small-pic-3">{image3}</div>
+            <div className="small-pic-4">{image4}</div>
+            <div className="small-pic-5">{image5}</div>
           </div>
         </div> {/* Create component for this? */}
 

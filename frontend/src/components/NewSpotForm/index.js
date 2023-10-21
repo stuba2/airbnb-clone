@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import * as spotActions from '../../store/spot'
-import { useParams } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 import './NewSpotForm.css'
 
 const NewSpotForm = () => {
   const dispatch = useDispatch()
+  const { spotId } = useParams()
+  const history = useHistory()
   const [country, setCountry] = useState('')
   const [address, setAddress] = useState('')
   const [city, setCity] = useState('')
@@ -15,11 +17,11 @@ const NewSpotForm = () => {
   const [description, setDescription] = useState('')
   const [name, setName] = useState('')
   const [price, setPrice] = useState(0)
-  const [image1, setImage1] = useState('')
-  const [image2, setImage2] = useState('')
-  const [image3, setImage3] = useState('')
-  const [image4, setImage4] = useState('')
-  const [image5, setImage5] = useState('')
+  const [image1, setImage1] = useState()
+  const [image2, setImage2] = useState()
+  const [image3, setImage3] = useState()
+  const [image4, setImage4] = useState()
+  const [image5, setImage5] = useState()
   const [validationErrors, setValidationErrors] = useState({})
   const [hasSubmitted, setHasSubmitted] = useState(false)
 
@@ -34,15 +36,15 @@ const NewSpotForm = () => {
     if (isNaN(parseInt(lng))) errors['lng'] = 'Longitude needs to be a number'
     if (!lng) errors['lng'] = 'Longitude is required'
     if (!description) errors['description'] = 'Description is required'
-    if (!description.length < 30) errors['description'] = 'Description must be at least 30 characters'
+    if (description.length < 30) errors['description'] = 'Description must be at least 30 characters'
     if (!name) errors['name'] = 'Name is required'
-    if (!name.length > 50) errors['name'] = 'Name must be less than 50 characters'
-    if (!(image1.split('.')[image1.split('.').length-1] === 'png' || image1.split('.')[image1.split('.').length-1] === 'jpg' || image1.split('.')[image1.split('.').length-1] === 'jpeg')) errors['image1'] = 'Image URL must end in .png, .jpg, or .jpeg'
+    if (name.length > 50) errors['name'] = 'Name must be less than 50 characters'
+    if (image1 && !(image1.split('.')[image1.split('.').length-1] === 'png' || image1.split('.')[image1.split('.').length-1] === 'jpg' || image1.split('.')[image1.split('.').length-1] === 'jpeg')) errors['image1'] = 'Image URL must end in .png, .jpg, or .jpeg'
     if (!image1) errors['image1'] = 'Preview image is required'
-    if (!(image2.split('.')[image2.split('.').length-1] === 'png' || image2.split('.')[image2.split('.').length-1] === 'jpg' || image2.split('.')[image2.split('.').length-1] === 'jpeg')) errors['image2'] = 'Image URL must end in .png, .jpg, or .jpeg'
-    if (!(image3.split('.')[image3.split('.').length-1] === 'png' || image3.split('.')[image3.split('.').length-1] === 'jpg' || image3.split('.')[image3.split('.').length-1] === 'jpeg')) errors['image3'] = 'Image URL must end in .png, .jpg, or .jpeg'
-    if (!(image4.split('.')[image4.split('.').length-1] === 'png' || image4.split('.')[image4.split('.').length-1] === 'jpg' || image4.split('.')[image4.split('.').length-1] === 'jpeg')) errors['image4'] = 'Image URL must end in .png, .jpg, or .jpeg'
-    if (!(image5.split('.')[image5.split('.').length-1] === 'png' || image5.split('.')[image5.split('.').length-1] === 'jpg' || image5.split('.')[image5.split('.').length-1] === 'jpeg')) errors['image5'] = 'Image URL must end in .png, .jpg, or .jpeg'
+    if (image2 && !(image2.split('.')[image2.split('.').length-1] === 'png' || image2.split('.')[image2.split('.').length-1] === 'jpg' || image2.split('.')[image2.split('.').length-1] === 'jpeg')) errors['image2'] = 'Image URL must end in .png, .jpg, or .jpeg'
+    if (image3 && !(image3.split('.')[image3.split('.').length-1] === 'png' || image3.split('.')[image3.split('.').length-1] === 'jpg' || image3.split('.')[image3.split('.').length-1] === 'jpeg')) errors['image3'] = 'Image URL must end in .png, .jpg, or .jpeg'
+    if (image4 && !(image4.split('.')[image4.split('.').length-1] === 'png' || image4.split('.')[image4.split('.').length-1] === 'jpg' || image4.split('.')[image4.split('.').length-1] === 'jpeg')) errors['image4'] = 'Image URL must end in .png, .jpg, or .jpeg'
+    if (image5 && !(image5.split('.')[image5.split('.').length-1] === 'png' || image5.split('.')[image5.split('.').length-1] === 'jpg' || image5.split('.')[image5.split('.').length-1] === 'jpeg')) errors['image5'] = 'Image URL must end in .png, .jpg, or .jpeg'
     setValidationErrors(errors)
   }, [country, address, city, livedState, lat, lng, description, name, price, image1, image2, image3, image4, image5])
 
@@ -50,26 +52,6 @@ const NewSpotForm = () => {
     e.preventDefault()
 
     setHasSubmitted(true)
-    // if (Object.values(validationErrors).length) {
-      // return alert(`The following errors were found:
-
-      // ${validationErrors.country ? "* " + validationErrors.country : ""}
-      // ${validationErrors.address ? "* " + validationErrors.address : ""}
-      // ${validationErrors.city ? "* " + validationErrors.city : ""}
-      // ${validationErrors.state ? "* " + validationErrors.state : ""}
-      // ${validationErrors.lat ? "* " + validationErrors.lat : ""}
-      // ${validationErrors.lng ? "* " + validationErrors.lng : ""}
-      // ${validationErrors.description ? "* " + validationErrors.description : ""}
-      // ${validationErrors.name ? "* " + validationErrors.name : ""}
-      // ${validationErrors.price ? "* " + validationErrors.price : ""}
-      // ${validationErrors.image1 ? "* " + validationErrors.image1 : ""}
-      // ${validationErrors.image2 ? "* " + validationErrors.image2 : ""}
-      // ${validationErrors.image3 ? "* " + validationErrors.image3 : ""}
-      // ${validationErrors.image4 ? "* " + validationErrors.image4 : ""}
-      // ${validationErrors.image5 ? "* " + validationErrors.image5 : ""}
-      // `)
-    // }
-
     const spotForm = {
       address,
       city,
@@ -163,7 +145,7 @@ const NewSpotForm = () => {
       setImage5('')
     }
 
-
+    history.push(`/api/spots/${+spotId}`)
 
 
   }

@@ -32,12 +32,6 @@ const AllSpots = () =>{
               to={`/api/spots/${spot.id}`}
               className="spots"
               key={spot.id}>
-                {/* <div>({spot.name} {spot.id})</div>
-                <div>{spot.previewImage || "null"}</div>
-                <div>{spot.city}, {spot.state}</div>
-                <div>${spot.price} night</div>
-                <div><i className="fa-solid fa-star"></i> {spot.avgRating}</div>
-                <br></br> */}
                 <ASmallSpotMain spotId={spot.id}/>
             </NavLink>
           )

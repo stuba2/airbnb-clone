@@ -4,6 +4,8 @@ import * as spotActions from '../../store/spot'
 import { NavLink } from "react-router-dom"
 import ASmallSpotMain from "../ASmallSpotMain"
 import './UserSpots.css'
+import OpenModalButton from "../OpenModalButton"
+import DeleteASpot from "../DeleteASpot"
 
 const UserSpots = () => {
   const dispatch = useDispatch()
@@ -19,12 +21,11 @@ const UserSpots = () => {
   const ownedSpots = spotsArrVals.filter((spot) => {
     return spot.ownerId === userId
   })
-  console.log('owned: ', ownedSpots)
-
 
   useEffect(() => {
     dispatch(spotActions.getSpotsThunk())
   }, [dispatch]);
+
 
   if (!spots) {
     return (
@@ -33,8 +34,10 @@ const UserSpots = () => {
   } else {
     return (
       <div className="whole-thing-user-spots">
-        <h4>Manage Your Spots</h4>
-        <button className="manage-create">Create a New Spot</button>
+        <div className="manage-header">
+          <h4>Manage Spots</h4>
+          <button className="manage-create">Create a New Spot</button>
+        </div>
         <div className="who-knows">
           {ownedSpots.map((spot) => {
           return (
@@ -46,12 +49,15 @@ const UserSpots = () => {
                   <ASmallSpotMain spotId={spot.id} />
               </NavLink>
               <div className="update-delete-buttons">
-                <button className="manage-update">
-                    Update
-                </button>
-                <button className="manage-delete">
-                  Delete
-                </button>
+                <NavLink to={`/api/spots/${spot.id}/edit`}>
+                  <button className="manage-update">
+                      Update
+                  </button>
+                </NavLink>
+                <OpenModalButton
+                  buttonText={"Delete"}
+                  modalComponent={<DeleteASpot spotId={spot.id}/>}
+                />
               </div>
             </div>
           )
