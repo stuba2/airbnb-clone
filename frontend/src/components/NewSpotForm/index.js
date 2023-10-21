@@ -10,6 +10,8 @@ const NewSpotForm = () => {
   const [address, setAddress] = useState('')
   const [city, setCity] = useState('')
   const [livedState, setLivedState] = useState('')
+  const [lat, setLat] = useState('')
+  const [lng, setLng] = useState('')
   const [description, setDescription] = useState('')
   const [name, setName] = useState('')
   const [price, setPrice] = useState(0)
@@ -18,9 +20,55 @@ const NewSpotForm = () => {
   const [image3, setImage3] = useState('')
   const [image4, setImage4] = useState('')
   const [image5, setImage5] = useState('')
+  const [validationErrors, setValidationErrors] = useState({})
+  const [hasSubmitted, setHasSubmitted] = useState(false)
+
+  useEffect(() => {
+    const errors = {}
+    if (!country) errors['country'] = 'Country is required'
+    if (!address) errors['address'] = 'Address is required'
+    if (!city) errors['city'] = 'City is required'
+    if (!livedState) errors['state'] = 'State is required'
+    if (isNaN(parseInt(lat))) errors['lat'] = 'Latitude needs to be a number'
+    if (!lat) errors['lat'] = 'Latitude is required'
+    if (isNaN(parseInt(lng))) errors['lng'] = 'Longitude needs to be a number'
+    if (!lng) errors['lng'] = 'Longitude is required'
+    if (!description) errors['description'] = 'Description is required'
+    if (!description.length < 30) errors['description'] = 'Description must be at least 30 characters'
+    if (!name) errors['name'] = 'Name is required'
+    if (!name.length > 50) errors['name'] = 'Name must be less than 50 characters'
+    if (!(image1.split('.')[image1.split('.').length-1] === 'png' || image1.split('.')[image1.split('.').length-1] === 'jpg' || image1.split('.')[image1.split('.').length-1] === 'jpeg')) errors['image1'] = 'Image URL must end in .png, .jpg, or .jpeg'
+    if (!image1) errors['image1'] = 'Preview image is required'
+    if (!(image2.split('.')[image2.split('.').length-1] === 'png' || image2.split('.')[image2.split('.').length-1] === 'jpg' || image2.split('.')[image2.split('.').length-1] === 'jpeg')) errors['image2'] = 'Image URL must end in .png, .jpg, or .jpeg'
+    if (!(image3.split('.')[image3.split('.').length-1] === 'png' || image3.split('.')[image3.split('.').length-1] === 'jpg' || image3.split('.')[image3.split('.').length-1] === 'jpeg')) errors['image3'] = 'Image URL must end in .png, .jpg, or .jpeg'
+    if (!(image4.split('.')[image4.split('.').length-1] === 'png' || image4.split('.')[image4.split('.').length-1] === 'jpg' || image4.split('.')[image4.split('.').length-1] === 'jpeg')) errors['image4'] = 'Image URL must end in .png, .jpg, or .jpeg'
+    if (!(image5.split('.')[image5.split('.').length-1] === 'png' || image5.split('.')[image5.split('.').length-1] === 'jpg' || image5.split('.')[image5.split('.').length-1] === 'jpeg')) errors['image5'] = 'Image URL must end in .png, .jpg, or .jpeg'
+    setValidationErrors(errors)
+  }, [country, address, city, livedState, lat, lng, description, name, price, image1, image2, image3, image4, image5])
 
   const onSubmit = async (e) => {
     e.preventDefault()
+
+    setHasSubmitted(true)
+    // if (Object.values(validationErrors).length) {
+      // return alert(`The following errors were found:
+
+      // ${validationErrors.country ? "* " + validationErrors.country : ""}
+      // ${validationErrors.address ? "* " + validationErrors.address : ""}
+      // ${validationErrors.city ? "* " + validationErrors.city : ""}
+      // ${validationErrors.state ? "* " + validationErrors.state : ""}
+      // ${validationErrors.lat ? "* " + validationErrors.lat : ""}
+      // ${validationErrors.lng ? "* " + validationErrors.lng : ""}
+      // ${validationErrors.description ? "* " + validationErrors.description : ""}
+      // ${validationErrors.name ? "* " + validationErrors.name : ""}
+      // ${validationErrors.price ? "* " + validationErrors.price : ""}
+      // ${validationErrors.image1 ? "* " + validationErrors.image1 : ""}
+      // ${validationErrors.image2 ? "* " + validationErrors.image2 : ""}
+      // ${validationErrors.image3 ? "* " + validationErrors.image3 : ""}
+      // ${validationErrors.image4 ? "* " + validationErrors.image4 : ""}
+      // ${validationErrors.image5 ? "* " + validationErrors.image5 : ""}
+      // `)
+    // }
 
     const spotForm = {
       address,
@@ -30,8 +78,8 @@ const NewSpotForm = () => {
       name,
       description,
       price: +price,
-      lat: 45,
-      lng: -83
+      lat,
+      lng
     }
 
     let imageForm1
@@ -71,43 +119,53 @@ const NewSpotForm = () => {
     }
 
     let createdSpot
-    createdSpot = await dispatch(spotActions.createSpotThunk(spotForm))
-    const newSpotId = +createdSpot.id
-    console.log('new spot id?: ', newSpotId)
-
     let addedImage1
     let addedImage2
     let addedImage3
     let addedImage4
     let addedImage5
 
-    addedImage1 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm1))
+    if (!(Object.values(validationErrors).length)) {
+      createdSpot = await dispatch(spotActions.createSpotThunk(spotForm))
+      const newSpotId = +createdSpot.id
 
-    if (image2) {
-      addedImage2 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm2))
-    }
-    if (image3) {
-      addedImage3 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm3))
-    }
-    if (image4) {
-      addedImage4 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm4))
-    }
-    if (image5) {
-      addedImage5 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm5))
+      addedImage1 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm1))
+
+      if (image2) {
+        addedImage2 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm2))
+      }
+
+      if (image3) {
+        addedImage3 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm3))
+      }
+
+      if (image4) {
+        addedImage4 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm4))
+      }
+
+      if (image5) {
+        addedImage5 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm5))
+      }
+
+      setAddress('')
+      setCity('')
+      setLivedState('')
+      setLat('')
+      setLng('')
+      setCountry('')
+      setName('')
+      setDescription('')
+      setPrice(0)
+      setImage1('')
+      setImage2('')
+      setImage3('')
+      setImage4('')
+      setImage5('')
     }
 
-    setAddress('')
-    setCity('')
-    setLivedState('')
-    setCountry('')
-    setName('')
-    setDescription('')
-    setPrice(0)
-    setImage1('')
-    setImage2('')
-    setImage3('')
-    setImage4('')
-    setImage5('')
+
+
+
   }
 
   return (
@@ -129,6 +187,9 @@ const NewSpotForm = () => {
               value={country}
               placeholder="Country"
             />
+            <div className="spot-error">
+              {hasSubmitted && validationErrors.country && `* ${validationErrors.country}`}
+            </div>
           </div>
           <div className="new-spot-address">
             <label htmlFor="address">Street Address</label>
@@ -139,6 +200,9 @@ const NewSpotForm = () => {
               value={address}
               placeholder="Address"
             />
+            <div className="spot-error">
+              {hasSubmitted && validationErrors.address && `* ${validationErrors.address}`}
+            </div>
           </div>
           <div className="city-state">
             <div className="new-spot-city">
@@ -151,8 +215,11 @@ const NewSpotForm = () => {
                 placeholder="City"
                 className="input-city"
               />
+              <div className="spot-error">
+              {hasSubmitted && validationErrors.city && `* ${validationErrors.city}`}
             </div>
-            <div className="comma">,</div>
+            </div>
+            {/* <div className="comma">,</div> */}
             <div className="new-spot-state">
               <label htmlFor="state">State</label>
               <input
@@ -162,6 +229,37 @@ const NewSpotForm = () => {
                 value={livedState}
                 placeholder="STATE"
               />
+              <div className="spot-error">
+                {hasSubmitted && validationErrors.state && `* ${validationErrors.state}`}
+              </div>
+            </div>
+          </div>
+          <div className="lat-lng">
+            <div className="latitude">
+              <label htmlFor="latitude">Latitude</label>
+              <input
+                id="lat"
+                type="text"
+                onChange={e => setLat(e.target.value)}
+                value={lat}
+                placeholder="Latitude"
+              />
+              <div className="spot-error">
+                {hasSubmitted && validationErrors.lat && `* ${validationErrors.lat}`}
+              </div>
+            </div>
+            <div className="longitude">
+              <label htmlFor="longitude">Longitude</label>
+              <input
+                id="lng"
+                type="text"
+                onChange={e => setLng(e.target.value)}
+                value={lng}
+                placeholder="Longitude"
+              />
+              <div className="spot-error">
+                {hasSubmitted && validationErrors.lng && `* ${validationErrors.lng}`}
+              </div>
             </div>
           </div>
         </div>
@@ -178,6 +276,9 @@ const NewSpotForm = () => {
               placeholder="Please write at least 30 characters"
               className="description-box"
             />
+            <div className="spot-error">
+              {hasSubmitted && validationErrors.description && `* ${validationErrors.description}`}
+            </div>
           </div>
         </div>
         <div className="name-div">
@@ -192,6 +293,9 @@ const NewSpotForm = () => {
               value={name}
               placeholder="Name of your spot"
             />
+            <div className="spot-error">
+              {hasSubmitted && validationErrors.name && `* ${validationErrors.name}`}
+            </div>
           </div>
         </div>
         <div className="price-div">
@@ -207,6 +311,9 @@ const NewSpotForm = () => {
               placeholder="Price per night (USD)"
               className="price-input"
             />
+            <div className="spot-error">
+              {hasSubmitted && validationErrors.price && `* ${validationErrors.price}`}
+            </div>
           </div>
         </div>
           <div className="image-div">
@@ -221,6 +328,9 @@ const NewSpotForm = () => {
                 value={image1}
                 placeholder="Preview Image URL"
               />
+              <div className="spot-error">
+              {hasSubmitted && validationErrors.image1 && `* ${validationErrors.image1}`}
+            </div>
             </div>
           <div>
             <label htmlFor="images"></label>
@@ -231,6 +341,9 @@ const NewSpotForm = () => {
               value={image2}
               placeholder="Image URL"
               />
+              <div className="spot-error">
+              {hasSubmitted && validationErrors.image2 && `* ${validationErrors.image2}`}
+            </div>
           </div>
           <div>
             <label htmlFor="images"></label>
@@ -241,6 +354,9 @@ const NewSpotForm = () => {
               value={image3}
               placeholder="Image URL"
               />
+              <div className="spot-error">
+              {hasSubmitted && validationErrors.image3 && `* ${validationErrors.image3}`}
+            </div>
           </div>
           <div>
             <label htmlFor="images"></label>
@@ -251,6 +367,9 @@ const NewSpotForm = () => {
               value={image4}
               placeholder="Image URL"
               />
+              <div className="spot-error">
+              {hasSubmitted && validationErrors.image4 && `* ${validationErrors.image4}`}
+            </div>
           </div>
           <div>
             <label htmlFor="images"></label>
@@ -261,6 +380,9 @@ const NewSpotForm = () => {
               value={image5}
               placeholder="Image URL"
               />
+              <div className="spot-error">
+              {hasSubmitted && validationErrors.image5 && `* ${validationErrors.image5}`}
+            </div>
           </div>
         </div>
         <div className="button-div">

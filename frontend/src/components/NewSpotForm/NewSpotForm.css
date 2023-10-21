@@ -29,7 +29,8 @@ h4 {
 }
 
 label {
-  color: black
+  color: black;
+  font-size: small;
 }
 
 .location {
@@ -52,7 +53,7 @@ label {
 
 .city-state {
   display: grid;
-  grid-template-columns: 60% 10% 30%;
+  grid-template-columns: 90%  10%;
 }
 
 .new-spot-city {
@@ -65,6 +66,12 @@ label {
 .input-city {
   /* width: max-content; */
 
+}
+
+.lat-lng {
+  display: grid;
+  grid-template-columns: 39.5% 39.5%;
+  width: fit-content;
 }
 
 .comma {
@@ -136,4 +143,9 @@ label {
   justify-content: center;
   padding-top: 10px;
   padding-bottom: 10px;
+ }
+
+ .spot-error {
+  color: red;
+  font-size: small;
  }
