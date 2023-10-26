@@ -35,7 +35,7 @@ const PostAReview = ({spotId}) => {
 
   }
 
-  
+
 
 
   const star1ClassName = (isStar1Clicked ? 'fa-solid fa-star' : 'fa-regular fa-star')
@@ -49,7 +49,7 @@ const PostAReview = ({spotId}) => {
       <form onSubmit={handleSubmit}>
         <h3>How was your stay?</h3>
         <div className="review-text">
-          <input
+          <textarea
             id="review-text"
             type="text"
             onChange={e => setReviewText(e.target.value)}

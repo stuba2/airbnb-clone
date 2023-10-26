@@ -12,10 +12,11 @@ const ASmallSpotMain = ({spotId}) => {
   })
   const spot = spots[+spotId]
 
+
   let spotsArrVals = Object.values(spots)
 
   useEffect(() => {
-    dispatch(spotActions.getOwnerDeetsThunk(spot.id))
+    dispatch(spotActions.getSpotDeetsThunk(spot.id))
   }, [dispatch])
 
   // let truePreviewImg
@@ -34,9 +35,9 @@ const ASmallSpotMain = ({spotId}) => {
   const hasPreviewImg = (spot) => {
     const SpotImages = spot.SpotImages
     if (SpotImages) {
-      const what = SpotImages.find((image) => image.previewImage === true)
-      if (what) {
-        return what.url
+      const imgPreview = SpotImages.find((image) => image.previewImage === true)
+      if (imgPreview) {
+        return imgPreview.url
       } else return 'No Image Found'
     }
   }

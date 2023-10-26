@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import * as reviewActions from '../../store/review'
 import { useParams } from "react-router-dom";
 import './AReview.css'
+import OpenModalButton from "../OpenModalButton";
+import DeleteAReview from "../DeleteAReview";
 
 const AReview = () => {
   const dispatch = useDispatch()
@@ -43,6 +45,10 @@ const AReview = () => {
               <div className="review-name">{review.User.firstName}</div>
               <div className="review-date">{dateMonth} {dateYear}</div> {/* Format these */}
               <p className="review-review">{review.review}</p>
+              <OpenModalButton
+                buttonText={"Delete"}
+                modalComponent={<DeleteAReview spotId={spotId} reviewId={review.id} />}
+              />
             </div>
           )
         })}

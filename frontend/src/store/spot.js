@@ -6,6 +6,8 @@ const FIND_OWNER = "spot/get/owner"
 const POST_SPOT = "spot/post"
 const ADD_IMAGE = "spot/post/image"
 const OWNED_SPOTS = "spot/get/owned"
+const EDIT_SPOT = "spot/edit"
+const DELETE_SPOT = "spot/delete"
 
 const getSpots = (spots) => {
   return {
@@ -50,6 +52,20 @@ const getOwnedSpots = (data) => {
   }
 }
 
+const editSpot = (data) => {
+  return {
+    type: EDIT_SPOT,
+    payload: data
+  }
+}
+
+const deleteSpot = (data) => {
+  return {
+    type: DELETE_SPOT,
+    payload: data
+  }
+}
+
 export const getSpotsThunk = () => async (dispatch) => {
   const response = await csrfFetch("/api/spots")
 
@@ -74,7 +90,7 @@ export const getASpotThunk = (spot) => async (dispatch) => {
   }
 }
 
-export const getOwnerDeetsThunk = (id) => async (dispatch) => {
+export const getSpotDeetsThunk = (id) => async (dispatch) => {
   const response = await csrfFetch(`/api/spots/${id}`)
 
   if (response.ok) {
@@ -82,7 +98,7 @@ export const getOwnerDeetsThunk = (id) => async (dispatch) => {
     dispatch(findOwner(data))
     return data
   } else {
-    console.log('wrong: getOwnerDeetsThunk')
+    console.log('wrong: getSpotDeetsThunk')
   }
 }
 
@@ -134,6 +150,38 @@ export const getOwnedSpotsThunk = (ownerId) => async (dispatch) => {
   }
 }
 
+export const editASpotThunk = (spotForm, spotId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/spots/${spotId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(spotForm)
+  })
+
+  const secondResponse = await csrfFetch(`/api/spots/${spotId}`)
+
+  if (secondResponse.ok) {
+    const updatedSpot = await secondResponse.json()
+    dispatch(findOwner(updatedSpot))
+    return updatedSpot
+  } else {
+    console.log('wrong: editASpotThunk')
+  }
+}
+
+export const deleteASpotThunk = (spotId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/spots/${spotId}`, {
+    method: "DELETE"
+  })
+
+  if (response.ok) {
+    const deletedSpot = await response.json()
+    dispatch(deleteSpot(spotId))
+    return deletedSpot
+  }
+}
+
 const initialState = {}
 
 const spotReducer = (state = initialState, action) => {
@@ -158,6 +206,16 @@ const spotReducer = (state = initialState, action) => {
       newState = {...state}
       const imgData = action.payload
       newState[imgData.id] = imgData
+      return newState
+    case EDIT_SPOT:
+      newState = {...state}
+      const spot = action.payload
+      newState[spot.id] = spot
+      return newState
+    case DELETE_SPOT:
+      newState = {...state}
+      const spotId = action.payload
+      delete newState[spotId]
       return newState
     case OWNED_SPOTS:
 

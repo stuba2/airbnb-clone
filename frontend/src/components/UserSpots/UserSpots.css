@@ -1,0 +1,45 @@
+.manage-header {
+  padding-left: 4.5vw;
+  padding-bottom: 2vw;
+}
+
+.who-knows {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  /* flex-direction: column; */
+}
+
+.spot-holder {
+  display: grid;
+}
+
+.whole-spot-container {
+  /* display: inline-block; */
+  /* flex-direction: column; */
+  /* background-color: red; */
+  justify-self: center;
+}
+
+.update-delete-buttons {
+  /* position: relative;
+  left: 60px;
+  width: 50%; */
+  /* display: flex; */
+  justify-self: center;
+  background-color: red;
+}
+
+.manage-create {
+  background-color: #c04e02;
+  color: white;
+}
+
+.manage-update {
+  background-color: #c04e02;
+  color: white;
+}
+
+.manage-delete {
+  background-color: #c04e02;
+  color: white;
+}

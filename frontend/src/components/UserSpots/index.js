@@ -2,6 +2,10 @@ import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import * as spotActions from '../../store/spot'
 import { NavLink } from "react-router-dom"
+import ASmallSpotMain from "../ASmallSpotMain"
+import './UserSpots.css'
+import OpenModalButton from "../OpenModalButton"
+import DeleteASpot from "../DeleteASpot"
 
 const UserSpots = () => {
   const dispatch = useDispatch()
@@ -17,12 +21,11 @@ const UserSpots = () => {
   const ownedSpots = spotsArrVals.filter((spot) => {
     return spot.ownerId === userId
   })
-  console.log('owned: ', ownedSpots)
-
 
   useEffect(() => {
     dispatch(spotActions.getSpotsThunk())
   }, [dispatch]);
+
 
   if (!spots) {
     return (
@@ -30,23 +33,37 @@ const UserSpots = () => {
     )
   } else {
     return (
-      <div>{ownedSpots.map((spot) => {
-        return (
-          <NavLink
-            to={`/api/spots/${spot.id}`}
-            className='spots'
-            key={spot.id}>
-              <div>({spot.name} {spot.id})</div>
-              <div>{spot.previewImage || "null"}</div>
-              <div>{spot.city}, {spot.state}</div>
-              <div>${spot.price} night</div>
-              <div><i className="fa-solid fa-star"></i> {spot.avgRating}</div>
-              <br></br>
-              <button>update</button>
-              <button>delete</button>
-          </NavLink>
-        )
-      })}</div>
+      <div className="whole-thing-user-spots">
+        <div className="manage-header">
+          <h4>Manage Spots</h4>
+          <button className="manage-create">Create a New Spot</button>
+        </div>
+        <div className="who-knows">
+          {ownedSpots.map((spot) => {
+          return (
+            <div className="spot-holder">
+              <NavLink
+                to={`/api/spots/${spot.id}`}
+                className='whole-spot-container'
+                key={spot.id}>
+                  <ASmallSpotMain spotId={spot.id} />
+              </NavLink>
+              <div className="update-delete-buttons">
+                <NavLink to={`/api/spots/${spot.id}/edit`}>
+                  <button className="manage-update">
+                      Update
+                  </button>
+                </NavLink>
+                <OpenModalButton
+                  buttonText={"Delete"}
+                  modalComponent={<DeleteASpot spotId={spot.id}/>}
+                />
+              </div>
+            </div>
+          )
+        })}
+        </div>
+      </div>
     )
   }
 }

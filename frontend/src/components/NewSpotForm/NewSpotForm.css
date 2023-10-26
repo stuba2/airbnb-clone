@@ -2,6 +2,14 @@
   color: #FFCB05;
 } */
 
+input {
+  background-color: #e8f0fe;
+}
+
+textarea {
+  background-color: #e8f0fe;
+}
+
 .new-spot-form {
   /* display: grid; */
   /* grid-template-columns: 1fr 1fr 1fr; */
@@ -61,11 +69,6 @@ label {
   /* flex-direction: column; */
   justify-self: start;
   width: max-content;
-}
-
-.input-city {
-  /* width: max-content; */
-
 }
 
 .lat-lng {

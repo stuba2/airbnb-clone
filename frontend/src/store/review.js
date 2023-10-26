@@ -3,6 +3,7 @@ import { ValidationError } from '../utils/validationError'
 
 const GET_REVIEWS = "reviews/get"
 const POST_REVIEW = "reviews/post"
+const DELETE_REVIEW = "reviews/delete"
 
 const getReviews = (spot) => {
   return {
@@ -15,6 +16,13 @@ const postReview = (review) => {
   return {
     type: POST_REVIEW,
     payload: review
+  }
+}
+
+const deleteAReview = (data) => {
+  return {
+    type: DELETE_REVIEW,
+    payload: data
   }
 }
 
@@ -91,6 +99,19 @@ console.log(error)
   }
 }
 
+export const deleteAReviewThunk = (spotId, reviewId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/spots/${spotId}/reviews/${reviewId}`, {
+    method: "DELETE"
+  })
+
+  if (response.ok) {
+    const rezzy = await response.json()
+    const data = { spotId, reviewId}
+    dispatch(deleteAReview(reviewId))
+    return rezzy
+  }
+}
+
 const initialState = {}
 
 const reviewReducer = (state = initialState, action) => {
@@ -105,6 +126,11 @@ const reviewReducer = (state = initialState, action) => {
       newState = {...state}
       const newReview = action.payload
       newState[newReview.id] = newReview
+    case DELETE_REVIEW:
+      newState = {...state}
+      const reviewId = action.payload
+      delete newState[reviewId]
+      return newState
     default:
       return state
   }
