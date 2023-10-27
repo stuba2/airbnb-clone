@@ -91,15 +91,18 @@ const ASpot = () => {
         </div>
 
         <div>
+
           <div className="lower-review">
             {avgStar}  {reviewNum}
           </div>
+
           <div className="review-modal">
             <OpenModalButton
               buttonText={'Post Your Review'}
-              modalComponent={<PostAReview spotId={spotId}/>}
+              modalComponent={<PostAReview spotId={spotId} />}
             />
           </div>
+
           <div className="reviews-area"><AReview /></div>
         </div>
       </div>

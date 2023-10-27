@@ -16,11 +16,17 @@ const PostAReview = ({spotId}) => {
   const [isStar4Clicked, setIsStar4Clicked] = useState(false)
   const [isStar5Clicked, setIsStar5Clicked] = useState(false)
   const [errors, setErrors] = useState({})
+  const [validity, setValidity] = useState(false)
   const { closeModal } = useModal()
 
   useEffect(() => {
     dispatch(reviewActions.getReviewsThunk(+spotId))
   }, [dispatch])
+
+  useEffect(() => {
+    if (reviewText.length > 10 && numStars > 0) setValidity(true)
+    else setValidity(false)
+  }, [reviewText, numStars])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -48,21 +54,29 @@ const PostAReview = ({spotId}) => {
   const star4ClassName = (isStar4Clicked ? 'fa-solid fa-star' : 'fa-regular fa-star')
   const star5ClassName = (isStar5Clicked ? 'fa-solid fa-star' : 'fa-regular fa-star')
 
+  const submitButtonClass = "post-review-button" + (validity ? "" : " disabled")
+
   return (
-    <div className="whole-container">
-      <form onSubmit={handleSubmit}>
-        <h3>How was your stay?</h3>
-        <div className="review-text">
+    <div className="whole-container-post-review">
+
+      <div className="post-review-header-container">
+        <h3 className="post-review-header">How was your stay?</h3>
+      </div>
+
+      <form onSubmit={handleSubmit} className="post-review-form">
+
+        <div className="post-review-text-container">
           <textarea
             id="review-text"
             type="text"
             onChange={e => setReviewText(e.target.value)}
             value={reviewText}
             placeholder="Leave your review here..."
-            className="review-text-box"
+            className="post-review-text-box"
           />
         </div>
-        <div className="stars">
+
+        <div className="post-review-stars">
           <span className="rate">
             <i
               className={star1ClassName}
@@ -121,9 +135,9 @@ const PostAReview = ({spotId}) => {
             />
           </span> Stars
         </div>
-        <div className="button-container">
-          <button>Submit Your Review</button>
-        </div>
+
+        <button className={submitButtonClass} disabled={!validity ? true : false}>Submit Your Review</button>
+
       </form>
 
     </div>

@@ -26,17 +26,27 @@
   width: 50%; */
   /* display: flex; */
   justify-self: center;
-  background-color: red;
+
 }
 
 .manage-create {
+  justify-items: center;
   background-color: #c04e02;
   color: white;
+  box-shadow: 3px 3px black;
+  border: solid black;
+  border-radius: 2px;
 }
 
 .manage-update {
+  /* background-color: #c04e02;
+  color: white; */
+  justify-items: center;
   background-color: #c04e02;
   color: white;
+  box-shadow: 3px 3px black;
+  border: solid black;
+  border-radius: 2px;
 }
 
 .manage-delete {

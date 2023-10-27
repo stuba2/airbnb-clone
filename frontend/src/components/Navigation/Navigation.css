@@ -24,6 +24,10 @@
   text-decoration: none;
 }
 
+.create-spot.logged-out {
+  display: none;
+}
+
 /* .create-spot > NavLink {
   text-decoration: none;
   background-color: red;
@@ -132,6 +136,7 @@
   padding-left: 5px;
   font-size: small;
   padding-right: 4px;
+  align-self: center;
 }
 
 .first-last:hover {
@@ -160,6 +165,7 @@
   padding-left: 5px;
   font-size: small;
   padding-right: 4px;
+  align-self: center;
 }
 
 .email:hover {
@@ -170,6 +176,7 @@
 .logout {
   grid-area: logout;
   cursor: context-menu;
+  align-self: center;
 }
 
 .logout > button {

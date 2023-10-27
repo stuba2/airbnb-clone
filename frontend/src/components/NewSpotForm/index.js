@@ -16,7 +16,7 @@ const NewSpotForm = () => {
   const [lng, setLng] = useState('')
   const [description, setDescription] = useState('')
   const [name, setName] = useState('')
-  const [price, setPrice] = useState(0)
+  const [price, setPrice] = useState()
   const [image1, setImage1] = useState()
   const [image2, setImage2] = useState()
   const [image3, setImage3] = useState()

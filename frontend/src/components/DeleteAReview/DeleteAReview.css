@@ -1,0 +1,51 @@
+.whole-container-delete-review {
+  padding: 10px;
+  border: solid #222222;
+  border-radius: 8px;
+  width: 250px;
+  display: grid;
+  justify-content: center;
+  grid-template-rows: 2fr 1fr 2fr 2fr;
+  grid-template-areas:
+  "header"
+  "body"
+  "delete"
+  "keep";
+}
+
+.delete-review-header-container {
+  grid-area: header;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete-review-header {
+  font-size: large;
+}
+
+.delete-review-p-body-container {
+font-size: .75rem;
+}
+
+.delete-review-delete-button {
+  grid-area: delete;
+  background-color: #c04e02;
+  color: white;
+  box-shadow: 3px 3px black;
+  border: solid black;
+  border-radius: 2px;
+  padding: 10px;
+  margin: 10px 20px 20px;
+}
+
+.delete-review-keep-button {
+  grid-area: keep;
+  background-color: #666666;
+  color: white;
+  box-shadow: 3px 3px black;
+  border: solid black;
+  border-radius: 2px;
+  padding: 10px;
+  margin: 10px 20px 20px;
+}
