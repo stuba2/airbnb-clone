@@ -109,8 +109,9 @@ router.post('/', validateLogin, async (req, res, next) => {
 
     if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
       res.status(401)
+      console.log('-------------------backend, !user if block')
       return res.json({
-        message: "Invalid credentials"
+        message: "The provided credentials were invalid"
       })
     }
 

@@ -16,7 +16,7 @@ const validateSignup = [
   check('email')
     .exists({ checkFalsy: true })
     .isEmail()
-    .withMessage('Invalid email'),
+    .withMessage('The provided email is invalid'),
   check('username')
     .isLength({ min: 4 })
     .withMessage('Please provide a username with at least 4 characters.'),
