@@ -12,13 +12,70 @@
 
 .signup-header-container {
   grid-area: header;
-  display: flex;
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+  "headerHeader"
+  "errors";
   justify-content: center;
   align-items: center;
 }
 
 .signup-header {
+  grid-area: headerHeader;
   font-size: large;
+}
+
+.signup-header-errors {
+  grid-area: errors;
+  grid-template-areas:
+  "signup"
+  "firstError"
+  "lastError"
+  "emailError"
+  "usernameError"
+  "passwordError"
+  "confirmError";
+}
+
+.signup-firstname-error {
+  grid-area: firstError;
+  margin: 5px 0;
+  color: red;
+}
+
+.signup-firstname-error.hide {
+  display: none;
+}
+
+.signup-lastname-error {
+  grid-area: lastError;
+  margin: 5px 0;
+  color: red;
+}
+
+.signup-email-error {
+  grid-area: emailError;
+  margin: 5px 0;
+  color: red;
+}
+
+.signup-username-error {
+  grid-area: usernameError;
+  margin: 5px 0;
+  color: red;
+}
+
+.signup-password-error {
+  grid-area: passwordError;
+  margin: 5px 0;
+  color: red;
+}
+
+.signup-confirm-error {
+  grid-area: comfirmError;
+  margin: 5px 0;
+  color: red;
 }
 
 .signup-form {
@@ -46,16 +103,6 @@
   padding-bottom: 10px;
 } */
 
-.signup-email-input {
-  grid-area: email;
-  margin: 5px 0;
-}
-
-.signup-username-input {
-  grid-area: username;
-  margin: 5px 0;
-}
-
 .signup-firstname-input {
   grid-area: first;
   margin: 5px 0;
@@ -63,6 +110,16 @@
 
 .signup-lastname-input {
   grid-area: last;
+  margin: 5px 0;
+}
+
+.signup-email-input {
+  grid-area: email;
+  margin: 5px 0;
+}
+
+.signup-username-input {
+  grid-area: username;
   margin: 5px 0;
 }
 

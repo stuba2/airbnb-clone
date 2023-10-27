@@ -43,18 +43,36 @@ const SignupFormModal = () => {
         }
       })
     }
+
+    console.log('this is errors: ', errors)
+
     return setErrors({
       confirmPassword: "Confirm Password field must be the same as the Password field"
     })
   }
 
   const signupButtonClass = "signup-button" + (validity ? "" : " disabled");
+  const firstErrorClass = "signup-firstname-error" + (errors.firstName ? "" : " hide")
+  const lastErrorClass = "signup-lastname-error" + (errors.lastName ? "" : " hide")
+  const emailErrorClass = "signup-email-error" + (errors.email ? "" : " hide")
+  const usernameErrorClass = "signup-username-error" + (errors.username ? "" : " hide")
+  const passwordErrorClass = "signup-password-error" + (errors.password ? "" : " hide")
+  const confirmErrorClass = "signup-confirm-error" + (errors.confirmPassword ? "" : " hide")
 
   return (
     <div className="whole-container-signup">
 
       <div className="signup-header-container">
         <h1 className="signup-header">Sign Up</h1>
+
+        <div className="signup-header-errors">
+          {errors.firstName && <p className={firstErrorClass}>{errors.firstName}</p>}
+          {errors.lastName && <p className={lastErrorClass}>{errors.lastName}</p>}
+          {errors.email && <p className={emailErrorClass}>{errors.email}</p>}
+          {errors.username && <p className={usernameErrorClass}>{errors.username}</p>}
+          {errors.password && <p className={passwordErrorClass}>{errors.password}</p>}
+          {errors.confirmPassword && <p className={confirmErrorClass}>{errors.confirmPassword}</p>}
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="signup-form">
@@ -68,7 +86,6 @@ const SignupFormModal = () => {
           className="signup-firstname-input"
         />
 
-        {errors.firstName && <p>{errors.firstName}</p>}
 
         <input
           type="text"
@@ -79,8 +96,7 @@ const SignupFormModal = () => {
           className="signup-lastname-input"
         />
 
-        {errors.lastName && <p>{errors.lastName}</p>}
-        
+
         <input
           type="text"
           value={email}
@@ -90,7 +106,6 @@ const SignupFormModal = () => {
           className="signup-email-input"
         />
 
-        {errors.email && <p>{errors.email}</p>}
 
         <input
           type="text"
@@ -101,7 +116,6 @@ const SignupFormModal = () => {
           className="signup-username-input"
         />
 
-        {errors.username && <p>{errors.username}</p>}
 
         <input
           type="password"
@@ -112,7 +126,6 @@ const SignupFormModal = () => {
           className="signup-password-input"
         />
 
-        {errors.password && <p>{errors.password}</p>}
 
         <input
           type="password"
@@ -123,7 +136,6 @@ const SignupFormModal = () => {
           className="signup-confirm-input"
         />
 
-        {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
 
         <button type="submit" className={signupButtonClass}>Sign Up</button>
       </form>

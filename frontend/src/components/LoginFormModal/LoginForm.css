@@ -37,13 +37,26 @@ button {
 
 .login-header-container {
   grid-area: header;
-  display: flex;
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+  "headerHeader"
+  "headerError";
   justify-content: center;
   align-items: center;
 }
 
 .login-header {
+  grid-area: headerHeader;
   font-size: large;
+  justify-self: center;
+}
+
+.login-errors {
+  grid-area: headerError;
+  justify-content: center;
+  font-size: small;
+  color: red;
 }
 
 .login-form {

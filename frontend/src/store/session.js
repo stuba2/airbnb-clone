@@ -1,4 +1,5 @@
 import { csrfFetch } from "./csrf";
+import { ValidationError } from "../utils/validationError";
 
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
@@ -17,22 +18,64 @@ const removeUser = () => {
 };
 
 export const loginThunk = (user) => async (dispatch) => {
-  const { credential, password } = user;
-  const response = await csrfFetch("/api/session", {
-    method: "POST",
-    body: JSON.stringify({
-      credential,
-      password,
-    }),
-  });
+  const { credential, password } = user
+  try {
+    const response = await csrfFetch(`/api/session`, {
+      method: "POST",
+      body: JSON.stringify({
+        credential,
+        password
+      })
+    })
 
-  if (response.ok) {
-    const data = await response.json();
-    dispatch(setUser(data.user));
-    return response;
-  } else {
-    console.log('wrong: loginThunk')
+    console.log('above data in loginThunk')
+
+    // if (!response.ok) {
+    //   let error;
+    //   if (response.status >= 400) {
+    //     error = await response.json()
+    //     throw new ValidationError(error.errors, response.statusText)
+    //   } else {
+    //     let errorJSON;
+    //     error = await response.text()
+    //     try {
+    //       errorJSON = JSON.parse(error)
+    //     } catch {
+    //       throw new Error(error)
+    //     }
+    //     throw new Error(`${errorJSON.title}: ${errorJSON.message}`)
+    //   }
+    // }
+
+    const data = await response.json()
+    dispatch(setUser(data.user))
+    return response
+  } catch (error) {
+    // const hi = await error.json()
+    // console.log('this is the error: ', await error.json())
+    // // return await error.json()
+    // // return hi
+    return error
   }
+
+
+  // const { credential, password } = user;
+  // const response = await csrfFetch("/api/session", {
+  //   method: "POST",
+  //   body: JSON.stringify({
+  //     credential,
+  //     password,
+  //   }),
+  // });
+
+  // if (response.ok) {
+  //   const data = await response.json();
+  //   dispatch(setUser(data.user));
+  //   return data;
+  // } else {
+  //   console.log('wrong: loginThunk')
+  //   return Error(response)
+  // }
 };
 
 export const restoreUserThunk = () => async (dispatch) => {
