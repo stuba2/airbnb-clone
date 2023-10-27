@@ -14,3 +14,7 @@
 .review-review {
   font-size: 0.8em;
 }
+
+.review-delete-hide {
+  display: none;
+}

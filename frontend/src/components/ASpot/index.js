@@ -13,6 +13,12 @@ const ASpot = () => {
   const spots = useSelector(state => {
     return state.spots
   })
+  const session = useSelector(state => {
+    return state.session
+  })
+  const reviews = useSelector(state => {
+    return state.reviews
+  })
   const spot = spots[+spotId]
   const image1 = spot ? (spot.SpotImages ? (spot.SpotImages[0] ? spot.SpotImages[0].url : "No Image Found") : "No Image Found") : "No Image Found"
   const image2 = spot ? (spot.SpotImages ? (spot.SpotImages[1] ? spot.SpotImages[1].url : "No Image Found") : "No Image Found") : "No Image Found"
@@ -53,6 +59,32 @@ const ASpot = () => {
   if (spot && spot.numReviews === 1) reviewNum = `· ${spot.numReviews} Review`
   if (spot && spot.numReviews === 0) reviewNum = ""
   else reviewNum = `· ${spot && spot.numReviews} Reviews`
+
+  let reviewButton
+  let reviewButtonModalClass
+  const reviewsArrVals = Object.values(reviews)
+  const filteredReviews = reviewsArrVals.filter(review => review.spotId === +spotId)
+  console.log('filter: ', filteredReviews)
+  const usersReview = filteredReviews.find(review => review.userId === session.user.id)
+  console.log('usersReview: ', usersReview)
+
+  if (!session.user) {
+    reviewButtonModalClass = "review-modal hide"
+    console.log('first hit')
+  } else if (spot && session.user.id === spot.Owner.id) {
+    reviewButtonModalClass = "review-modal hide"
+    console.log('second hit')
+  } else if (spot && session.user.id !== spot.Owner.id && Object.values(filteredReviews).length  ) {
+    reviewButtonModalClass = "review-modal"
+    reviewButton = "Post Your Review"
+  } else if (spot && session.user.id !== spot.Owner.id && !Object.values(filteredReviews).length !== 0) {
+    reviewButtonModalClass= "review-modal"
+    reviewButton = "Be the first to post a review!"
+  } else if (spot && session.user.id !== spot.Owner.id && Object.values(filteredReviews).length && usersReview && Object.values(usersReview)) {
+    console.log('third hit')
+    reviewButtonModalClass = "review-modal hide"
+  }
+
 
   if (!spot || !spot.Owner) {
     return (
@@ -96,9 +128,9 @@ const ASpot = () => {
             {avgStar}  {reviewNum}
           </div>
 
-          <div className="review-modal">
+          <div className={reviewButtonModalClass}>
             <OpenModalButton
-              buttonText={'Post Your Review'}
+              buttonText={reviewButton}
               modalComponent={<PostAReview spotId={spotId} />}
             />
           </div>

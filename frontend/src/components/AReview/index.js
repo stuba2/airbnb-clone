@@ -12,6 +12,9 @@ const AReview = () => {
   const reviews = useSelector(state => {
     return state.reviews
   })
+  const session = useSelector(state => {
+    return state.session
+  })
 
   let reviewsArrVals = Object.values(reviews)
   let purgedReviews = reviewsArrVals.filter((review) =>
@@ -23,6 +26,8 @@ const AReview = () => {
   useEffect(() => {
     dispatch(reviewActions.getReviewsThunk(+spotId))
   }, [dispatch])
+
+  let deleteButtonClass
 
 
 
@@ -37,6 +42,12 @@ const AReview = () => {
         let date = new Date(review.createdAt).toDateString()
         let dateMonth = date.split(' ')[1]
         let dateYear = date.split(' ')[3]
+        if (review.userId === session.user.id) {
+          deleteButtonClass = "review-delete"
+        }
+        else {
+          deleteButtonClass = "review-delete-hide"
+        }
           return (
             <div
               key={review.id}
@@ -45,10 +56,13 @@ const AReview = () => {
               <div className="review-name">{review && review.User && review.User.firstName}</div>
               <div className="review-date">{dateMonth} {dateYear}</div> {/* Format these */}
               <p className="review-review">{review.review}</p>
-              <OpenModalButton
-                buttonText={"Delete"}
-                modalComponent={<DeleteAReview spotId={spotId} reviewId={review.id} />}
-              />
+              <div className={deleteButtonClass}>
+                <OpenModalButton
+                  buttonText={"Delete"}
+                  modalComponent={<DeleteAReview spotId={spotId} reviewId={review.id}
+                   />}
+                />
+              </div>
             </div>
           )
         })}

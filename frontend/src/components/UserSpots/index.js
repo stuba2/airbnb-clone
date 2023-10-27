@@ -36,7 +36,7 @@ const UserSpots = () => {
       <div className="whole-thing-user-spots">
         <div className="manage-header">
           <h4>Manage Spots</h4>
-          <button className="manage-create">Create a New Spot</button>
+          <NavLink to={`/api/spots/new`}><button className="manage-create">Create a New Spot</button></NavLink>
         </div>
         <div className="who-knows">
           {ownedSpots.map((spot) => {

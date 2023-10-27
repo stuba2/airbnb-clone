@@ -38,6 +38,10 @@
   border-radius: 2px;
 }
 
+.manage-create:hover {
+  cursor: pointer;
+}
+
 .manage-update {
   /* background-color: #c04e02;
   color: white; */

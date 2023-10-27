@@ -44,14 +44,14 @@ const LoginFormModal = () => {
 
   const demoLogIn = (e) => {
     e.preventDefault()
-    setErrors({})
+    // setErrors({})
     return dispatch(sessionActions.loginThunk({ credential: 'Demo-lition', password: 'password' }))
-    .then(closeModal)
     .catch(async (res) => {
       const data = await res.json()
       console.log('this is data: ', data)
       if (data && data.errors) setErrors(data.errors)
     })
+    .then(closeModal)
   }
 
 

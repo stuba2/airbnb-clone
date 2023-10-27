@@ -152,6 +152,10 @@
   border-radius: 2px;
 } */
 
+.review-modal.hide {
+  display: none;
+}
+
 .avgStar {
   padding-right: 3px;
 }
