@@ -31,7 +31,8 @@ const AllSpots = () =>{
             <NavLink
               to={`/api/spots/${spot.id}`}
               className="spots"
-              key={spot.id}>
+              key={spot.id}
+              title={spot.name}>
                 <ASmallSpotMain spotId={spot.id}/>
             </NavLink>
           )

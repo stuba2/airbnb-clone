@@ -21,13 +21,10 @@ const ASpot = () => {
   const image5 = spot ? (spot.SpotImages ? (spot.SpotImages[4] ? spot.SpotImages[4].url : "No Image Found") : "No Image Found") : "No Image Found"
 
 
-  // useEffect(() => {
-    // dispatch(spotActions.getSpotsThunk(spots))
-  // }, [dispatch])
-
   useEffect(() => {
-    dispatch(spotActions.getSpotDeetsThunk(spotId))
+    dispatch(spotActions.getSpotsThunk())
   }, [dispatch])
+
 
   const hasPreviewImg = (spot) => {
     const SpotImages = spot.SpotImages
@@ -39,18 +36,23 @@ const ASpot = () => {
     }
   }
 
+  const reserveAlert = () => {
+    alert("Feature coming soon!")
+  }
+
   let avgStar
   const star = <i className="fa-solid fa-star"></i>
-  if (!spot.avgStarRating && typeof spot.avgStarRating !== "number") {
-    avgStar = "New"
-  } else if (spot.avgStarRating && typeof spot.avgStarRating === "number") {
+  if (spot && !spot.avgStarRating && typeof spot.avgStarRating !== "number") {
+    avgStar = <div>{star} New</div>
+  } else if (spot && spot.avgStarRating && typeof spot.avgStarRating === "number") {
     const rating = (+spot.avgStarRating).toFixed(1)
-    avgStar = <div>{star} {rating}</div>
+    avgStar = <div className="avgStar">{star} {rating}</div>
   }
 
   let reviewNum
-  if (spot.numReviews === 1) reviewNum = "Review"
-  else reviewNum = "Reviews"
+  if (spot && spot.numReviews === 1) reviewNum = `· ${spot.numReviews} Review`
+  if (spot && spot.numReviews === 0) reviewNum = ""
+  else reviewNum = `· ${spot && spot.numReviews} Reviews`
 
   if (!spot || !spot.Owner) {
     return (
@@ -83,14 +85,14 @@ const ASpot = () => {
           </div>
           <div className="reserve-button-area">
             <div className="spot-price">${spot.price} night</div>
-            <div className="reserve-rating-reviews">{avgStar} · {spot.numReviews} {reviewNum}</div>
-            <button className="reserve-button">Reserve</button>
+            <div className="reserve-rating-reviews">{avgStar} {" "} {reviewNum}</div>
+            <button className="reserve-button" onClick={reserveAlert}>Reserve</button>
           </div>
         </div>
 
         <div>
           <div className="lower-review">
-            {avgStar} · {spot.numReviews} {reviewNum}
+            {avgStar}  {reviewNum}
           </div>
           <div className="review-modal">
             <OpenModalButton

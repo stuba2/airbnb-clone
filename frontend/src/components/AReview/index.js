@@ -42,7 +42,7 @@ const AReview = () => {
               key={review.id}
               className="whole-review"
             >
-              <div className="review-name">{review.User.firstName}</div>
+              <div className="review-name">{review && review.User && review.User.firstName}</div>
               <div className="review-date">{dateMonth} {dateYear}</div> {/* Format these */}
               <p className="review-review">{review.review}</p>
               <OpenModalButton

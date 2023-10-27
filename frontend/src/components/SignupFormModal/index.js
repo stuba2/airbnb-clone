@@ -61,28 +61,6 @@ const SignupFormModal = () => {
 
         <input
           type="text"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          placeholder="Email"
-          className="signup-email-input"
-        />
-
-        {errors.email && <p>{errors.email}</p>}
-
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-          placeholder="Username"
-          className="signup-username-input"
-        />
-
-        {errors.username && <p>{errors.username}</p>}
-
-        <input
-          type="text"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           required
@@ -102,6 +80,28 @@ const SignupFormModal = () => {
         />
 
         {errors.lastName && <p>{errors.lastName}</p>}
+        
+        <input
+          type="text"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          placeholder="Email"
+          className="signup-email-input"
+        />
+
+        {errors.email && <p>{errors.email}</p>}
+
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+          placeholder="Username"
+          className="signup-username-input"
+        />
+
+        {errors.username && <p>{errors.username}</p>}
 
         <input
           type="password"

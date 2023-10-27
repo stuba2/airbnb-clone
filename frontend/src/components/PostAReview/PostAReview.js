@@ -3,11 +3,11 @@ import { useModal } from "../../context/Modal"
 import './PostAReview.css'
 import { useEffect, useState } from "react"
 import * as reviewActions from '../../store/review'
-import { useParams } from "react-router-dom/"
+import { useHistory } from "react-router-dom/"
 
 const PostAReview = ({spotId}) => {
   const dispatch = useDispatch()
-  // const { spotId } = useParams()
+  const history = useHistory()
   const [reviewText, setReviewText] = useState('')
   const [numStars, setNumStars] = useState()
   const [isStar1Clicked, setIsStar1Clicked] = useState(false)
@@ -17,6 +17,10 @@ const PostAReview = ({spotId}) => {
   const [isStar5Clicked, setIsStar5Clicked] = useState(false)
   const [errors, setErrors] = useState({})
   const { closeModal } = useModal()
+
+  useEffect(() => {
+    dispatch(reviewActions.getReviewsThunk(+spotId))
+  }, [dispatch])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -29,10 +33,10 @@ const PostAReview = ({spotId}) => {
 
     let createdReview
     // if no errors block
-    createdReview = dispatch(reviewActions.createReviewThunk(spotId, reviewForm))
+    dispatch(reviewActions.createReviewThunk(spotId, reviewForm))
 
+    // history.push(`/api/spots/${spotId}`)
     closeModal()
-
   }
 
 

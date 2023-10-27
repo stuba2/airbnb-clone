@@ -39,11 +39,11 @@ export const getReviewsThunk = (id) => async (dispatch) => {
 }
 
 export const createReviewThunk = (spotId, reviewForm) => async (dispatch) => {
-console.log('before try block')
-  try {
-console.log('first in try block')
-console.log('spotId: ', spotId)
-console.log('reviewForm: ', reviewForm)
+// console.log('before try block')
+//   try {
+// console.log('first in try block')
+// console.log('spotId: ', spotId)
+// console.log('reviewForm: ', reviewForm)
     const response = await csrfFetch(`/api/spots/${+spotId}/reviews`, {
       method: "POST",
       headers: {
@@ -51,52 +51,52 @@ console.log('reviewForm: ', reviewForm)
       },
       body: JSON.stringify(reviewForm)
     })
-console.log('after fetch in try block')
+// console.log('after fetch in try block')
 
-    // if (response.ok) {
-      //   const createdReview = await response.json()
-  //   dispatch(postReview(createdReview))
-  //   return createdReview
-  // } else {
-    //   console.log('wrong: createReviewThunk')
-    // }
-
-    if (!response.ok) {
-console.log('response is not ok')
-      let error
-      if (response.status === 422) {
-console.log('response is 422')
-        error = await response.json();
-        throw new ValidationError(error.errors, response.statusText);
-      } else {
-console.log('response is NOT 422')
-        let errorJSON;
-        error = await response.text();
-        try {
-console.log('error is JSON?')
-          // Check if the error is JSON, i.e., from the Pokemon server. If so,
-          // don't throw error yet or it will be caught by the following catch
-          errorJSON = JSON.parse(error);
-        } catch {
-console.log('server couldn"t be reached?')
-          // Case if server could not be reached
-          throw new Error(error);
-        }
-console.log('honestly idk')
-        throw new Error(`${errorJSON.title}: ${errorJSON.message}`);
-      }
-    }
-console.log('before sending to action creator')
-    const createdReview = await response.json()
+    if (response.ok) {
+        const createdReview = await response.json()
     dispatch(postReview(createdReview))
-console.log('after sending to action and dispatching to reducer')
     return createdReview
+  } else {
+      console.log('wrong: createReviewThunk')
+    }
 
-  } catch (error) {
-console.log('last catch')
-console.log(error)
-    throw error
-  }
+//     if (!response.ok) {
+// console.log('response is not ok')
+//       let error
+//       if (response.status === 422) {
+// console.log('response is 422')
+//         error = await response.json();
+//         throw new ValidationError(error.errors, response.statusText);
+//       } else {
+// console.log('response is NOT 422')
+//         let errorJSON;
+//         error = await response.text();
+//         try {
+// console.log('error is JSON?')
+//           // Check if the error is JSON, i.e., from the Pokemon server. If so,
+//           // don't throw error yet or it will be caught by the following catch
+//           errorJSON = JSON.parse(error);
+//         } catch {
+// console.log('server couldn"t be reached?')
+//           // Case if server could not be reached
+//           throw new Error(error);
+//         }
+// console.log('honestly idk')
+//         throw new Error(`${errorJSON.title}: ${errorJSON.message}`);
+//       }
+//     }
+// console.log('before sending to action creator')
+//     const createdReview = await response.json()
+//     dispatch(postReview(createdReview))
+// console.log('after sending to action and dispatching to reducer')
+//     return createdReview
+
+//   } catch (error) {
+// console.log('last catch')
+// console.log(error)
+//     throw error
+//   }
 }
 
 export const deleteAReviewThunk = (spotId, reviewId) => async (dispatch) => {
@@ -126,6 +126,7 @@ const reviewReducer = (state = initialState, action) => {
       newState = {...state}
       const newReview = action.payload
       newState[newReview.id] = newReview
+      return newState
     case DELETE_REVIEW:
       newState = {...state}
       const reviewId = action.payload
