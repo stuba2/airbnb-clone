@@ -59,6 +59,62 @@
   list-style-type: none;
 }
 
+.logged-in-user-menu {
+  position: absolute;
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-areas:
+  "first-last"
+  "email"
+  "manage-spots"
+  "logout";
+  right: 17px;
+  padding-left: 0;
+  background-color: white;
+
+  /* padding-right: 4px; */
+  border: solid;
+  list-style-type: none;
+}
+
+.logged-out-user-menu {
+  position: absolute;
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+  "login"
+  "signup";
+  right: 17px;
+  font-size: small;
+  background-color: white;
+  width: 150px;
+  margin-left: 10px;
+
+  /* padding-right: 4px; */
+  border: solid;
+  list-style-type: none;
+}
+
+.login-menu-option {
+  padding: 5px 0px;
+  padding-left: 5px;
+}
+
+.login-menu-option:hover {
+  background-color: #e4e4e4;
+  cursor: context-menu;
+}
+
+.signup-menu-option {
+  padding: 5px 0px;
+  padding-left: 5px;
+}
+
+.signup-menu-option:hover {
+  background-color: #e4e4e4;
+  cursor: context-menu;
+}
+
 .username {
   grid-area: username;
   padding-left: 5px;

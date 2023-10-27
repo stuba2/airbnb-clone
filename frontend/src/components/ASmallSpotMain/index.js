@@ -15,22 +15,19 @@ const ASmallSpotMain = ({spotId}) => {
 
   let spotsArrVals = Object.values(spots)
 
-  useEffect(() => {
-    dispatch(spotActions.getSpotDeetsThunk(spot.id))
-  }, [dispatch])
+  // useEffect(() => {
+  //   dispatch(spotActions.getSpotDeetsThunk(spot.id))
+  // }, [dispatch])
 
-  // let truePreviewImg
-  // const imgArr = spot.SpotImages
-  // if (imgArr) {
-  //   imgArr.map((image) => {
-  //     if (image.previewImage) {
-  //       truePreviewImg = image.url
-  //       // return truePreviewImg
-  //     }
-  //   })
-  // } else truePreviewImg = null
-  // // console.log('spotId', spotId, 'truePreviewImg: ', truePreviewImg)
-  // console.log('---', spot.SpotImages)
+
+  let avgStar
+  const star = <i className="fa-solid fa-star"></i>
+  if (!spot.avgStarRating && typeof spot.avgStarRating !== "number") {
+    avgStar = "New"
+  } else if (spot.avgStarRating && typeof spot.avgStarRating === "number") {
+    const rating = (+spot.avgStarRating).toFixed(1)
+    avgStar = <div>{star} {rating}</div>
+  }
 
   const hasPreviewImg = (spot) => {
     const SpotImages = spot.SpotImages
@@ -54,7 +51,7 @@ const ASmallSpotMain = ({spotId}) => {
         </div>
         <div className="under-pic">
           <div className="city-state">{spot.city}, {spot.state}</div>
-          <div className="rating"><i className="fa-solid fa-star"></i> {spot.avgStarRating}</div>
+          <div className="rating">{avgStar}</div>
           <div className="price">${spot.price} night</div>
         </div>
       </div>
