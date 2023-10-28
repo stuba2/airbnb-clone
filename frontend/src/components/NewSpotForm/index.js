@@ -143,6 +143,11 @@ const NewSpotForm = () => {
       console.log('newSpotForm: newSpotId and typeof newSpotId (as is): ', newSpotId, typeof newSpotId)
       console.log('newSpotForm: +newSpotId and typeof +newSpotId (modified): ', +newSpotId, typeof +newSpotId)
 
+      if (!createdSpot.ok) {
+        const response = await createdSpot.json()
+        console.log('---------newSpotForm !createdSpot.ok: response: ', response)
+      }
+
       addedImage1 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm1))
 
       if (image2) {
