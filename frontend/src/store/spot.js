@@ -111,13 +111,13 @@ export const createSpotThunk = (spotForm) => async (dispatch) => {
     body: JSON.stringify(spotForm)
   })
 
-  if (newSpot.ok) {
+  // if (newSpot.ok) {
     const createdSpot = await newSpot.json()
     dispatch(createASpot(createdSpot))
     return createdSpot
-  } else {
-    console.log('wrong: createSpotThunk')
-  }
+  // } else {
+  //   console.log('wrong: createSpotThunk')
+  // }
 }
 
 export const addImageThunk = (newSpotId, imageObj) => async (dispatch) => {
