@@ -61,8 +61,8 @@ const NewSpotForm = () => {
       name,
       description,
       price: +price,
-      lat,
-      lng
+      lat: +lat,
+      lng: +lng
     }
 
     let imageForm1
@@ -112,6 +112,7 @@ const NewSpotForm = () => {
       createdSpot = await dispatch(spotActions.createSpotThunk(spotForm))
       .catch(async (res) => {
         const data = await res.json()
+        console.log('this is data: ', data)
         if (data && data.errors) {
           setValidationErrors(data.errors)
         }

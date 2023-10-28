@@ -103,18 +103,24 @@ export const getSpotDeetsThunk = (id) => async (dispatch) => {
 }
 
 export const createSpotThunk = (spotForm) => async (dispatch) => {
-  const newSpot = await csrfFetch('/api/spots/', {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(spotForm)
-  })
+  try {
+    const newSpot = await csrfFetch('/api/spots/', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(spotForm)
+    })
 
-  // if (newSpot.ok) {
-    const createdSpot = await newSpot.json()
-    dispatch(createASpot(createdSpot))
-    return createdSpot
+    // if (newSpot.ok)
+      const createdSpot = await newSpot.json()
+      dispatch(createASpot(createdSpot))
+      return createdSpot
+
+  } catch (error) {
+    return error
+  }
+
   // } else {
   //   console.log('wrong: createSpotThunk')
   // }
