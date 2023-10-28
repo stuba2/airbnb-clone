@@ -1,3 +1,166 @@
-/* h1 {
-  color: #2f65a7
+.whole-container-signup {
+  padding: 10px;
+  border: solid #222222;
+  border-radius: 8px;
+  width: 250px;
+  display: grid;
+  grid-template-rows: 1fr 4fr;
+  grid-template-areas:
+  "header"
+  "form";
+}
+
+.signup-header-container {
+  grid-area: header;
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+  "headerHeader"
+  "errors";
+  justify-content: center;
+  align-items: center;
+}
+
+.signup-header {
+  grid-area: headerHeader;
+  font-size: large;
+}
+
+.signup-header-errors {
+  grid-area: errors;
+  grid-template-areas:
+  "signup"
+  "firstError"
+  "lastError"
+  "emailError"
+  "usernameError"
+  "passwordError"
+  "confirmError";
+}
+
+.signup-firstname-error {
+  grid-area: firstError;
+  margin: 5px 0;
+  color: red;
+}
+
+.signup-firstname-error.hide {
+  display: none;
+}
+
+.signup-lastname-error {
+  grid-area: lastError;
+  margin: 5px 0;
+  color: red;
+}
+
+.signup-email-error {
+  grid-area: emailError;
+  margin: 5px 0;
+  color: red;
+}
+
+.signup-username-error {
+  grid-area: usernameError;
+  margin: 5px 0;
+  color: red;
+}
+
+.signup-password-error {
+  grid-area: passwordError;
+  margin: 5px 0;
+  color: red;
+}
+
+.signup-confirm-error {
+  grid-area: comfirmError;
+  margin: 5px 0;
+  color: red;
+}
+
+.signup-form {
+  display: grid;
+  flex-direction: column;
+  grid-area: form;
+  grid-template-rows: repeat(6, 1fr) 2fr;
+  grid-template-areas:
+  "first"
+  "last"
+  "email"
+  "username"
+  "password"
+  "confirm"
+  "button";
+}
+
+/* .signup-input-container {
+  grid-area: userpass;
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+  "username"
+  "password";
+  padding-bottom: 10px;
 } */
+
+.signup-firstname-input {
+  grid-area: first;
+  margin: 5px 0;
+}
+
+.signup-lastname-input {
+  grid-area: last;
+  margin: 5px 0;
+}
+
+.signup-email-input {
+  grid-area: email;
+  margin: 5px 0;
+}
+
+.signup-username-input {
+  grid-area: username;
+  margin: 5px 0;
+}
+
+.signup-password-input {
+  grid-area: password;
+  margin: 5px 0;
+}
+
+.signup-confirm-input {
+  grid-area: confirm;
+  margin: 5px 0;
+}
+
+.signup-button {
+  grid-area: button;
+  justify-items: center;
+  background-color: #c04e02;
+  color: white;
+  box-shadow: 3px 3px black;
+  border: solid black;
+  border-radius: 2px;
+  padding: 10px;
+  margin: 10px 20px 20px;
+}
+
+.signup-button:hover {
+  cursor: pointer;
+}
+
+.signup-button.disabled {
+  grid-area: button;
+  justify-items: center;
+  background-color: white;
+  color: #8b90b3;
+  box-shadow: 3px 3px black;
+  border: solid black;
+  border-radius: 2px;
+  padding: 10px;
+  margin: 10px 20px 20px;
+}
+
+.signup-button.disabled {
+  cursor: context-menu;
+}

@@ -171,7 +171,15 @@ router.get('/', async (req, res) => {
     }
     let average = sum / reviewsLazy.length
     let shortAvg = parseFloat(average.toFixed(1))
-    spotLazy.avgRating = shortAvg
+    spotLazy.avgStarRating = shortAvg
+
+    // numReviews
+    let numReviewsLazyProm = await Review.count({
+      where: {
+        spotId: spotLazy.id
+      }
+    })
+    spotLazy.numReviews = numReviewsLazyProm
 
     // previewImage
     let imageLazyProm = await SpotImage.findAll({
@@ -196,6 +204,25 @@ router.get('/', async (req, res) => {
     if (typeof spotLazy.price === "string") {
       spotLazy.price = parseFloat(spotLazy.price)
     }
+
+    // add SpotImages
+    let spotImgProm = await SpotImage.scope("noSpotId").findAll({
+      where: {
+        spotId: spotLazy.id
+      }
+    })
+    spotLazy.SpotImages = spotImgProm
+
+    // add Owner details
+    let ownerDeetsProm = await User.findAll({
+      where: {
+        id: spotLazy.ownerId
+      }
+    })
+    spotLazy.Owner = {}
+    spotLazy.Owner.id = ownerDeetsProm[0].id
+    spotLazy.Owner.firstName = ownerDeetsProm[0].firstName
+    spotLazy.Owner.lastName = ownerDeetsProm[0].lastName
 
     ret.push(spotLazy)
   }

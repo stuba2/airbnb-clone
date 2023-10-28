@@ -49,9 +49,26 @@ label {
   border-color: #222222;
 }
 
+.country-label {
+  display: flex;
+}
+
 .new-spot-country {
   display: flex;
   flex-direction: column;
+}
+
+.new-spot-country-label {
+  padding-right: 5px;
+}
+
+.new-spot-country-error {
+  font-size: small;
+  color: red;
+}
+
+.new-spot-country-error.hide {
+  display: none;
 }
 
 .new-spot-address {

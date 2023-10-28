@@ -5,10 +5,11 @@ import OpenModalMenuItem from "./OpenModalMenuItem";
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
 import './ProfileButton.css'
-import { NavLink } from "react-router-dom/";
+import { NavLink, useHistory } from "react-router-dom";
 
 const ProfileButton = ({ user }) => {
   const dispatch = useDispatch();
+  const history = useHistory()
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef()
 
@@ -39,6 +40,7 @@ const ProfileButton = ({ user }) => {
     e.preventDefault();
     dispatch(sessionActions.logoutThunk());
     closeMenu()
+    history.push(`/`)
   };
 
 
@@ -53,36 +55,38 @@ const ProfileButton = ({ user }) => {
         <i className="fa-solid fa-bars profile-button-img"></i>
         <i className="fas fa-user-circle profile-button-img" />
       </button>
-      <ul className={ulClassName} ref={ulRef}>
-        {user ? (
-          <>
-            {/* <li className="username">{user.username}</li> */}
-            <li className="first-last">Hello, {user.firstName}</li>
-            <li className="email">{user.email}</li>
-            <NavLink to='/api/spots/current'
-              className="manage-spots"
-              onClick={closeMenu}>
-                Manage Spots
-              </NavLink>
-            <li className="logout">
-              <button  onClick={logout}>Log Out</button>
-            </li>
-          </>
-        ) : (
-          <>
-            <OpenModalMenuItem
-              itemText="Log In"
-              onItemClick={closeMenu}
-              modalComponent={<LoginFormModal />}
-            />
-            <OpenModalMenuItem
-              itemText="Sign Up"
-              onItemClick={closeMenu}
-              modalComponent={<SignupFormModal />}
-            />
-          </>
-        )}
-      </ul>
+      {user ? (
+  <ul className={`${ulClassName} logged-in-user-menu`} ref={ulRef}>
+    <li className="first-last">Hello, {user.firstName}</li>
+      <li className="email">{user.email}</li>
+      <NavLink to='/api/spots/current'
+        className="manage-spots"
+        onClick={closeMenu}>
+          Manage Spots
+      </NavLink>
+    <li className="logout">
+      <button  onClick={logout}>Log Out</button>
+    </li>
+  </ul>
+) : (
+  <ul className={`${ulClassName} logged-out-user-menu`} ref={ulRef}>
+    <li className="login-menu-option">
+      <OpenModalMenuItem
+        itemText="Log In"
+        onItemClick={closeMenu}
+        modalComponent={<LoginFormModal />}
+      />
+    </li>
+    <li className="signup-menu-option">
+      <OpenModalMenuItem
+        itemText="Sign Up"
+        onItemClick={closeMenu}
+        modalComponent={<SignupFormModal />}
+      />
+    </li>
+  </ul>
+)}
+
     </>
   );
 }

@@ -16,7 +16,7 @@ const NewSpotForm = () => {
   const [lng, setLng] = useState('')
   const [description, setDescription] = useState('')
   const [name, setName] = useState('')
-  const [price, setPrice] = useState(0)
+  const [price, setPrice] = useState()
   const [image1, setImage1] = useState()
   const [image2, setImage2] = useState()
   const [image3, setImage3] = useState()
@@ -39,6 +39,7 @@ const NewSpotForm = () => {
     if (description.length < 30) errors['description'] = 'Description must be at least 30 characters'
     if (!name) errors['name'] = 'Name is required'
     if (name.length > 50) errors['name'] = 'Name must be less than 50 characters'
+    if (!price) errors['price'] = 'Price is required'
     if (image1 && !(image1.split('.')[image1.split('.').length-1] === 'png' || image1.split('.')[image1.split('.').length-1] === 'jpg' || image1.split('.')[image1.split('.').length-1] === 'jpeg')) errors['image1'] = 'Image URL must end in .png, .jpg, or .jpeg'
     if (!image1) errors['image1'] = 'Preview image is required'
     if (image2 && !(image2.split('.')[image2.split('.').length-1] === 'png' || image2.split('.')[image2.split('.').length-1] === 'jpg' || image2.split('.')[image2.split('.').length-1] === 'jpeg')) errors['image2'] = 'Image URL must end in .png, .jpg, or .jpeg'
@@ -137,18 +138,32 @@ const NewSpotForm = () => {
       setCountry('')
       setName('')
       setDescription('')
-      setPrice(0)
+      setPrice()
       setImage1('')
       setImage2('')
       setImage3('')
       setImage4('')
       setImage5('')
+
+      history.push(`/api/spots/${+spotId}`)
     }
 
-    history.push(`/api/spots/${+spotId}`)
-
-
   }
+
+  const countryErrorClass = "new-spot-country-error" + (validationErrors.country ? "" : " hide")
+  const addressErrorClass = "new-spot-address-error" + (validationErrors.address ? "" : " hide")
+  const cityErrorClass = "new-spot-city-error" + (validationErrors.city ? "" : " hide")
+  const stateErrorClass = "new-spot-state-error" + (validationErrors.state ? "" : " hide")
+  const latErrorClass = "new-spot-lat-error" + (validationErrors.lat ? "" : " hide")
+  const lngErrorClass = "new-spot-lng-error" + (validationErrors.lng ? "" : " hide")
+  const descriptionErrorClass = "new-spot-description-error" + (validationErrors.description ? "" : " hide")
+  const nameErrorClass = "new-spot-name-error" + (validationErrors.name ? "" : " hide")
+  const priceErrorClass = "new-spot-price-error" + (validationErrors.price ? "" : " hide")
+  const image1ErrorClass = "new-spot-image1-error" + (validationErrors.image1 ? "" : " hide")
+  const image2ErrorClass = "new-spot-image2-error" + (validationErrors.image2 ? "" : " hide")
+  const image3ErrorClass = "new-spot-image3-error" + (validationErrors.image3 ? "" : " hide")
+  const image4ErrorClass = "new-spot-image4-error" + (validationErrors.image4 ? "" : " hide")
+  const image5ErrorClass = "new-spot-image5-error" + (validationErrors.image5 ? "" : " hide")
 
   return (
     <div>
@@ -158,10 +173,17 @@ const NewSpotForm = () => {
       >
         <h2>Create a new Spot</h2>
         <div className="location">
+
           <h3>Where's your place located?</h3>
           <h4>Guests will only get your exact address once they booked a reservation</h4>
+
           <div className="new-spot-country">
-            <label htmlFor="country" className="new-spot-label">Country</label>
+
+            <div className="country-label">
+              <label htmlFor="country" className="new-spot-country-label">Country</label>
+              {/* {validationErrors.country && <span className={countryErrorClass}>{validationErrors.country}</span>} */}
+            </div>
+
             <input
               id="country"
               type="text"
@@ -169,12 +191,17 @@ const NewSpotForm = () => {
               value={country}
               placeholder="Country"
             />
+
             <div className="spot-error">
               {hasSubmitted && validationErrors.country && `* ${validationErrors.country}`}
             </div>
+
           </div>
+
           <div className="new-spot-address">
+
             <label htmlFor="address">Street Address</label>
+
             <input
               id="address"
               type="text"
@@ -182,13 +209,19 @@ const NewSpotForm = () => {
               value={address}
               placeholder="Address"
             />
+
             <div className="spot-error">
               {hasSubmitted && validationErrors.address && `* ${validationErrors.address}`}
             </div>
+
           </div>
+
           <div className="city-state">
+
             <div className="new-spot-city">
+
               <label htmlFor="city">City</label>
+
               <input
                 id="city"
                 type="text"
@@ -197,13 +230,19 @@ const NewSpotForm = () => {
                 placeholder="City"
                 className="input-city"
               />
+
               <div className="spot-error">
-              {hasSubmitted && validationErrors.city && `* ${validationErrors.city}`}
+                {hasSubmitted && validationErrors.city && `* ${validationErrors.city}`}
+              </div>
+
             </div>
-            </div>
+
             {/* <div className="comma">,</div> */}
+
             <div className="new-spot-state">
+
               <label htmlFor="state">State</label>
+
               <input
                 id="state"
                 type="text"
@@ -211,11 +250,15 @@ const NewSpotForm = () => {
                 value={livedState}
                 placeholder="STATE"
               />
+
               <div className="spot-error">
                 {hasSubmitted && validationErrors.state && `* ${validationErrors.state}`}
               </div>
+
             </div>
+
           </div>
+
           <div className="lat-lng">
             <div className="latitude">
               <label htmlFor="latitude">Latitude</label>
@@ -244,6 +287,7 @@ const NewSpotForm = () => {
               </div>
             </div>
           </div>
+
         </div>
         <div className="description-div">
           <h3>Describe your place to guests</h3>
