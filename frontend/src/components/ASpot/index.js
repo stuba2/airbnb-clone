@@ -66,12 +66,10 @@ const ASpot = () => {
   let reviewButtonModalClass
   const reviewsArrVals = Object.values(reviews)
   const filteredReviews = reviewsArrVals.filter(review => review.spotId === +spotId)
-  console.log('filter: ', filteredReviews)
   let usersReview
   if (session.user && filteredReviews.length) {
     usersReview = filteredReviews.find(review => review.userId === session.user.id)
   }
-  console.log('usersReview: ', usersReview)
 
   if (!session.user) {
     reviewButtonModalClass = "review-modal hide"
