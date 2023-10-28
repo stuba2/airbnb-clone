@@ -151,7 +151,7 @@ const NewSpotForm = () => {
       setImage4('')
       setImage5('')
 
-      history.push(`/api/spots/${+spotId}`)
+      history.push(`/api/spots/${+newSpotId}`)
     }
 
   }
