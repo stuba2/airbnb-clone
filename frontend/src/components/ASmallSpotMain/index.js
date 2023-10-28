@@ -29,7 +29,11 @@ const ASmallSpotMain = ({spotId}) => {
     avgStar = <div>{star} {rating}</div>
   }
 
-  const image1 = <img src='https://source.unsplash.com/random/700x700/?house' style={{height: '100%', width: '100%'}}/>
+  const SpotImages = spot ? spot.SpotImages : []
+  let previewImage
+  previewImage = SpotImages.find(image => image.previewImage === true)
+
+  const image1 = previewImage ? <img src={previewImage.url} style={{height: '100%', width: '100%'}} /> : <img src='https://source.unsplash.com/random/700x700/?house' style={{height: '100%', width: '100%'}}/>
 
 
   if (!spot) {

@@ -50,24 +50,6 @@ const NewSpotForm = () => {
   }, [country, address, city, livedState, lat, lng, description, name, price, image1, image2, image3, image4, image5])
 
   const onSubmit = async (e) => {
-    console.log('newSpotForm: in onSubmit block')
-    console.log('newSpotForm: address and typeof address: ', address, typeof address)
-    console.log('newSpotForm: city and typeof city: ', city, typeof city)
-    console.log('newSpotForm: livedState and typeof livedState: ', livedState, typeof livedState)
-    console.log('newSpotForm: country and typeof country: ', country, typeof country)
-    console.log('newSpotForm: name and typeof name: ', name, typeof name)
-    console.log('newSpotForm: description and typeof description: ', description, typeof description)
-    console.log('newSpotForm: price and typeof price (passed in): ', price, typeof price)
-    console.log('newSpotForm: lat and typeof lat (passed in): ', lat, typeof lat)
-    console.log('newSpotForm: lng and typeof lng (passed in): ', lng, typeof lng)
-    console.log('newSpotForm: +price and typeof +price (modified and sent on): ', +price, typeof +price)
-    console.log('newSpotForm: +lat and typeof +lat (modified and sent on): ', +lat, typeof +lat)
-    console.log('newSpotForm: +lng and typeof +lng (modified and sent on): ', +lng, typeof +lng)
-    console.log('newSpotForm: image1 and typeof image1: ', image1, typeof image1)
-    console.log('newSpotForm: image2 and typeof image2: ', image2, typeof image2)
-    console.log('newSpotForm: image3 and typeof image3: ', image3, typeof image3)
-    console.log('newSpotForm: image4 and typeof image4: ', image4, typeof image4)
-    console.log('newSpotForm: image5 and typeof image5: ', image5, typeof image5)
 
     e.preventDefault()
 
@@ -133,30 +115,20 @@ const NewSpotForm = () => {
       createdSpot = await dispatch(spotActions.createSpotThunk(spotForm))
       .catch(async (res) => {
         const data = await res.json()
-        console.log('??????in .catch??????? data: ', data)
         if (data && data.errors) {
           setValidationErrors(data.errors)
         }
       })
-      console.log('!!!!!!!!!!!!!!!! createdSpot: ', createdSpot)
 
       // if (createdSpotProm.ok) {
       //   createdSpot = await createdSpotProm.json()
       // }
 
-      console.log('inside if block where createSpotThunk gets dispatched if there are no validationErrors')
-      console.log('newSpotForm: createdSpot: ', createdSpot)
-      console.log('newSpotForm: createdSpot.id and typeof createdSpot.id (as is): ', createdSpot.id, typeof createdSpot.id)
-      console.log('newSpotForm: +createdSpot.id and typeof +createdSpot.id (modified and sent on): ', +createdSpot.id, typeof +createdSpot.id)
-
       const newSpotId = +createdSpot.id
 
-      console.log('newSpotForm: newSpotId and typeof newSpotId (as is): ', newSpotId, typeof newSpotId)
-      console.log('newSpotForm: +newSpotId and typeof +newSpotId (modified): ', +newSpotId, typeof +newSpotId)
 
       if (createdSpot.ok && createdSpot.ok === false) {
         troubledSpot = await createdSpot.json()
-        console.log('---------newSpotForm !createdSpot.ok: troubledSpot: ', troubledSpot)
       }
 
       addedImage1 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm1))

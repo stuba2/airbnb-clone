@@ -45,7 +45,8 @@ const UserSpots = () => {
               <NavLink
                 to={`/api/spots/${spot.id}`}
                 className='whole-spot-container'
-                key={spot.id}>
+                key={spot.id}
+                title={spot.name}>
                   <ASmallSpotMain spotId={spot.id} />
               </NavLink>
               <div className="update-delete-buttons">
