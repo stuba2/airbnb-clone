@@ -20,11 +20,12 @@ const ASpot = () => {
     return state.reviews
   })
   const spot = spots[+spotId]
-  const image1 = spot ? (spot.SpotImages ? (spot.SpotImages[0] ? spot.SpotImages[0].url : "No Image Found") : "No Image Found") : "No Image Found"
-  const image2 = spot ? (spot.SpotImages ? (spot.SpotImages[1] ? spot.SpotImages[1].url : "No Image Found") : "No Image Found") : "No Image Found"
-  const image3 = spot ? (spot.SpotImages ? (spot.SpotImages[2] ? spot.SpotImages[2].url : "No Image Found") : "No Image Found") : "No Image Found"
-  const image4 = spot ? (spot.SpotImages ? (spot.SpotImages[3] ? spot.SpotImages[3].url : "No Image Found") : "No Image Found") : "No Image Found"
-  const image5 = spot ? (spot.SpotImages ? (spot.SpotImages[4] ? spot.SpotImages[4].url : "No Image Found") : "No Image Found") : "No Image Found"
+  
+  const image1 = <img src='https://source.unsplash.com/random/700x700/?house' style={{height: '350px'}}/>
+  const image2 = <img src='https://source.unsplash.com/random/600x600/?house' style={{height: '175px'}} />
+  const image3 = <img src='https://source.unsplash.com/random/500x500/?house' style={{height: '175px'}} />
+  const image4 = <img src='https://source.unsplash.com/random/400x400/?house' style={{height: '175px'}} />
+  const image5 = <img src='https://source.unsplash.com/random/300x300/?house' style={{height: '175px'}} />
 
 
   useEffect(() => {
@@ -32,15 +33,16 @@ const ASpot = () => {
   }, [dispatch])
 
 
-  const hasPreviewImg = (spot) => {
-    const SpotImages = spot.SpotImages
-    if (SpotImages) {
-      const imgPreview = SpotImages.find((image) => image.previewImage === true)
-      if (imgPreview) {
-        return imgPreview.url
-      } else return 'No Image Found'
-    }
-  }
+  // const hasPreviewImg = (spot) => {
+  //   const SpotImages = spot.SpotImages
+  //   if (SpotImages) {
+  //     const imgPreview = SpotImages.find((image) => image.previewImage === true)
+  //     if (imgPreview) {
+  //       return <img src='https://source.unsplash.com/random/?house'/>
+  //       return imgPreview.url
+  //     } else return 'No Image Found'
+  //   }
+  // }
 
   const reserveAlert = () => {
     alert("Feature coming soon!")
@@ -70,10 +72,8 @@ const ASpot = () => {
 
   if (!session.user) {
     reviewButtonModalClass = "review-modal hide"
-    console.log('first hit')
   } else if (spot && session.user.id === spot.Owner.id) {
     reviewButtonModalClass = "review-modal hide"
-    console.log('second hit')
   } else if (spot && session.user.id !== spot.Owner.id && Object.values(filteredReviews).length  ) {
     reviewButtonModalClass = "review-modal"
     reviewButton = "Post Your Review"
@@ -81,7 +81,6 @@ const ASpot = () => {
     reviewButtonModalClass= "review-modal"
     reviewButton = "Be the first to post a review!"
   } else if (spot && session.user.id !== spot.Owner.id && Object.values(filteredReviews).length && usersReview && Object.values(usersReview)) {
-    console.log('third hit')
     reviewButtonModalClass = "review-modal hide"
   }
 
@@ -100,7 +99,7 @@ const ASpot = () => {
 
         <div className="images">
           <div className="big-pic">
-            {hasPreviewImg(spot)}
+            {image1}
           </div>
           <div className="small-pics">
             <div className="small-pic-2">{image2}</div>

@@ -29,15 +29,8 @@ const ASmallSpotMain = ({spotId}) => {
     avgStar = <div>{star} {rating}</div>
   }
 
-  const hasPreviewImg = (spot) => {
-    const SpotImages = spot.SpotImages
-    if (SpotImages) {
-      const imgPreview = SpotImages.find((image) => image.previewImage === true)
-      if (imgPreview) {
-        return imgPreview.url
-      } else return 'No Image Found'
-    }
-  }
+  const image1 = <img src='https://source.unsplash.com/random/700x700/?house' style={{height: '100%', width: '100%'}}/>
+
 
   if (!spot) {
     return (
@@ -47,7 +40,7 @@ const ASmallSpotMain = ({spotId}) => {
     return (
       <div className="whole-thing-small-spot">
         <div className="spot-image">
-          {hasPreviewImg(spot)}
+          {image1}
         </div>
         <div className="under-pic">
           <div className="city-state">{spot.city}, {spot.state}</div>

@@ -26,7 +26,7 @@ let newSpotClass
     <div className='nav-bar'>
       <div className='nav-left'>
         <div className='home-logo'>
-          <NavLink exact to="/"><img src={require('../../images/heirbnb-logo.png')}  /></NavLink>
+          <NavLink exact to="/"><img src={require('../../images/heirbnb-logo.png')} style={{ height: '30%', width: '30%' }}  /></NavLink>
         </div>
       </div>
       <div className='nav-right'>
