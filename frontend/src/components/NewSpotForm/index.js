@@ -33,8 +33,10 @@ const NewSpotForm = () => {
     if (!livedState) errors['state'] = 'State is required'
     if (isNaN(parseInt(lat))) errors['lat'] = 'Latitude needs to be a number'
     if (!lat) errors['lat'] = 'Latitude is required'
+    if (+lat < -90 || +lat > 90) errors['lat'] = 'Latitude is not valid'
     if (isNaN(parseInt(lng))) errors['lng'] = 'Longitude needs to be a number'
     if (!lng) errors['lng'] = 'Longitude is required'
+    if (+lng < -180 || +lng > 180) errors['lng'] = 'Longitude is not valid'
     if (!description) errors['description'] = 'Description is required'
     if (description.length < 30) errors['description'] = 'Description must be at least 30 characters'
     if (!name) errors['name'] = 'Name is required'
@@ -124,33 +126,37 @@ const NewSpotForm = () => {
       //   createdSpot = await createdSpotProm.json()
       // }
 
-      const newSpotId = +createdSpot.id
 
 
-      if (createdSpot.ok && createdSpot.ok === false) {
-        troubledSpot = await createdSpot.json()
-      }
 
-      addedImage1 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm1))
+      // if (createdSpot.ok && createdSpot.ok === false) {
+      //   troubledSpot = await createdSpot.json()
+      //   console.log('------------', troubledSpot)
+      // }
 
-      if (image2) {
-        addedImage2 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm2))
-      }
+      if (createdSpot && createdSpot.ok) {
+        const newSpotId = +createdSpot.id
 
-      if (image3) {
-        addedImage3 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm3))
-      }
+        addedImage1 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm1))
 
-      if (image4) {
-        addedImage4 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm4))
-      }
+        if (image2) {
+          addedImage2 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm2))
+        }
 
-      if (image5) {
-        addedImage5 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm5))
-      }
+        if (image3) {
+          addedImage3 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm3))
+        }
 
-      setAddress('')
-      setCity('')
+        if (image4) {
+          addedImage4 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm4))
+        }
+
+        if (image5) {
+          addedImage5 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm5))
+        }
+
+        setAddress('')
+        setCity('')
       setLivedState('')
       setLat('')
       setLng('')
@@ -165,6 +171,7 @@ const NewSpotForm = () => {
       setImage5('')
 
       history.push(`/api/spots/${+newSpotId}`)
+    }
     }
 
   }
