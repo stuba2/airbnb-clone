@@ -173,6 +173,10 @@ label {
   border-radius: 2px;
  }
 
+ .create-spot-button:hover {
+  cursor: pointer;
+ }
+
  .spot-error {
   color: red;
   font-size: small;
