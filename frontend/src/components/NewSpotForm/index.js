@@ -110,6 +110,12 @@ const NewSpotForm = () => {
 
     if (!(Object.values(validationErrors).length)) {
       createdSpot = await dispatch(spotActions.createSpotThunk(spotForm))
+      .catch(async (res) => {
+        const data = await res.json()
+        if (data && data.errors) {
+          setValidationErrors(data.errors)
+        }
+      })
       const newSpotId = +createdSpot.id
 
       addedImage1 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm1))
@@ -412,7 +418,7 @@ const NewSpotForm = () => {
           </div>
         </div>
         <div className="button-div">
-          <button>Create Spot</button>
+          <button className="create-spot-button">Create Spot</button>
         </div>
       </form>
     </div>

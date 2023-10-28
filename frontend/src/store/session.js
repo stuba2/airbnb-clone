@@ -28,7 +28,6 @@ export const loginThunk = (user) => async (dispatch) => {
       })
     })
 
-    console.log('above data in loginThunk')
 
     // if (!response.ok) {
     //   let error;
