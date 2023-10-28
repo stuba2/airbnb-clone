@@ -61,9 +61,10 @@ const ASpot = () => {
   }
 
   let reviewNum
-  if (spot && spot.numReviews === 1) reviewNum = `· ${spot.numReviews} Review`
-  if (spot && spot.numReviews === 0) reviewNum = ""
+  if (spot && spot.numReviews && +spot.numReviews === 1) reviewNum = `· ${spot.numReviews} Review`
+  else if (spot && spot.numReviews === 0) reviewNum = ""
   else reviewNum = `· ${spot && spot.numReviews} Reviews`
+
 
   let reviewButton
   let reviewButtonModalClass

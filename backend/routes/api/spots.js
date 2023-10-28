@@ -278,6 +278,9 @@ router.post('/', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, r
   if (!description) {
     errors.description = "Description is required"
   }
+  if (description.length > 1000) {
+    errors.description = "Description must be less than 1000 characters"
+  }
   if (!price) {
     errors.price = "Price per day is required"
   }
@@ -600,6 +603,9 @@ router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (
   }
   if (!description) {
     errors.description = "Description is required"
+  }
+  if (description.length > 1000) {
+    errors.description = "Description must be less than 1000 characters"
   }
   if (!price) {
     errors.price = "Price per day is required"

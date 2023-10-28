@@ -23,10 +23,10 @@ function App() {
       {isLoaded &&
       <Switch>
         <Route exact path="/" component={AllSpots} />
-        <Route path="/api/spots/new" component={NewSpotForm} />
-        <Route path='/api/spots/current' component={UserSpots}/>
-        <Route exact path="/api/spots/:spotId" component={ASpot} />
-        <Route path="/api/spots/:spotId/edit" component={UpdateSpotForm}/>
+        <Route path="/spots/new" component={NewSpotForm} />
+        <Route path='/spots/current' component={UserSpots}/>
+        <Route exact path="/spots/:spotId" component={ASpot} />
+        <Route path="/spots/:spotId/edit" component={UpdateSpotForm}/>
       </Switch>}
     </div>
   );

@@ -48,6 +48,7 @@ const UpdateSpotForm = () => {
     if (+lng < -180 || +lng > 180) errors['lng'] = 'Longitude is not valid'
     if (!description) errors['description'] = 'Description is required'
     if (description.length < 30) errors['description'] = 'Description must be at least 30 characters'
+    if (description.length > 1000) errors['description'] = 'Description must be less than 1000 characters'
     if (!name) errors['name'] = 'Name is required'
     if (name.length > 50) errors['name'] = 'Name must be less than 50 characters'
     if (!(image1.split('.')[image1.split('.').length-1] === 'png' || image1.split('.')[image1.split('.').length-1] === 'jpg' || image1.split('.')[image1.split('.').length-1] === 'jpeg')) errors['image1'] = 'Image URL must end in .png, .jpg, or .jpeg'
@@ -155,7 +156,7 @@ const UpdateSpotForm = () => {
       }
 
 
-      history.push(`/api/spots/${+spotId}`)
+      history.push(`/spots/${+spotId}`)
     }
     }
   }
