@@ -134,7 +134,6 @@ const NewSpotForm = () => {
       //   troubledSpot = await createdSpot.json()
       //   console.log('------------', troubledSpot)
       // }
-      console.log('createdspot...: ', createdSpot, createdSpot.ok)
       if (createdSpot) {
         console.log('hi')
         const newSpotId = +createdSpot.id
