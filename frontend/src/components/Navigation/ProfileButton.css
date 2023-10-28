@@ -1,0 +1,12 @@
+.whole-button {
+  position: relative;
+  border-radius: 15px;
+  border: solid #003434;
+  color: #003434;
+  background-color: #c04e02;
+  padding: 4px 8px;
+}
+
+.profile-button-img {
+  color: white;
+}

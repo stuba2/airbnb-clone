@@ -1,0 +1,96 @@
+.whole-container-post-review {
+  padding: 10px;
+  border: solid #222222;
+  border-radius: 8px;
+  width: 250px;
+  display: grid;
+  justify-content: center;
+  grid-template-rows: 1fr 4fr;
+  grid-template-areas:
+  "header"
+  "form";
+}
+
+.post-review-header-container {
+  grid-area: header;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.post-review-header {
+  font-size: large;
+}
+
+.post-review-form {
+  display: grid;
+  flex-direction: column;
+  grid-area: form;
+  grid-template-rows: 2fr 1fr 1fr;
+  grid-template-areas:
+  "reviewbox"
+  "stars"
+  "button";
+}
+
+.post-review-text-container {
+  grid-area: reviewbox;
+  display: grid;
+  padding-bottom: 10px;
+  width: 100%;
+}
+
+.post-review-text-box {
+  height: 100%;
+  display: block;
+}
+
+/* .review-text {
+  padding-bottom: 15px;
+  width: 100%;
+  display: flex;
+  align-items: start;
+} */
+
+.post-review-stars {
+  grid-area: stars;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.post-review-button {
+  grid-area: button;
+  display: block;
+  justify-items: center;
+  align-items: center;
+  background-color: #c04e02;
+  color: white;
+  box-shadow: 3px 3px black;
+  border: solid black;
+  border-radius: 2px;
+  padding: 10px;
+  margin: 10px 20px 20px;
+}
+
+.post-review-button:hover {
+  cursor: pointer;
+}
+
+.post-review-button.disabled {
+  grid-area: button;
+  display: block;
+  justify-items: center;
+  align-items: center;
+  background-color: white;
+  color: #8b90b3;
+  box-shadow: 3px 3px black;
+  border: solid black;
+  border-radius: 2px;
+  padding: 10px;
+  margin: 10px 20px 20px;
+}
+
+.post-review-button.disabled:hover {
+  cursor: context-menu;
+}

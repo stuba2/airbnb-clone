@@ -1,7 +1,199 @@
-.profile-dropdown {
-  color: blue;
+.nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px auto;
+  border-bottom: solid #cccccc;
+  border-width: 2px;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.nav-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.create-spot {
+  padding: 0px 10px 10px;
+  color: #0973ad;
+  text-decoration: none;
+}
+
+.create-spot.logged-out {
+  display: none;
+}
+
+/* .create-spot > NavLink {
+  text-decoration: none;
+  background-color: red;
+} */
+
+.profile-button {
+  padding: 0px 10px 10px;
+  /* color: #003434;
+  background-color: #c04e02; */
+  /* position: relative; */
 }
 
 .profile-dropdown.hidden {
-  color: red;
+  display: none;
 }
+
+.profile-dropdown {
+  position: absolute;
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-areas:
+  /* "username" */
+  "first-last"
+  "email"
+  "manage-spots"
+  "logout";
+  right: 17px;
+  padding-left: 0;
+  background-color: white;
+
+  /* padding-right: 4px; */
+  border: solid;
+  list-style-type: none;
+}
+
+.logged-in-user-menu {
+  position: absolute;
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-areas:
+  "first-last"
+  "email"
+  "manage-spots"
+  "logout";
+  right: 17px;
+  padding-left: 0;
+  background-color: white;
+
+  /* padding-right: 4px; */
+  border: solid;
+  list-style-type: none;
+}
+
+.logged-out-user-menu {
+  position: absolute;
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+  "login"
+  "signup";
+  right: 17px;
+  font-size: small;
+  background-color: white;
+  width: 150px;
+  margin-left: 10px;
+
+  /* padding-right: 4px; */
+  border: solid;
+  list-style-type: none;
+}
+
+.login-menu-option {
+  padding: 5px 0px;
+  padding-left: 5px;
+}
+
+.login-menu-option:hover {
+  background-color: #e4e4e4;
+  cursor: context-menu;
+}
+
+.signup-menu-option {
+  padding: 5px 0px;
+  padding-left: 5px;
+}
+
+.signup-menu-option:hover {
+  background-color: #e4e4e4;
+  cursor: context-menu;
+}
+
+.username {
+  grid-area: username;
+  padding-left: 5px;
+  font-size: small;
+  padding-right: 4px;
+}
+
+.username:hover {
+  background-color: #e4e4e4;
+  cursor: context-menu;
+}
+
+.first-last {
+  grid-area: first-last;
+  padding-left: 5px;
+  font-size: small;
+  padding-right: 4px;
+  align-self: center;
+}
+
+.first-last:hover {
+  background-color: #e4e4e4;
+  cursor: context-menu;
+}
+
+.manage-spots {
+  grid-area: manage-spots;
+  padding-left: 5px;
+  font-size: small;
+  padding-right: 4px;
+  padding: 3px 4px 3px 5px;
+  border-top: solid 1px;
+  border-bottom: solid 1px;
+  text-decoration: none;
+}
+
+.manage-spots:hover {
+  background-color: #e4e4e4;
+  cursor: context-menu;
+}
+
+.email {
+  grid-area: email;
+  padding-left: 5px;
+  font-size: small;
+  padding-right: 4px;
+  align-self: center;
+}
+
+.email:hover {
+  background-color: #e4e4e4;
+  cursor: context-menu;
+}
+
+.logout {
+  grid-area: logout;
+  cursor: context-menu;
+  align-self: center;
+}
+
+.logout > button {
+  width: 100%;
+  border: none;
+  text-align: left;
+  font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto, Helvetica Neue, sans-serif;
+  color: #222222;
+  font-size: small;
+  padding-right: 4px;
+}
+
+.logout > button:hover {
+  background-color: #e4e4e4;
+}
+
+/* img {
+  height: 30%;
+  width: 30%;
+} */

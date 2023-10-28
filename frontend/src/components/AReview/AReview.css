@@ -1,0 +1,20 @@
+.whole-review {
+  padding: 10px;
+}
+
+.review-name {
+  font-size: 1em;
+}
+
+.review-date {
+  font-size: 0.9em;
+  color: #999aa3;
+}
+
+.review-review {
+  font-size: 0.8em;
+}
+
+.review-delete-hide {
+  display: none;
+}

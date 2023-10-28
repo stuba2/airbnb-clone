@@ -45,10 +45,10 @@ router.post('/', validateSignup, async (req, res) => {
 
     // Validation errors
     if (!email.includes('@')) {
-      errors.email = "Invalid email"
+      errors.email = "The provided email is invalid"
     }
     if (!email) {
-      errors.email = "Invalid email"
+      errors.email = "The provided email is invalid"
     }
     if (username.includes('@')) {
       errors.username = "Username cannot be an email"

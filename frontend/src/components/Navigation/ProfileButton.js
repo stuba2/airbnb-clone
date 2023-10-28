@@ -4,9 +4,12 @@ import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from "./OpenModalMenuItem";
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
+import './ProfileButton.css'
+import { NavLink, useHistory } from "react-router-dom";
 
 const ProfileButton = ({ user }) => {
   const dispatch = useDispatch();
+  const history = useHistory()
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef()
 
@@ -31,14 +34,13 @@ const ProfileButton = ({ user }) => {
 
   const closeMenu = () => {
     setShowMenu(false)
-    console.log('yup its closed now')
   }
 
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logoutThunk());
     closeMenu()
-    console.log('closin time')
+    history.push(`/`)
   };
 
 
@@ -46,38 +48,45 @@ const ProfileButton = ({ user }) => {
 
   return (
     <>
-      <button onClick={openMenu}>
-        <i className="fas fa-user-circle" />
+      <button
+        onClick={openMenu}
+        className="whole-button"
+      >
+        <i className="fa-solid fa-bars profile-button-img"></i>
+        <i className="fas fa-user-circle profile-button-img" />
       </button>
-      <ul className={ulClassName} ref={ulRef}>
-        {user ? (
-          <>
-            <li>{user.username}</li>
-            <li>{user.firstName} {user.lastName}</li>
-            <li>{user.email}</li>
-            <li>
-              <button onClick={logout}>Log Out</button>
-            </li>
-          </>
-        ) : (
-          <>
-            <li>
-              <OpenModalMenuItem
-                itemText="Log In"
-                onItemClick={closeMenu}
-                modalComponent={<LoginFormModal />}
-              />
-            </li>
-            <li>
-              <OpenModalMenuItem
-                itemText="Sign Up"
-                onItemClick={closeMenu}
-                modalComponent={<SignupFormModal />}
-              />
-            </li>
-          </>
-        )}
-      </ul>
+      {user ? (
+  <ul className={`${ulClassName} logged-in-user-menu`} ref={ulRef}>
+    <li className="first-last">Hello, {user.firstName}</li>
+      <li className="email">{user.email}</li>
+      <NavLink to='/api/spots/current'
+        className="manage-spots"
+        onClick={closeMenu}>
+          Manage Spots
+      </NavLink>
+    <li className="logout">
+      <button  onClick={logout}>Log Out</button>
+    </li>
+  </ul>
+) : (
+  <ul className={`${ulClassName} logged-out-user-menu`} ref={ulRef}>
+    <li className="login-menu-option">
+      <OpenModalMenuItem
+        itemText="Log In"
+        onItemClick={closeMenu}
+        modalComponent={<LoginFormModal />}
+      />
+    </li>
+    <li className="signup-menu-option">
+      <OpenModalMenuItem
+        itemText="Sign Up"
+        onItemClick={closeMenu}
+        modalComponent={<SignupFormModal />}
+      />
+    </li>
+  </ul>
+)}
+
     </>
   );
 }
