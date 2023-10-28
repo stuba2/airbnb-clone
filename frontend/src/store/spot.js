@@ -24,7 +24,6 @@ const getASpot = (spot) => {
 }
 
 const findOwner = (data) => {
-  // console.log('-------', data)
   return {
     type: FIND_OWNER,
     payload: data

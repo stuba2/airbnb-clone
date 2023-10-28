@@ -51,7 +51,6 @@ export const loginThunk = (user) => async (dispatch) => {
     return response
   } catch (error) {
     // const hi = await error.json()
-    // console.log('this is the error: ', await error.json())
     // // return await error.json()
     // // return hi
     return error
