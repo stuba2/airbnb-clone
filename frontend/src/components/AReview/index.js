@@ -42,7 +42,7 @@ const AReview = () => {
         let date = new Date(review.createdAt).toDateString()
         let dateMonth = date.split(' ')[1]
         let dateYear = date.split(' ')[3]
-        if (review.userId === session.user.id) {
+        if (session.user && review.userId === session.user.id) {
           deleteButtonClass = "review-delete"
         }
         else {

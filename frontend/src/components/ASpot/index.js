@@ -20,7 +20,7 @@ const ASpot = () => {
     return state.reviews
   })
   const spot = spots[+spotId]
-  
+
   const image1 = <img src='https://source.unsplash.com/random/700x700/?house' style={{height: '350px'}}/>
   const image2 = <img src='https://source.unsplash.com/random/600x600/?house' style={{height: '175px'}} />
   const image3 = <img src='https://source.unsplash.com/random/500x500/?house' style={{height: '175px'}} />
@@ -67,7 +67,10 @@ const ASpot = () => {
   const reviewsArrVals = Object.values(reviews)
   const filteredReviews = reviewsArrVals.filter(review => review.spotId === +spotId)
   console.log('filter: ', filteredReviews)
-  const usersReview = filteredReviews.find(review => review.userId === session.user.id)
+  let usersReview
+  if (session.user && filteredReviews.length) {
+    usersReview = filteredReviews.find(review => review.userId === session.user.id)
+  }
   console.log('usersReview: ', usersReview)
 
   if (!session.user) {
