@@ -44,8 +44,6 @@ const SignupFormModal = () => {
       })
     }
 
-    console.log('this is errors: ', errors)
-
     return setErrors({
       confirmPassword: "Confirm Password field must be the same as the Password field"
     })

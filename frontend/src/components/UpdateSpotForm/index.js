@@ -4,12 +4,10 @@ import * as spotActions from '../../store/spot'
 import { useParams, Redirect, useHistory } from "react-router-dom"
 
 const UpdateSpotForm = () => {
-  // debugger
   const spots = useSelector(state => state.spots)
   const { spotId } = useParams()
   const dispatch = useDispatch()
   const history = useHistory()
-  // const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(spotActions.getSpotDeetsThunk(spotId))
@@ -123,9 +121,7 @@ const UpdateSpotForm = () => {
 
     if (!(Object.values(validationErrors).length)) {
       editedSpot = await dispatch(spotActions.editASpotThunk(spotForm, spotId))
-      console.log('editedSpot: ', editedSpot)
       const newSpotId = +editedSpot.id
-      console.log('newSpotId: ', newSpotId)
 
       dispatch(spotActions.getSpotDeetsThunk(spotId))
 
@@ -149,23 +145,6 @@ const UpdateSpotForm = () => {
 
 
       history.push(`/api/spots/${+spotId}`)
-
-
-
-      // setAddress('')
-      // setCity('')
-      // setLivedState('')
-      // setLat('')
-      // setLng('')
-      // setCountry('')
-      // setName('')
-      // setDescription('')
-      // setPrice(0)
-      // setImage1('')
-      // setImage2('')
-      // setImage3('')
-      // setImage4('')
-      // setImage5('')
     }
   }
 
