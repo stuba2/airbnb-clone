@@ -2,7 +2,7 @@
 
 ## Database Schema Design
 
-![HeirBnB Database Schema](<../images/AirBnB schema v6.png>)
+![HeirBnB Database Schema](<./utils/images/AirBnB schema v6.png>)
 [HeirBnB DB Schema](https://dbdiagram.io/d/64c3108e02bd1c4a5ed42ce8)
 
 ## API Documentation
@@ -51,7 +51,7 @@ Returns the information about the current user that is logged in.
 * Require Authentication: true
 * Request
   * Method: GET
-  * URL: /users
+  * URL: /session
   * Body: none
 
 * Successful Response when there is a logged in user
@@ -92,7 +92,7 @@ information.
 * Require Authentication: false
 * Request
   * Method: POST
-  * URL: /users/login
+  * URL: /session
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -158,7 +158,7 @@ user's information.
 * Require Authentication: false
 * Request
   * Method: POST
-  * URL: /users/signup
+  * URL: /user
   * Headers:
     * Content-Type: application/json
   * Body:
