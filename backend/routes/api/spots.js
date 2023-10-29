@@ -256,6 +256,11 @@ router.post('/', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, r
   console.log('---------?-----------Create a Spot: +lat and typeof (modified): ', +lat, typeof +lat)
   console.log('---------?-----------Create a Spot: +lng and typeof (modified): ', +lng, typeof +lng)
   console.log('--------------------Create a Spot: user: ', user)
+  console.log('--------------------Create a Spot: user.id and typeof: ', user.id, typeof user.id)
+  console.log('--------------------Create a Spot: user.firstName and typeof: ', user.firstName, typeof user.firstName)
+  console.log('--------------------Create a Spot: user.lastName and typeof: ', user.lastName, typeof user.lastName)
+  console.log('--------------------Create a Spot: user.username and typeof: ', user.username, typeof user.username)
+  console.log('--------------------Create a Spot: user.email and typeof: ', user.email, typeof user.email)
 
   // Body validation errors
   let errors = {}
