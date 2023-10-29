@@ -121,6 +121,7 @@ const NewSpotForm = () => {
     }
 
     let createdSpot
+    let troubledSpot
     let addedImage1
     let addedImage2
     let addedImage3
@@ -128,13 +129,18 @@ const NewSpotForm = () => {
     let addedImage5
 
     if (!(Object.values(validationErrors).length)) {
-      createdSpot = await dispatch(spotActions.createSpotThunk(spotForm))
+      let createdSpotProm = await dispatch(spotActions.createSpotThunk(spotForm))
       .catch(async (res) => {
         const data = await res.json()
         if (data && data.errors) {
           setValidationErrors(data.errors)
         }
       })
+
+      if (createdSpotProm.ok) {
+        createdSpot = await createdSpotProm.json()
+      }
+
       console.log('inside if block where createSpotThunk gets dispatched if there are no validationErrors')
       console.log('newSpotForm: createdSpot: ', createdSpot)
       console.log('newSpotForm: createdSpot.id and typeof createdSpot.id (as is): ', createdSpot.id, typeof createdSpot.id)
@@ -143,9 +149,9 @@ const NewSpotForm = () => {
       console.log('newSpotForm: newSpotId and typeof newSpotId (as is): ', newSpotId, typeof newSpotId)
       console.log('newSpotForm: +newSpotId and typeof +newSpotId (modified): ', +newSpotId, typeof +newSpotId)
 
-      if (createdSpot.ok && createdSpot.ok === false) {
-        const response = await createdSpot.json()
-        console.log('---------newSpotForm !createdSpot.ok: response: ', response)
+      if (createdSpotProm.ok && createdSpotProm.ok === false) {
+        troubledSpot = await createdSpotProm.json()
+        console.log('---------newSpotForm !createdSpot.ok: troubledSpot: ', troubledSpot)
       }
 
       addedImage1 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm1))
