@@ -238,9 +238,24 @@ router.get('/', async (req, res) => {
 
 // Create a Spot
 router.post('/', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, res) => {
+  console.log('--------------------in Create A Spot route')
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
   const user = req.user
+
+  console.log('--------------------Create a Spot: address and typeof: ', address, typeof address)
+  console.log('--------------------Create a Spot: city and typeof: ', city, typeof city)
+  console.log('--------------------Create a Spot: state and typeof: ', state, typeof state)
+  console.log('--------------------Create a Spot: country and typeof: ', country, typeof country)
+  console.log('--------------------Create a Spot: lat and typeof (as is): ', lat, typeof lat)
+  console.log('--------------------Create a Spot: lng and typeof (as is): ', lng, typeof lng)
+  console.log('--------------------Create a Spot: name and typeof: ', name, typeof name)
+  console.log('--------------------Create a Spot: description and typeof: ', description, typeof description)
+  console.log('--------------------Create a Spot: price and typeof (as is): ', price, typeof price)
+  console.log('---------?-----------Create a Spot: +price and typeof (modified): ', +price, typeof +price)
+  console.log('---------?-----------Create a Spot: +lat and typeof (modified): ', +lat, typeof +lat)
+  console.log('---------?-----------Create a Spot: +lng and typeof (modified): ', +lng, typeof +lng)
+  console.log('--------------------Create a Spot: user: ', user)
 
   // Body validation errors
   let errors = {}
@@ -286,6 +301,7 @@ router.post('/', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, r
 
   if (errors.address || errors.city || errors.state || errors.country || errors.lat || errors.lng || errors.name || errors.description || errors.price) {
     res.status(400)
+    console.log('--------------------if Create A Spot has errors')
     res.json({
       message: "Bad Request",
       errors
@@ -299,6 +315,7 @@ router.post('/', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, r
   });
   if (spotExistsQuestion[0]) {
     res.status(400)
+    console.log('--------------------if Create A Spot spot already exists')
     return res.json({
       message: "Location already exists"
     })
@@ -317,19 +334,21 @@ router.post('/', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, r
     price: price
   });
 
-
+console.log('--------------------Create A Spot: everything went well')
   res.status(201)
   res.json(newSpot)
 });
 
 // Add an Image to a Spot based on the Spot's id
 router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, validateSpotImage, async (req, res) => {
+  console.log('--------------------in Add an Image route')
   const { spotId } = req.params;
   const { url, preview } = req.body;
   const user = req.user;
 
   if (isNaN(parseInt(spotId))) {
     res.status(404)
+    console.log('--------------------Add an Image: spotId isnt a number')
     return res.json({
       message: "spotId needs to be a number"
     })
@@ -340,6 +359,7 @@ router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, validateSpotI
   // No spot error
   if (!spot) {
     res.status(404)
+    console.log('--------------------Add an Image: no spot found')
     return res.json({
       message: "Spot couldn't be found"
     })
@@ -348,6 +368,7 @@ router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, validateSpotI
   // Restricts if user isn't the owner
   if (user.id !== spot.ownerId) {
     res.status(403)
+    console.log('--------------------Add an Image: user isnt owner')
     return res.json({
       message: "Forbidden"
     })
@@ -364,6 +385,7 @@ router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, validateSpotI
 
   if (errors.url || errors.previewImage) {
     res.status(400)
+    console.log('--------------------Add an Image: has errors')
     return res.json({
       message: "Bad Request",
       errors
@@ -383,50 +405,14 @@ router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, validateSpotI
     attributes: ['id', 'url', 'previewImage']
   })
 
+  console.log('--------------------Add an Image: everything went well')
   res.json(retNewPic[0])
 });
 
 // Get Spots owned by the Current User
 router.get('/user', restoreUser, requireAuth, plsLogIn, async (req, res) => {
   const user = req.user;
-  // const spots = await Spot.scope("allInfo").findAll({
-  //   where: {
-  //     ownerId: user.id
-  //   },
-  //   include: [
-  //     {
-  //       model: Review,
-  //       attributes: []
-  //     },
-  //     {
-  //       model: SpotImage,
-  //       where: {
-  //         previewImage: true
-  //       },
-  //       required: false,
-  //       attributes: []
-  //     }
-  //   ],
-  //   attributes: {
-  //     include: [
-  //       [sequelize.fn('AVG', sequelize.col('stars')), 'avgRating'],
-  //       [sequelize.col('SpotImages.url'), 'previewImage']
-  //     ]
-  //   },
-  //   group: [['Spot.id'], ['SpotImages.url']]
-  // });
 
-  // for (let i = 0; i < spots.length; i++) {
-  //   let spotStr = JSON.stringify(spots[i])
-  //   let spot = JSON.parse(spotStr)
-  //   if (spot.avgRating) {
-  //     let num = +spot.avgRating
-  //     let newNum = Math.round(num * 100) / 100
-  //     spot.avgRating = newNum
-  //   }
-  // }
-
-  // res.json({Spots: spots})
 
   // lazy load attempt
   const spotsLazy = await Spot.scope("allInfo").findAll({
@@ -570,12 +556,28 @@ router.get('/:spotId', restoreUser, async (req, res) => {
 
 // Edit a spot
 router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, res) => {
+  console.log('--------------------in Edit a Spot')
   const { spotId } = req.params
   const { address, city, state, country, lat, lng, name, description, price } = req.body
   const user = req.user
 
+  console.log('--------------------Edit a Spot: address and typeof: ', address, typeof address)
+  console.log('--------------------Edit a Spot: city and typeof: ', city, typeof city)
+  console.log('--------------------Edit a Spot: state and typeof: ', state, typeof state)
+  console.log('--------------------Edit a Spot: country and typeof: ', country, typeof country)
+  console.log('--------------------Edit a Spot: lat and typeof (passed in): ', lat, typeof lat)
+  console.log('--------------------Edit a Spot: lng and typeof (passed in): ', lng, typeof lng)
+  console.log('--------------------Edit a Spot: name and typeof: ', name, typeof name)
+  console.log('--------------------Edit a Spot: description and typeof: ', description, typeof description)
+  console.log('--------------------Edit a Spot: price and typeof (passed in): ', price, typeof price)
+  console.log('--------------------Edit a Spot: +price and typeof (modified): ', +price, typeof +price)
+  console.log('--------------------Edit a Spot: +lat and typeof (modified): ', +lat, typeof +lat)
+  console.log('--------------------Edit a Spot: +lng and typeof (modified): ', +lng, typeof +lng)
+  console.log('--------------------Edit a Spot: user and typeof: ', user, typeof user)
+
   if (isNaN(parseInt(spotId))) {
     res.status(404)
+    console.log('--------------------Edit a Spot: spot isnt a number')
     return res.json({
       message: "spotId needs to be a number"
     })
@@ -587,6 +589,7 @@ router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (
   // No spot found error
   if (!spot) {
     res.status(404)
+    console.log('--------------------Edit a Spot: no spot found')
     res.json({
       message: "Spot couldn't be found"
     })
@@ -595,6 +598,7 @@ router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (
   // Restricts if user isn't the owner
   if (user.id !== spot.ownerId) {
     res.status(403)
+    console.log('--------------------Edit a Spot: user isnt owner')
     return res.json({
       message: "Forbidden"
     })
@@ -644,6 +648,7 @@ router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (
 
   if (errors.address || errors.city || errors.state || errors.country || errors.lat || errors.lng || errors.name || errors.description || errors.price) {
     res.status(400)
+    console.log('--------------------Edit a Spot has errors')
     res.json({
       message: "Bad Request",
       errors
@@ -657,6 +662,7 @@ router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (
   });
   if (spotExistsQuestion[0] && spotExistsQuestion[0].id !== spot.id) {
     res.status(400)
+    console.log('--------------------Edit a Spot: Location already exists')
     return res.json({
       message: "Location already exists"
     })
@@ -674,6 +680,7 @@ router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (
 
   await spot.save()
 
+  console.log('--------------------Edit a Spot: all good')
   res.json(spot)
 });
 
