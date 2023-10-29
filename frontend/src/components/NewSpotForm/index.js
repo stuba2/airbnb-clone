@@ -121,6 +121,7 @@ const NewSpotForm = () => {
     }
 
     let createdSpot
+    let createdSpotProm
     let troubledSpot
     let addedImage1
     let addedImage2
@@ -129,13 +130,14 @@ const NewSpotForm = () => {
     let addedImage5
 
     if (!(Object.values(validationErrors).length)) {
-      let createdSpotProm = await dispatch(spotActions.createSpotThunk(spotForm))
+      createdSpotProm = await dispatch(spotActions.createSpotThunk(spotForm))
       .catch(async (res) => {
         const data = await res.json()
         if (data && data.errors) {
           setValidationErrors(data.errors)
         }
       })
+      console.log('!!!!!!!!!!!!!!!! createdSpotProm: ', createdSpotProm)
 
       if (createdSpotProm.ok) {
         createdSpot = await createdSpotProm.json()
