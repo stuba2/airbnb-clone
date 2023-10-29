@@ -25,6 +25,13 @@ const SignupFormModal = () => {
     e.preventDefault()
 
     if (password === confirmPassword) {
+      console.log('signup: in password === confirm password if block, before dispatch')
+      console.log('signup: email and typeof email: ', email, typeof email)
+      console.log('signup: username and typeof username: ', username, typeof username)
+      console.log('signup: firstName and typeof firstName: ', firstName, typeof firstName)
+      console.log('signup: lastName and typeof lastName: ', lastName, typeof lastName)
+      console.log('signup: password and typeof password: ', password, typeof password)
+
       setErrors({})
       return dispatch(
         sessionActions.signupThunk({
@@ -37,7 +44,9 @@ const SignupFormModal = () => {
       )
       .then(closeModal)
       .catch(async (res) => {
+        console.log('signup: in .catch of dispatch')
         const data = await res.json()
+        console.log('signup: data: ', data)
         if (data && data.errors) {
           setErrors(data.errors)
         }

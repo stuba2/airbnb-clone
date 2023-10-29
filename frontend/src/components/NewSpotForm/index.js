@@ -50,6 +50,25 @@ const NewSpotForm = () => {
   }, [country, address, city, livedState, lat, lng, description, name, price, image1, image2, image3, image4, image5])
 
   const onSubmit = async (e) => {
+    console.log('newSpotForm: in onSubmit block')
+    console.log('newSpotForm: address and typeof address: ', address, typeof address)
+    console.log('newSpotForm: city and typeof city: ', city, typeof city)
+    console.log('newSpotForm: livedState and typeof livedState: ', livedState, typeof livedState)
+    console.log('newSpotForm: country and typeof country: ', country, typeof country)
+    console.log('newSpotForm: name and typeof name: ', name, typeof name)
+    console.log('newSpotForm: description and typeof description: ', description, typeof description)
+    console.log('newSpotForm: price and typeof price: ', price, typeof price)
+    console.log('newSpotForm: +price and typeof +price: ', +price, typeof +price)
+    console.log('newSpotForm: lat and typeof lat: ', lat, typeof lat)
+    console.log('newSpotForm: +lat and typeof +lat: ', +lat, typeof +lat)
+    console.log('newSpotForm: lng and typeof lng: ', lng, typeof lng)
+    console.log('newSpotForm: +lng and typeof +lng: ', +lng, typeof +lng)
+    console.log('newSpotForm: image1 and typeof image1: ', image1, typeof image1)
+    console.log('newSpotForm: image2 and typeof image2: ', image2, typeof image2)
+    console.log('newSpotForm: image3 and typeof image3: ', image3, typeof image3)
+    console.log('newSpotForm: image4 and typeof image4: ', image4, typeof image4)
+    console.log('newSpotForm: image5 and typeof image5: ', image5, typeof image5)
+
     e.preventDefault()
 
     setHasSubmitted(true)
@@ -112,12 +131,14 @@ const NewSpotForm = () => {
       createdSpot = await dispatch(spotActions.createSpotThunk(spotForm))
       .catch(async (res) => {
         const data = await res.json()
-        console.log('this is data: ', data)
         if (data && data.errors) {
           setValidationErrors(data.errors)
         }
       })
       const newSpotId = +createdSpot.id
+      console.log('inside if block where createSpotThunk gets dispatched if there are no validationErrors')
+      console.log('newSpotForm: createdSpot: ', createdSpot)
+      console.log('newSpotForm: newSpotId and typeof newSpotId: ', newSpotId, typeof newSpotId)
 
       addedImage1 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm1))
 
