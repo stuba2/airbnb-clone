@@ -24,7 +24,6 @@ const LoginFormModal = () => {
     // setErrors({});
     const what = await dispatch(sessionActions.loginThunk({ credential, password }))
     .catch(async (res) => {
-      console.log('in the catch')
       const data = await res.json();
       if (data && data.errors) {
         setErrors(data.errors)
@@ -48,7 +47,6 @@ const LoginFormModal = () => {
     return dispatch(sessionActions.loginThunk({ credential: 'Demo-lition', password: 'password' }))
     .catch(async (res) => {
       const data = await res.json()
-      console.log('this is data: ', data)
       if (data && data.errors) setErrors(data.errors)
     })
     .then(closeModal)
