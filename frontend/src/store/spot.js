@@ -134,6 +134,7 @@ export const createSpotThunk = (spotForm) => async (dispatch) => {
       body: JSON.stringify(spotForm)
     })
     console.log('createSpotThunk: newSpot: ', newSpot)
+    // console.log('createSpotThunk: newSpot.json(): ', await newSpot.json())
 
     // if (newSpot.ok)
       const createdSpot = await newSpot.json()
@@ -144,6 +145,7 @@ export const createSpotThunk = (spotForm) => async (dispatch) => {
   } catch (error) {
     console.log('in createSpotThunk catch block')
     console.log('createSpotThunk: error: ', error)
+    // console.log('createSpotThunk: error.json(): ', await error.json())
     return error
   }
 

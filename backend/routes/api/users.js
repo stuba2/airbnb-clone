@@ -12,8 +12,14 @@ const router = express.Router();
 
 // Sign up
 router.post('/', validateSignup, async (req, res) => {
+  console.log('--------------------in Signup')
     const { email, password, username, firstName, lastName } = req.body;
     const hashedPassword = bcrypt.hashSync(password);
+    console.log('--------------------Signup: email and typeof: ', email, typeof email)
+    console.log('--------------------Signup: password and typeof: ', password, typeof password)
+    console.log('--------------------Signup: username and typeof: ', username, typeof username)
+    console.log('--------------------Signup: firstName and typeof: ', firstName, typeof firstName)
+    console.log('--------------------Signup: lastName and typeof: ', lastName, typeof lastName)
 
     // User already exists errors
     let errors = {}
@@ -36,6 +42,7 @@ router.post('/', validateSignup, async (req, res) => {
     }
     if (errors.email || errors.username) {
       res.status(500)
+      console.log('--------------------Signup: user already exists')
       return res.json({
         message: "User already exists",
         errors
@@ -74,6 +81,7 @@ router.post('/', validateSignup, async (req, res) => {
 
     if (errors.email || errors.username || errors.password || errors.firstName || errors.lastName) {
       res.status(400)
+      console.log('--------------------Signup has errors')
       return res.json({
         message: "Bad Request",
         errors
@@ -87,6 +95,7 @@ router.post('/', validateSignup, async (req, res) => {
 
     await setTokenCookie(res, safeUser);
 
+    console.log('--------------------Signup is all good')
     return res.json({
       user: safeUser
     });
