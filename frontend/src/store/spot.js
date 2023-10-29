@@ -136,11 +136,18 @@ export const createSpotThunk = (spotForm) => async (dispatch) => {
     console.log('createSpotThunk: newSpot: ', newSpot)
     // console.log('createSpotThunk: newSpot.json(): ', await newSpot.json())
 
-    // if (newSpot.ok)
+    if (newSpot.ok) {
       const createdSpot = await newSpot.json()
+      console.log('newSpot is ok!')
       console.log('createSpotThunk: createdSpot: ', createdSpot)
       dispatch(createASpot(createdSpot))
+      return createdSpot
+    }
+
+    if (!newSpot.ok) {
+      console.log('newSpot is not ok and neither am i')
       return newSpot
+    }
 
   } catch (error) {
     console.log('in createSpotThunk catch block')
