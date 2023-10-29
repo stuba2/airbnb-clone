@@ -133,6 +133,7 @@ const NewSpotForm = () => {
       createdSpotProm = await dispatch(spotActions.createSpotThunk(spotForm))
       .catch(async (res) => {
         const data = await res.json()
+        console.log('??????in .catch??????? data: ', data)
         if (data && data.errors) {
           setValidationErrors(data.errors)
         }
@@ -147,7 +148,9 @@ const NewSpotForm = () => {
       console.log('newSpotForm: createdSpot: ', createdSpot)
       console.log('newSpotForm: createdSpot.id and typeof createdSpot.id (as is): ', createdSpot.id, typeof createdSpot.id)
       console.log('newSpotForm: +createdSpot.id and typeof +createdSpot.id (modified and sent on): ', +createdSpot.id, typeof +createdSpot.id)
+
       const newSpotId = +createdSpot.id
+      
       console.log('newSpotForm: newSpotId and typeof newSpotId (as is): ', newSpotId, typeof newSpotId)
       console.log('newSpotForm: +newSpotId and typeof +newSpotId (modified): ', +newSpotId, typeof +newSpotId)
 
