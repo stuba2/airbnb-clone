@@ -95,10 +95,7 @@ const router = express.Router();
 
 // Log in
 router.post('/', validateLogin, async (req, res, next) => {
-  console.log('--------------------in Login')
   const { credential, password } = req.body;
-  console.log('--------------------Login: credential and typeof: ', credential, typeof credential)
-  console.log('--------------------Login: password and typeof: ', password, typeof password)
 
   const user = await User.unscoped().findOne({
       // allows either username or password to log in
@@ -112,7 +109,6 @@ router.post('/', validateLogin, async (req, res, next) => {
 
     if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
       res.status(401)
-      console.log('--------------------Login: credentials are invalid')
       return res.json({
         message: "The provided credentials were invalid"
       })
@@ -128,7 +124,6 @@ router.post('/', validateLogin, async (req, res, next) => {
 
     await setTokenCookie(res, safeUser);
 
-    console.log('--------------------Login: all good')
     return res.json({
       user: safeUser
     });
