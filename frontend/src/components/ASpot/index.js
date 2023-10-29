@@ -20,8 +20,11 @@ const ASpot = () => {
     return state.reviews
   })
   const spot = spots[+spotId]
+  const SpotImages = spot ? spot.SpotImages : []
+  let previewImage
+  previewImage = SpotImages.find(image => image.previewImage === true)
 
-  const image1 = <img src='https://source.unsplash.com/random/700x700/?house' style={{height: '350px'}}/>
+  const image1 = previewImage ? <img src={previewImage.url} style={{height: '350px'}} /> : <img src='https://source.unsplash.com/random/700x700/?house' style={{height: '350px'}}/>
   const image2 = <img src='https://source.unsplash.com/random/600x600/?house' style={{height: '175px'}} />
   const image3 = <img src='https://source.unsplash.com/random/500x500/?house' style={{height: '175px'}} />
   const image4 = <img src='https://source.unsplash.com/random/400x400/?house' style={{height: '175px'}} />
@@ -64,26 +67,29 @@ const ASpot = () => {
 
   let reviewButton
   let reviewButtonModalClass
-  const reviewsArrVals = Object.values(reviews)
-  const filteredReviews = reviewsArrVals.filter(review => review.spotId === +spotId)
+  const reviewsArrVals = Object.values(reviews) //reviews state values in array form (array of objects)
+  const filteredReviews = reviewsArrVals.filter(review => review.spotId === +spotId) //array of reviews of this spot specifically (array of objects)
   let usersReview
   if (session.user && filteredReviews.length) {
-    usersReview = filteredReviews.find(review => review.userId === session.user.id)
+    usersReview = filteredReviews.find(review => review.userId === session.user.id) //finds a review (object) of a review that the user made
   }
 
-  if (!session.user) {
+
+
+  if (!session.user) { // if user is not logged in
     reviewButtonModalClass = "review-modal hide"
-  } else if (spot && session.user.id === spot.Owner.id) {
+  } else if (spot && session.user.id === spot.Owner.id) { // if user is logged in and owns the spot
     reviewButtonModalClass = "review-modal hide"
-  } else if (spot && session.user.id !== spot.Owner.id && Object.values(filteredReviews).length  ) {
+  } else if (spot && session.user.id !== spot.Owner.id && Object.values(filteredReviews).length && usersReview && (usersReview && usersReview.userId) === session.user.id) { // if user is logged in, doesn't own the spot, there are reviews, and one of those reviews belongs to the user
+    reviewButtonModalClass = "review-modal hide"
+  } else if (spot && session.user.id !== spot.Owner.id && Object.values(filteredReviews).length  ) { // if user is logged in, doesn't own the spot, and there are reviews
     reviewButtonModalClass = "review-modal"
     reviewButton = "Post Your Review"
-  } else if (spot && session.user.id !== spot.Owner.id && !Object.values(filteredReviews).length !== 0) {
+  } else if (spot && session.user.id !== spot.Owner.id && !Object.values(filteredReviews).length !== 0) { // if user is logged in, doesn't own the spot, and there aren't reviews
     reviewButtonModalClass= "review-modal"
     reviewButton = "Be the first to post a review!"
-  } else if (spot && session.user.id !== spot.Owner.id && Object.values(filteredReviews).length && usersReview && Object.values(usersReview)) {
-    reviewButtonModalClass = "review-modal hide"
   }
+
 
 
   if (!spot || !spot.Owner) {
