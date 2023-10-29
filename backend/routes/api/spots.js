@@ -345,6 +345,10 @@ router.post('/:spotId/images', restoreUser, requireAuth, plsLogIn, validateSpotI
   const { spotId } = req.params;
   const { url, preview } = req.body;
   const user = req.user;
+  console.log('--------------------Add an Image: spotId and typeof (passed in ): ', spotId, typeof spotId)
+  console.log('--------------------Add an Image: url and typeof (passed in ): ', url, typeof url)
+  console.log('--------------------Add an Image: preview and typeof (passed in ): ', preview, typeof preview)
+  console.log('--------------------Add an Image: user and typeof (passed in ): ', user, typeof user)
 
   if (isNaN(parseInt(spotId))) {
     res.status(404)
