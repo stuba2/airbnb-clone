@@ -134,8 +134,8 @@ const NewSpotForm = () => {
       //   troubledSpot = await createdSpot.json()
       //   console.log('------------', troubledSpot)
       // }
+      
       if (createdSpot) {
-        console.log('hi')
         const newSpotId = +createdSpot.id
 
         addedImage1 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm1))
