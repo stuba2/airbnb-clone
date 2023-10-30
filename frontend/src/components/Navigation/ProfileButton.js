@@ -59,7 +59,7 @@ const ProfileButton = ({ user }) => {
   <ul className={`${ulClassName} logged-in-user-menu`} ref={ulRef}>
     <li className="first-last">Hello, {user.firstName}</li>
       <li className="email">{user.email}</li>
-      <NavLink to='/api/spots/current'
+      <NavLink to='/spots/current'
         className="manage-spots"
         onClick={closeMenu}>
           Manage Spots

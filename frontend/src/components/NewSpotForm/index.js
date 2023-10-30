@@ -39,6 +39,7 @@ const NewSpotForm = () => {
     if (+lng < -180 || +lng > 180) errors['lng'] = 'Longitude is not valid'
     if (!description) errors['description'] = 'Description is required'
     if (description.length < 30) errors['description'] = 'Description must be at least 30 characters'
+    if (description.length > 1000) errors['description'] = 'Description must be less than 1000 characters'
     if (!name) errors['name'] = 'Name is required'
     if (name.length > 50) errors['name'] = 'Name must be less than 50 characters'
     if (!price) errors['price'] = 'Price is required'
@@ -170,7 +171,7 @@ const NewSpotForm = () => {
       setImage4('')
       setImage5('')
 
-      history.push(`/api/spots/${+newSpotId}`)
+      history.push(`/spots/${+newSpotId}`)
     }
     }
 

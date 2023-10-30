@@ -31,7 +31,7 @@ let newSpotClass
       </div>
       <div className='nav-right'>
         <div className={newSpotClass}>
-          <NavLink to="/api/spots/new">
+          <NavLink to="/spots/new">
             Create a New Spot
           </NavLink>
         </div>

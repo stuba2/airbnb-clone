@@ -36,21 +36,21 @@ const UserSpots = () => {
       <div className="whole-thing-user-spots">
         <div className="manage-header">
           <h4>Manage Spots</h4>
-          <NavLink to={`/api/spots/new`}><button className="manage-create">Create a New Spot</button></NavLink>
+          <NavLink to={`/spots/new`}><button className="manage-create">Create a New Spot</button></NavLink>
         </div>
         <div className="who-knows">
           {ownedSpots.map((spot) => {
           return (
             <div className="spot-holder">
               <NavLink
-                to={`/api/spots/${spot.id}`}
+                to={`/spots/${spot.id}`}
                 className='whole-spot-container'
                 key={spot.id}
                 title={spot.name}>
                   <ASmallSpotMain spotId={spot.id} />
               </NavLink>
               <div className="update-delete-buttons">
-                <NavLink to={`/api/spots/${spot.id}/edit`}>
+                <NavLink to={`/spots/${spot.id}/edit`}>
                   <button className="manage-update">
                       Update
                   </button>
