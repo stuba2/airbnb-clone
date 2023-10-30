@@ -42,8 +42,10 @@ const UpdateSpotForm = () => {
     if (!livedState) errors['state'] = 'State is required'
     if (isNaN(parseInt(lat))) errors['lat'] = 'Latitude needs to be a number'
     if (!lat) errors['lat'] = 'Latitude is required'
+    if (+lat < -90 || +lat > 90) errors['lat'] = 'Latitude is not valid'
     if (isNaN(parseInt(lng))) errors['lng'] = 'Longitude needs to be a number'
     if (!lng) errors['lng'] = 'Longitude is required'
+    if (+lng < -180 || +lng > 180) errors['lng'] = 'Longitude is not valid'
     if (!description) errors['description'] = 'Description is required'
     if (description.length < 30) errors['description'] = 'Description must be at least 30 characters'
     if (!name) errors['name'] = 'Name is required'
@@ -69,8 +71,8 @@ const UpdateSpotForm = () => {
       name,
       description,
       price: +price,
-      lat,
-      lng
+      lat: +lat,
+      lng: +lng
     }
 
     let imageForm1
@@ -121,9 +123,18 @@ const UpdateSpotForm = () => {
 
     if (!(Object.values(validationErrors).length)) {
       editedSpot = await dispatch(spotActions.editASpotThunk(spotForm, spotId))
-      const newSpotId = +editedSpot.id
+      .catch(async (res) => {
+        const data = await res.json()
+        if (data && data.errors) {
+          setValidationErrors(data.errors)
+        }
+      })
 
-      dispatch(spotActions.getSpotDeetsThunk(spotId))
+      if (editedSpot) {
+
+        const newSpotId = +editedSpot.id
+
+      // dispatch(spotActions.getSpotDeetsThunk(spotId))
 
       addedImage1 = await dispatch(spotActions.addImageThunk(newSpotId, imageForm1))
 
@@ -145,6 +156,7 @@ const UpdateSpotForm = () => {
 
 
       history.push(`/api/spots/${+spotId}`)
+    }
     }
   }
 

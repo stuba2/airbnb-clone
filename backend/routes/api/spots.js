@@ -301,7 +301,9 @@ router.post('/', restoreUser, requireAuth, plsLogIn, validateSpot, async (req, r
   if (spotExistsQuestion[0]) {
     res.status(400)
     return res.json({
-      message: "Location already exists"
+      errors: {
+        address: "Location already exists"
+      }
     })
   }
 
@@ -578,13 +580,13 @@ router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (
   if (!country) {
     errors.country = "Country is required"
   }
-  if (!lat || typeof lng !== "number") {
+  if (!lat || typeof lat !== "number") {
     errors.lat = "Latitude is not valid"
   }
   if (lat < -90 || lat > 90) {
     errors.lat = "Latitude is not valid"
   }
-  if (!lng || typeof lat !== "number") {
+  if (!lng || typeof lng !== "number") {
     errors.lng = "Longitude is not valid"
   }
   if (lng < -180 || lng > 180) {
@@ -622,7 +624,9 @@ router.put('/:spotId', restoreUser, requireAuth, plsLogIn, validateSpot, async (
   if (spotExistsQuestion[0] && spotExistsQuestion[0].id !== spot.id) {
     res.status(400)
     return res.json({
-      message: "Location already exists"
+      errors: {
+        address: "Location already exists"
+      }
     })
   }
 
