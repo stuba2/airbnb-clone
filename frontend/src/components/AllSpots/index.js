@@ -29,7 +29,7 @@ const AllSpots = () =>{
         {spotsArrVals.map((spot) => {
           return (
             <NavLink
-              to={`/api/spots/${spot.id}`}
+              to={`/spots/${spot.id}`}
               className="spots"
               key={spot.id}
               title={spot.name}>

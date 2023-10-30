@@ -14,7 +14,7 @@ const DeleteASpot = ({ spotId }) => {
 
     dispatch(spotActions.deleteASpotThunk(spotId))
     closeModal()
-    history.push(`/api/spots/current`)
+    history.push(`/spots/current`)
   }
 
   const handleKeep = (e) => {
