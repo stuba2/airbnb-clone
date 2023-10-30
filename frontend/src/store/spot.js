@@ -101,7 +101,7 @@ export const getSpotDeetsThunk = (id) => async (dispatch) => {
 }
 
 export const createSpotThunk = (spotForm) => async (dispatch) => {
-  try {
+  // try {
     const newSpot = await csrfFetch('/api/spots/', {
       method: "POST",
       headers: {
@@ -120,9 +120,9 @@ export const createSpotThunk = (spotForm) => async (dispatch) => {
       return newSpot
     }
 
-  } catch (error) {
-    return error
-  }
+  // } catch (error) {
+  //   return error
+  // }
 }
 
 export const addImageThunk = (newSpotId, imageObj) => async (dispatch) => {
@@ -163,15 +163,27 @@ export const editASpotThunk = (spotForm, spotId) => async (dispatch) => {
     },
     body: JSON.stringify(spotForm)
   })
+  console.log('before ifs')
 
-  const secondResponse = await csrfFetch(`/api/spots/${spotId}`)
+  if (response.ok) {
+    console.log('first response is ok')
+    const secondResponse = await csrfFetch(`/api/spots/${spotId}`)
 
-  if (secondResponse.ok) {
-    const updatedSpot = await secondResponse.json()
-    dispatch(findOwner(updatedSpot))
-    return updatedSpot
-  } else {
-    console.log('wrong: editASpotThunk')
+    if (secondResponse.ok) {
+      console.log('second response ok')
+      const updatedSpot = await secondResponse.json()
+      dispatch(findOwner(updatedSpot))
+      return updatedSpot
+    }
+
+    if (!secondResponse.ok) {
+      console.log('second response not ok')
+      return secondResponse
+    }
+  }
+  if (!response.ok) {
+    console.log('first response not ok')
+    return response
   }
 }
 
